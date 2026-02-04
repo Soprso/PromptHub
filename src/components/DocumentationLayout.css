@@ -1,0 +1,68 @@
+/* Documentation Layout Container */
+.doc-layout {
+    display: flex;
+    min-height: calc(100vh - 57px);
+    position: relative;
+}
+
+/* Main Content Area */
+.doc-content {
+    flex: 1;
+    margin-left: 250px;
+    margin-top: 57px;
+    /* Below navbar */
+    position: relative;
+    width: auto;
+    /* Let it fill remaining space */
+}
+
+.doc-content-inner {
+    width: 100%;
+    max-width: 960px;
+    /* Documentation reading width */
+    margin: 0 auto;
+    /* robust centering */
+    padding: 2.5rem 3rem;
+}
+
+/* Hamburger Menu Button */
+.hamburger-btn {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 1rem;
+    z-index: 1001;
+    /* Above sidebar backdrop */
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.4rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-primary);
+}
+
+.hamburger-btn:hover {
+    background-color: var(--bg-secondary);
+}
+
+.hamburger-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .doc-content {
+        margin-left: 0;
+        margin-top: 57px;
+    }
+
+    .doc-content-inner {
+        padding: 1.5rem 1rem;
+    }
+
+    .hamburger-btn {
+        display: block;
+    }
+}

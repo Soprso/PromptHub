@@ -1,0 +1,203 @@
+/* Sidebar Container - Documentation Style */
+.sidebar {
+    position: fixed;
+    top: 57px;
+    left: 0;
+    width: 250px;
+    height: calc(100vh - 57px);
+    background-color: var(--bg-primary);
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 40;
+    transition: transform 0.2s ease;
+}
+
+/* Sidebar Navigation */
+.sidebar-nav {
+    padding: 1rem 0;
+}
+
+/* Home Link */
+.sidebar-home {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem 1rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.sidebar-home:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Categories Container */
+.sidebar-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+/* Category */
+.sidebar-category {
+    margin-bottom: 0;
+}
+
+.sidebar-category-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 0.75rem;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.1s ease;
+}
+
+.sidebar-category-header:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.sidebar-category-header.active {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+    font-weight: 600;
+}
+
+.sidebar-category-toggle {
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    width: 16px;
+    justify-content: center;
+}
+
+.sidebar-category-icon-main {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+.sidebar-category-header.active .sidebar-category-icon-main {
+    color: var(--accent-color);
+    opacity: 1;
+}
+
+.sidebar-category-name {
+    flex: 1;
+}
+
+/* Folders */
+.sidebar-folders {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+    margin-top: 1px;
+    margin-bottom: 0.25rem;
+    position: relative;
+}
+
+/* Thread line for hierarchy feel */
+.sidebar-folders::before {
+    content: '';
+    position: absolute;
+    left: 1.5rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: var(--border-color);
+    opacity: 0.5;
+}
+
+.sidebar-folder {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem 1rem 0.4rem 2.25rem;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    transition: all 0.15s ease;
+    border-radius: 0 4px 4px 0;
+    margin-right: 0.5rem;
+    position: relative;
+}
+
+.sidebar-folder:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+}
+
+.sidebar-folder.active {
+    color: var(--accent-color);
+    background-color: rgba(59, 130, 246, 0.08);
+    font-weight: 500;
+}
+
+/* .dark folder active bg adjustment */
+:global(.dark) .sidebar-folder.active {
+    background-color: rgba(56, 189, 248, 0.1);
+}
+
+.sidebar-folder-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Scrollbar Styling */
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Mobile Stylings */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        top: 0;
+        height: 100vh;
+        z-index: 1000;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .sidebar.sidebar-open {
+        transform: translateX(0) !important;
+    }
+
+    .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(2px);
+        z-index: 999;
+    }
+}
