@@ -91,7 +91,7 @@ export default function FolderPage() {
 
             {/* Documentation-style prompt list */}
             <div className="prompt-list">
-                {folder.prompts.map((prompt, index) => (
+                {folder.prompts.map((prompt) => (
                     <article key={prompt.id} className="prompt-item" style={{ marginBottom: "3rem" }}>
                         <div style={{
                             display: "flex",
