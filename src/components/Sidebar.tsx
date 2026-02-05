@@ -24,7 +24,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     };
 
     const isCategoryActive = (categoryId: string) => {
-        return location.pathname.includes(`/category/${categoryId}`);
+        const path = location.pathname;
+        const prefix = `/category/${categoryId}`;
+        return path === prefix || path.startsWith(`${prefix}/`);
     };
 
     const isFolderActive = (categoryId: string, folderId: string) => {
@@ -33,9 +35,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
     // Auto-expand active category on mount or navigation
     useEffect(() => {
-        const activeCategoryId = promptCategories.find(cat =>
-            location.pathname.includes(`/category/${cat.id}`)
-        )?.id;
+        const activeCategoryId = promptCategories.find(cat => {
+            const path = location.pathname;
+            const prefix = `/category/${cat.id}`;
+            return path === prefix || path.startsWith(`${prefix}/`);
+        })?.id;
 
         if (activeCategoryId) {
             setExpandedCategories(prev => {
