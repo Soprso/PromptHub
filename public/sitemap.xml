@@ -1,853 +1,617 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Homepage -->
   <url>
     <loc>https://promptshub.shop/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <!-- Category: image -->
   <url>
-    <loc>https://promptshub.shop/category/image</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/image/folder/portraits</loc>
+    <loc>https://promptshub.shop/category/im</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/character-sheet</loc>
+    <loc>https://promptshub.shop/category/im/folder/ch</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/anime-to-real</loc>
+    <loc>https://promptshub.shop/category/im/folder/cl</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/clothes</loc>
+    <loc>https://promptshub.shop/category/im/folder/item</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/items</loc>
+    <loc>https://promptshub.shop/category/im/folder/di</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/dishes-cuisines</loc>
+    <loc>https://promptshub.shop/category/im/folder/l</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/photography-styles</loc>
+    <loc>https://promptshub.shop/category/im/folder/urb</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/ai-art-styles</loc>
+    <loc>https://promptshub.shop/category/im/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/landscapes</loc>
+    <loc>https://promptshub.shop/category/im/folder/re</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/urban-cityscapes</loc>
+    <loc>https://promptshub.shop/category/im/folder/f</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/camera-settings</loc>
+    <loc>https://promptshub.shop/category/im/folder/mythic</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/studio-lighting</loc>
+    <loc>https://promptshub.shop/category/im/folder/vehicle</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/realistic-humans</loc>
+    <loc>https://promptshub.shop/category/im/folder/h</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/fantasy-scifi</loc>
+    <loc>https://promptshub.shop/category/im/folder/vect</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/anime-popular</loc>
+    <loc>https://promptshub.shop/category/im/folder/l</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/anime-generator</loc>
+    <loc>https://promptshub.shop/category/im/folder/m</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/mythical-creatures</loc>
+    <loc>https://promptshub.shop/category/im/folder/f</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/vehicles</loc>
+    <loc>https://promptshub.shop/category/im/folder/f</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/houses</loc>
+    <loc>https://promptshub.shop/category/im/folder/h</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/art-mediums</loc>
+    <loc>https://promptshub.shop/category/im/folder/tr</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/ai-enhancement</loc>
+    <loc>https://promptshub.shop/category/im/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/vector-flat-design</loc>
+    <loc>https://promptshub.shop/category/im/folder/g</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/logo-branding</loc>
+    <loc>https://promptshub.shop/category/im/folder/retr</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/marketing-advertising</loc>
+    <loc>https://promptshub.shop/category/im/folder/m</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/food-beverage-photo</loc>
+    <loc>https://promptshub.shop/category/im/folder/b</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/fashion-beauty</loc>
+    <loc>https://promptshub.shop/category/im/folder/digit</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/home-living</loc>
+    <loc>https://promptshub.shop/category/im/folder/3d-</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/travel-events</loc>
+    <loc>https://promptshub.shop/category/im/folder/technic</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/cartoon-stylized</loc>
+    <loc>https://promptshub.shop/category/vide</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/game-characters</loc>
+    <loc>https://promptshub.shop/category/vide/folder/cinem</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/avatar-profile</loc>
+    <loc>https://promptshub.shop/category/vide/folder/re</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/retro-vintage</loc>
+    <loc>https://promptshub.shop/category/vide/folder/ch</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/modern-aesthetics</loc>
+    <loc>https://promptshub.shop/category/vide/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/soft-natural</loc>
+    <loc>https://promptshub.shop/category/vide/folder/mu</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/folder/bold-artistic</loc>
+    <loc>https://promptshub.shop/category/vide/folder/vide</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://promptshub.shop/category/image/folder/digital-creative</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/image/folder/specialty-creative</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/image/folder/3d-specialty</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/image/folder/technical-utility</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Category: video-generation -->
-  <url>
-    <loc>https://promptshub.shop/category/video-generation</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/video-generation/folder/cinematic-film</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/video-generation/folder/animation-anime</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/video-generation/folder/realistic-stock</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/video-generation/folder/character-performance</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/video-generation/folder/camera-tech</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/video-generation/folder/music-video-abstract</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/video-generation/folder/product-commercial</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/video-generation/folder/videogame-vfx</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Category: writing -->
   <url>
     <loc>https://promptshub.shop/category/writing</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/writing/folder/blog-posts</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/writing/folder/youtube-video</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/writing/folder/business-writing</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/writing/folder/social-media</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/writing/folder/email-marketing</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/writing/folder/copywriting-sales</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/writing/folder/creative-writing</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/writing/folder/academic-writing</loc>
-    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/writing/folder/technical-writing</loc>
+    <loc>https://promptshub.shop/category/writing/folder/bl</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/writing/folder/content-strategy</loc>
+    <loc>https://promptshub.shop/category/writing/folder/y</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/writing/folder/job-career-writing</loc>
+    <loc>https://promptshub.shop/category/writing/folder/bu</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/writing/folder/legal-compliance</loc>
+    <loc>https://promptshub.shop/category/writing/folder/em</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/writing/folder/translation-localization</loc>
+    <loc>https://promptshub.shop/category/writing/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: coding -->
-  <url>
-    <loc>https://promptshub.shop/category/coding</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/system-design</loc>
+    <loc>https://promptshub.shop/category/writing/folder/cre</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/ai-prompt-engineering</loc>
+    <loc>https://promptshub.shop/category/writing/folder/technic</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/web-development</loc>
+    <loc>https://promptshub.shop/category/writing/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/mobile-development</loc>
+    <loc>https://promptshub.shop/category/writing/folder/j</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/data-science</loc>
+    <loc>https://promptshub.shop/category/writing/folder/leg</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/cloud-devops</loc>
+    <loc>https://promptshub.shop/category/writing/folder/tr</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/cybersecurity</loc>
+    <loc>https://promptshub.shop/category/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/database-sql</loc>
+    <loc>https://promptshub.shop/category/c/folder/web-devel</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/testing-qa</loc>
+    <loc>https://promptshub.shop/category/c/folder/m</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/code-quality</loc>
+    <loc>https://promptshub.shop/category/c/folder/d</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/algorithms-structures</loc>
+    <loc>https://promptshub.shop/category/c/folder/cl</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/coding/folder/troubleshooting-debug</loc>
+    <loc>https://promptshub.shop/category/c/folder/cyber</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: design -->
-  <url>
-    <loc>https://promptshub.shop/category/design</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/design/folder/branding</loc>
+    <loc>https://promptshub.shop/category/c/folder/d</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/design/folder/ux-research</loc>
+    <loc>https://promptshub.shop/category/c/folder/te</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/design/folder/ui-design</loc>
+    <loc>https://promptshub.shop/category/c/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/design/folder/graphic-design</loc>
+    <loc>https://promptshub.shop/category/c/folder/tr</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/design/folder/web-design</loc>
+    <loc>https://promptshub.shop/category/de</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/design/folder/product-design</loc>
+    <loc>https://promptshub.shop/category/de/folder/br</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/design/folder/design-systems</loc>
+    <loc>https://promptshub.shop/category/de/folder/ux-re</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/design/folder/accessibility-design</loc>
+    <loc>https://promptshub.shop/category/de/folder/ui-de</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/design/folder/motion-design</loc>
+    <loc>https://promptshub.shop/category/de/folder/gr</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/design/folder/design-thinking</loc>
+    <loc>https://promptshub.shop/category/de/folder/web-de</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: education -->
-  <url>
-    <loc>https://promptshub.shop/category/education</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/basic-education</loc>
+    <loc>https://promptshub.shop/category/de/folder/de</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/higher-education</loc>
+    <loc>https://promptshub.shop/category/de/folder/m</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/competitive-exams</loc>
+    <loc>https://promptshub.shop/category/de/folder/de</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/study-skills</loc>
+    <loc>https://promptshub.shop/category/educ</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/teacher-resources</loc>
+    <loc>https://promptshub.shop/category/educ/folder/b</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/language-learning</loc>
+    <loc>https://promptshub.shop/category/educ/folder/higher-educ</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/course-creation</loc>
+    <loc>https://promptshub.shop/category/educ/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/stem-education</loc>
+    <loc>https://promptshub.shop/category/educ/folder/te</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/humanities-social-sciences</loc>
+    <loc>https://promptshub.shop/category/educ/folder/l</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/philosophy-logic</loc>
+    <loc>https://promptshub.shop/category/educ/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/special-education</loc>
+    <loc>https://promptshub.shop/category/educ/folder/hum</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/professional-development</loc>
+    <loc>https://promptshub.shop/category/educ/folder/educ</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/education/folder/educational-games</loc>
+    <loc>https://promptshub.shop/category/b</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: books -->
-  <url>
-    <loc>https://promptshub.shop/category/books</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/books/folder/book-summaries</loc>
+    <loc>https://promptshub.shop/category/b/folder/b</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/books/folder/book-analysis</loc>
+    <loc>https://promptshub.shop/category/b/folder/b</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/books/folder/reading-help</loc>
+    <loc>https://promptshub.shop/category/b/folder/re</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: career -->
-  <url>
-    <loc>https://promptshub.shop/category/career</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/career/folder/career-guidance</loc>
+    <loc>https://promptshub.shop/category/b/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/career/folder/resume-cv</loc>
+    <loc>https://promptshub.shop/category/b/folder/re</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/career/folder/interviews</loc>
+    <loc>https://promptshub.shop/category/b/folder/interview</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Category: health -->
   <url>
-    <loc>https://promptshub.shop/category/health</loc>
+    <loc>https://promptshub.shop/category/he</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/health/folder/fitness</loc>
-    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/health/folder/mental-wellness</loc>
+    <loc>https://promptshub.shop/category/he/folder/fitne</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: daily-life -->
-  <url>
-    <loc>https://promptshub.shop/category/daily-life</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/daily-life/folder/personal-management</loc>
+    <loc>https://promptshub.shop/category/he/folder/ment</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/daily-life/folder/relationships</loc>
+    <loc>https://promptshub.shop/category/d</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: travel -->
-  <url>
-    <loc>https://promptshub.shop/category/travel</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/travel/folder/travel-planning</loc>
+    <loc>https://promptshub.shop/category/d/folder/rel</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/travel/folder/culture</loc>
+    <loc>https://promptshub.shop/category/tr</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: science -->
-  <url>
-    <loc>https://promptshub.shop/category/science</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/science/folder/research</loc>
+    <loc>https://promptshub.shop/category/tr/folder/tr</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/science/folder/data-analysis</loc>
+    <loc>https://promptshub.shop/category/tr/folder/culture</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: games -->
-  <url>
-    <loc>https://promptshub.shop/category/games</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/games/folder/gaming</loc>
+    <loc>https://promptshub.shop/category/tr/folder/digit</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/games/folder/fun</loc>
+    <loc>https://promptshub.shop/category/tr/folder/f</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Category: philosophy -->
   <url>
-    <loc>https://promptshub.shop/category/philosophy</loc>
+    <loc>https://promptshub.shop/category/tr/folder/budget-h</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/philosophy/folder/philosophy</loc>
-    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: tools -->
-  <url>
-    <loc>https://promptshub.shop/category/tools</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/tools/folder/templates</loc>
+    <loc>https://promptshub.shop/category/tr/folder/luxury-h</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/tools/folder/automation</loc>
+    <loc>https://promptshub.shop/category/tr/folder/l</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: developer -->
-  <url>
-    <loc>https://promptshub.shop/category/developer</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer/folder/debugging</loc>
+    <loc>https://promptshub.shop/category/tr/folder/re</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer/folder/performance</loc>
+    <loc>https://promptshub.shop/category/tr/folder/d</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer/folder/architecture</loc>
+    <loc>https://promptshub.shop/category/g</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer/folder/api-database</loc>
+    <loc>https://promptshub.shop/category/g/folder/g</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer/folder/devops-security</loc>
+    <loc>https://promptshub.shop/category/g/folder/fun</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer/folder/testing-qa</loc>
+    <loc>https://promptshub.shop/category/t</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: career -->
-  <url>
-    <loc>https://promptshub.shop/category/career</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/career/folder/resume</loc>
+    <loc>https://promptshub.shop/category/t/folder/tem</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/career/folder/hr-interview</loc>
+    <loc>https://promptshub.shop/category/devel</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/career/folder/tech-interview</loc>
+    <loc>https://promptshub.shop/category/devel/folder/debugging</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/career/folder/mock-interview</loc>
+    <loc>https://promptshub.shop/category/devel/folder/dev</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/career/folder/career-dev</loc>
+    <loc>https://promptshub.shop/category/devel/folder/te</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: content -->
-  <url>
-    <loc>https://promptshub.shop/category/content</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/content/folder/linkedin</loc>
+    <loc>https://promptshub.shop/category/devel/folder/re</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/content/folder/social-media</loc>
+    <loc>https://promptshub.shop/category/devel/folder/hr-interview</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/content/folder/blogging</loc>
+    <loc>https://promptshub.shop/category/devel/folder/tech-interview</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/content/folder/repurposing</loc>
+    <loc>https://promptshub.shop/category/devel/folder/m</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/content/folder/copywriting</loc>
+    <loc>https://promptshub.shop/category/devel/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Category: startup -->
   <url>
-    <loc>https://promptshub.shop/category/startup</loc>
+    <loc>https://promptshub.shop/category/devel/folder/linkedin</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://promptshub.shop/category/startup/folder/validation</loc>
-    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/startup/folder/mvp-product</loc>
+    <loc>https://promptshub.shop/category/devel/folder/bl</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/startup/folder/user-research</loc>
+    <loc>https://promptshub.shop/category/devel/folder/re</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/startup/folder/fundraising</loc>
+    <loc>https://promptshub.shop/category/devel/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/startup/folder/gtm</loc>
+    <loc>https://promptshub.shop/category/devel/folder/v</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Category: developer-tools -->
-  <url>
-    <loc>https://promptshub.shop/category/developer-tools</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer-tools/folder/app-generators</loc>
+    <loc>https://promptshub.shop/category/devel/folder/mv</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer-tools/folder/code-generation</loc>
+    <loc>https://promptshub.shop/category/devel/folder/u</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer-tools/folder/system-design</loc>
+    <loc>https://promptshub.shop/category/devel/folder/fundr</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer-tools/folder/debugging-refactoring</loc>
+    <loc>https://promptshub.shop/category/devel/folder/gtm</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer-tools/folder/automation-bots</loc>
+    <loc>https://promptshub.shop/category/devel/folder/c</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer-tools/folder/specialized-builders</loc>
+    <loc>https://promptshub.shop/category/devel/folder/debugging-ref</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
