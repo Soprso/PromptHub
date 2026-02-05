@@ -12,7 +12,7 @@ export default function Home() {
                     color: "var(--text-primary)",
                     letterSpacing: "-0.02em"
                 }}>
-                    Welcome to PromptHub
+                    Discover Free AI Prompts for Every Task
                 </h1>
                 <p style={{
                     color: "var(--text-secondary)",
@@ -20,7 +20,7 @@ export default function Home() {
                     lineHeight: "1.75",
                     marginBottom: "2rem"
                 }}>
-                    Your comprehensive library of professional AI prompts for image generation, content creation, coding, design, and more.
+                    Browse our comprehensive collection of free AI prompts for ChatGPT, Midjourney, DALL·E, and more. Perfect for image generation, content writing, coding, and creative projects—no signup required.
                 </p>
             </div>
 
@@ -37,7 +37,7 @@ export default function Home() {
                     marginBottom: "1.25rem",
                     color: "var(--text-primary)"
                 }}>
-                    Getting Started
+                    How to Use Free AI Prompts
                 </h2>
                 <ul style={{
                     listStyle: "none",
@@ -76,7 +76,7 @@ export default function Home() {
                     color: "var(--text-primary)",
                     letterSpacing: "-0.01em"
                 }}>
-                    Featured Categories
+                    Popular AI Prompt Categories
                 </h2>
                 <div style={{
                     display: "grid",
@@ -103,9 +103,9 @@ export default function Home() {
                             }}
                         >
                             <div style={{ marginBottom: "1rem", color: "var(--accent-color)" }}><Palette size={32} /></div>
-                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>Image Generation</div>
+                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>AI Image Generation Prompts</div>
                             <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
-                                Professional AI art prompts
+                                Free prompts for Midjourney, DALL·E, Stable Diffusion
                             </div>
                         </div>
                     </Link>
@@ -129,9 +129,9 @@ export default function Home() {
                             }}
                         >
                             <div style={{ marginBottom: "1rem", color: "var(--accent-color)" }}><PenTool size={32} /></div>
-                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>Writing & Content</div>
+                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>Writing & Content Prompts</div>
                             <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
-                                Content creation templates
+                                Free ChatGPT prompts for writing and content
                             </div>
                         </div>
                     </Link>
@@ -155,9 +155,9 @@ export default function Home() {
                             }}
                         >
                             <div style={{ marginBottom: "1rem", color: "var(--accent-color)" }}><Code2 size={32} /></div>
-                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>Coding & Tech</div>
+                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>Coding & Programming Prompts</div>
                             <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
-                                Developer-focused prompts
+                                Free AI prompts for developers and programmers
                             </div>
                         </div>
                     </Link>

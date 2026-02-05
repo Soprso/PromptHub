@@ -3,13 +3,13 @@ import type { PromptCategory } from "../types/prompt";
 export const promptCategories: PromptCategory[] = [
     {
         id: "image",
-        name: "Image Generation",
+        name: "AI Image Generation Prompts",
         icon: "🖼️",
-        description: "Professional image prompts for AI art generation",
+        description: "Free AI image prompts for Midjourney, DALL·E, Stable Diffusion, and Leonardo AI",
         folders: [
             {
                 id: "portraits",
-                name: "Portraits",
+                name: "Portrait Prompts",
                 icon: "👤",
                 prompts: [
                     { id: "realistic-portrait", title: "Realistic Portrait", content: "Ultra-realistic portrait of a person, natural lighting, DSLR quality, sharp focus, detailed skin texture, professional photography" },
@@ -35,7 +35,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "character-sheet",
-                name: "Character Sheet",
+                name: "Character Design Prompts",
                 icon: "📋",
                 prompts: [
                     { id: "full-turnaround-sheet", title: "Full Character Turnaround Sheet", content: "Create a professional character reference sheet based strictly on the uploaded reference image. Use a clean, neutral plain background and present the sheet as a technical model turnaround while matching the exact visual style of the reference (same realism level, rendering approach, texture, color treatment, and overall aesthetic). Arrange the composition into two horizontal rows. Top row: four full-body standing views placed side-by-side in this order: front view, left profile view (facing left), right profile view (facing right), back view. Bottom row: three highly detailed close-up portraits aligned beneath the full-body row in this order: front portrait, left profile portrait (facing left), right profile portrait (facing right). Maintain perfect identity consistency across every panel. Keep the subject in a relaxed A-pose and with consistent scale and alignment between views, accurate anatomy, and clear silhouette; ensure even spacing and clean panel separation, with uniform framing and consistent head height across the full-body lineup and consistent facial scale across the portraits. Lighting should be consistent across all panels (same direction, intensity, and softness), with natural, controlled shadows that preserve detail without dramatic mood shifts. Output a crisp, print-ready reference sheet look, sharp details." },
@@ -50,7 +50,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "anime-to-real",
-                name: "Anime to Real Life",
+                name: "Anime to Realistic Prompts",
                 icon: "✨",
                 prompts: [
                     { id: "anime-to-photorealistic", title: "Anime to Photorealistic Conversion", content: "Convert the uploaded anime character image into a photorealistic real-life person while preserving the character's core identity and distinctive features. Transform the stylized anime aesthetics into natural human features: replace large anime eyes with realistically proportioned human eyes that maintain the original eye color and expression, convert simplified anime nose into a natural human nose with proper bridge and nostril definition, transform anime mouth into realistic lips with natural texture and proportions, and replace flat anime skin with realistic human skin featuring natural pores, subtle imperfections, skin texture variation, and appropriate undertones matching the original character's skin tone. Maintain the character's hairstyle but render with realistic hair strands, natural hair texture, volume, and light interaction showing individual hairs and realistic flow. Preserve the character's facial structure, expression, and personality while adapting proportions to human anatomy. Convert clothing and accessories from anime style to photorealistic fabric with proper texture, wrinkles, and material properties. Use natural photographic lighting (soft daylight or studio lighting) that shows dimensional form and realistic shadows. Background should be photographically realistic or neutral. Output should look like a professional portrait photograph of a real person who embodies the anime character's appearance and essence. 8K photorealistic quality, DSLR camera aesthetic, natural color grading, lifelike skin rendering." },
@@ -65,7 +65,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "clothes",
-                name: "Clothes & Fashion",
+                name: "Fashion & Clothing Prompts",
                 icon: "👔",
                 prompts: [
                     { id: "mens-business-suit", title: "Men's Business Suit", content: "Professional men's business suit with tailored fit, charcoal gray or navy blue wool fabric, crisp white dress shirt underneath, silk tie with subtle pattern, polished leather oxford shoes, professional corporate aesthetic, sharp clean lines and precise tailoring, modern slim-fit or classic cut, professional fashion photography, studio lighting emphasizing fabric texture, confident business professional styling, high-quality menswear craftsmanship, suitable for boardroom or office, ultra-detailed fabric weave and stitching, 8K quality, executive presence" },
@@ -115,7 +115,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "items",
-                name: "Items & Objects",
+                name: "Object & Item Prompts",
                 icon: "🎁",
                 prompts: [
                     { id: "luxury-watch", title: "Luxury Wristwatch", content: "Luxury Swiss mechanical wristwatch with intricate craftsmanship, polished stainless steel or 18k gold case, sapphire crystal glass with anti-reflective coating, visible automatic movement through exhibition caseback, detailed watch face with luminous hands and hour markers, leather or metal bracelet with deployment clasp, professional product photography on black or white background, studio lighting emphasizing metallic reflections and details, macro photography showing fine details and finishing, ultra-detailed texture of brushed and polished surfaces, luxury timepiece aesthetic, Swiss watchmaking precision, 8K quality, museum-quality craftsmanship" },
@@ -181,7 +181,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "dishes-cuisines",
-                name: "Dishes & Cuisines",
+                name: "Food & Cuisine Prompts",
                 icon: "🍽️",
                 prompts: [
                     { id: "margherita-pizza", title: "Margherita Pizza", content: "Authentic Neapolitan margherita pizza with charred leopard-spotted crust, fresh mozzarella, San Marzano tomato sauce, fresh basil leaves, drizzle of olive oil, wood-fired oven baked, professional food photography, overhead or 45-degree angle, rustic wooden table, natural lighting, ultra-detailed cheese stretch and crust texture, Italian cuisine, 8K quality" },
@@ -373,7 +373,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "photography-styles",
-                name: "Photography Styles",
+                name: "Photography Style Prompts",
                 icon: "📸",
                 prompts: [
                     { id: "street-photography", title: "Street Photography", content: "Professional street photography capturing authentic urban life, candid moment of human interaction in busy city environment, natural overcast daylight creating soft shadows, realistic motion blur on moving subjects at 1/60s shutter speed, shallow depth of field isolating main subject from busy background, documentary-style composition with rule of thirds, gritty urban texture with weathered buildings and street signs, spontaneous emotion and genuine expression, environmental storytelling through layered elements, photojournalistic quality with decisive moment timing, shot on 35mm focal length equivalent, film photography aesthetic with subtle grain, muted yet rich color palette emphasizing urban tones" },
@@ -395,7 +395,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "ai-art-styles",
-                name: "AI Art Styles",
+                name: "AI Art Style Prompts",
                 icon: "🎨",
                 prompts: [
                     { id: "studio-ghibli", title: "Studio Ghibli Style", content: "Studio Ghibli inspired anime art style, hand-painted watercolor aesthetic with soft organic brushstrokes, warm nostalgic atmosphere with gentle pastel color palette, whimsical fantasy elements with touch of realism, detailed background landscapes with lush nature, fluffy clouds in bright blue sky, characteristic animation style of Hayao Miyazaki films, peaceful serene mood with emotional depth, cel-shaded coloring technique, soft lighting with natural warm glow, emphasis on nature and environmental beauty, dreamy magical realism, high-quality animation frame quality, innocent wonder and adventure spirit" },
@@ -418,7 +418,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "landscapes",
-                name: "Landscapes & Environments",
+                name: "Landscape & Nature Prompts",
                 icon: "🌄",
                 prompts: [
                     { id: "mountain-ultra", title: "Mountain Landscape (Ultra Realistic)", content: "Ultra-realistic mountain landscape, towering peaks covered in snow, golden hour sunlight casting long shadows, atmospheric depth with layered mountains fading into the distance, realistic volumetric clouds, DSLR landscape photography, high dynamic range, ultra-sharp details from foreground to background, 8K resolution, professional landscape composition" },
@@ -440,7 +440,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "urban-cityscapes",
-                name: "Urban & Cityscapes",
+                name: "City & Urban Prompts",
                 icon: "🏙️",
                 prompts: [
                     { id: "modern-skyline", title: "Modern City Skyline", content: "Modern metropolitan skyline at dusk, glass skyscrapers reflecting sunset colors, city lights starting to illuminate, atmospheric perspective, ultra-realistic architectural details, professional cityscape photography, high dynamic range, sharp focus from foreground to distant buildings, cinematic urban composition" },
@@ -462,7 +462,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "camera-settings",
-                name: "Camera & Photography Setup",
+                name: "Camera Setup Prompts",
                 icon: "📷",
                 prompts: [
                     { id: "dslr-portrait", title: "DSLR Portrait Setup", content: "Shot on a professional full-frame DSLR camera, 50mm prime lens, f/1.8 aperture creating beautiful shallow depth of field, natural skin tones with minimal post-processing, professional studio lighting setup with softbox as key light, ultra-sharp focus on eyes, creamy bokeh background, RAW image quality, natural color grading, editorial portrait photography standard" },
@@ -492,7 +492,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "studio-lighting",
-                name: "Studio Lighting Setups",
+                name: "Lighting Setup Prompts",
                 icon: "💡",
                 prompts: [
                     { id: "softbox-setup", title: "Softbox Lighting", content: "Professional studio setup with large softbox as main light source, soft even lighting across subject's face, minimal shadows, beauty lighting for flattering skin tones, white or gray seamless background, clean commercial photography look, high-key lighting style, professional headshot quality" },
@@ -516,7 +516,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "realistic-humans",
-                name: "Realistic Human Characters",
+                name: "Realistic Character Prompts",
                 icon: "👥",
                 prompts: [
                     { id: "realistic-human-gen", title: "Realistic Human Character Generator", content: "Ultra-realistic portrait of a [GENDER] [AGE] [ETHNICITY] person, natural facial proportions and anatomy, realistic skin texture with pores and subtle imperfections, studio lighting or natural soft light, DSLR photography quality, neutral or environmental background, lifelike eyes with catchlight, natural hair texture and movement, photorealistic human render" },
@@ -538,7 +538,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "fantasy-scifi",
-                name: "Fantasy & Sci-Fi Characters",
+                name: "Fantasy Character Prompts",
                 icon: "🗡️",
                 prompts: [
                     { id: "medieval-knight", title: "Medieval Knight", content: "Medieval knight in full plate armor, highly detailed metallic surfaces with realistic weathering and battle damage, standing in heroic pose with longsword, dramatic lighting highlighting armor details, castle or battlefield background, photorealistic materials and textures, cinematic fantasy art, ultra-detailed metalwork, 8K quality rendering" },
@@ -560,7 +560,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "anime-popular",
-                name: "Anime Characters (Fan Art)",
+                name: "Anime Character Prompts",
                 icon: "🎌",
                 prompts: [
                     { id: "goku-fanart", title: "Goku (Dragon Ball) Fan Art", content: "Anime-style fan art of Goku from Dragon Ball, iconic spiky black hair, orange gi with blue undershirt, dynamic action pose powering up, intense determined expression, golden aura or energy effects, dramatic lighting, high-detail anime illustration style, vibrant colors, cinematic background with energy particles, professional anime artwork quality" },
@@ -602,7 +602,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "anime-generator",
-                name: "Anime Character Generator",
+                name: "Anime Generator Prompts",
                 icon: "✨",
                 prompts: [
                     { id: "male-anime", title: "Male Anime Character", content: "Original male anime character design, distinctive hairstyle and hair color, expressive anime eyes, contemporary or fantasy outfit, confident or cool pose, clean anime art style, full-color illustration, neutral or thematic background, professional anime character concept art, suitable for visual novel or manga" },
@@ -629,7 +629,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "mythical-creatures",
-                name: "Fantasy Creatures & Beings",
+                name: "Fantasy Creature Prompts",
                 icon: "🐉",
                 prompts: [
                     { id: "majestic-dragon", title: "Majestic Dragon", content: "Majestic fantasy dragon with massive wings spread wide, detailed scales covering powerful muscular body, intelligent piercing eyes, fire breath or elemental magic, perched on mountain peak or in flight, ultra-detailed creature design, cinematic fantasy atmosphere, professional concept art quality, Western or Eastern dragon style, legendary mythical creature presence" },
@@ -651,7 +651,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "vehicles",
-                name: "Vehicles",
+                name: "Vehicle & Car Prompts",
                 icon: "🚗",
                 prompts: [
                     { id: "ferrari-supercar", title: "Ferrari Supercar", content: "Stunning Ferrari supercar in vibrant Italian racing red, sleek aerodynamic body design with aggressive front splitter and rear diffuser, iconic prancing horse badge on hood, carbon fiber accents and details, low wide stance with performance wheels, professional automotive photography with dramatic lighting, showroom quality or scenic mountain road background, ultra-sharp details showing curves and reflections, 8K photorealistic rendering, golden hour lighting highlighting metallic paint, sense of speed and Italian luxury, legendary supercar presence" },
@@ -700,7 +700,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "houses",
-                name: "Houses & Architecture",
+                name: "Architecture & Building Prompts",
                 icon: "🏠",
                 prompts: [
                     { id: "modern-minimalist-house", title: "Modern Minimalist House", content: "Ultra-modern minimalist house with clean geometric lines and flat roof, floor-to-ceiling glass windows, white concrete and natural wood accents, seamless indoor-outdoor living spaces, infinity pool overlooking landscape, professional architectural photography, golden hour lighting, Scandinavian or Japanese minimalist influence, open-plan interior visible through glass, manicured landscape design, contemporary luxury aesthetic, 8K photorealistic rendering, sense of tranquility and sophistication, award-winning modern architecture" },
@@ -744,7 +744,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "art-mediums",
-                name: "Illustration & Art Mediums",
+                name: "Illustration Style Prompts",
                 icon: "🖌️",
                 prompts: [
                     { id: "watercolor-painting", title: "Watercolor Painting", content: "Beautiful watercolor painting with soft flowing colors, translucent layers creating depth, visible paper texture beneath paint, wet-on-wet technique with colors bleeding together naturally, professional watercolor artist quality, delicate color gradients, loose expressive brushwork, artistic illustration style, traditional medium aesthetic" },
@@ -766,7 +766,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "ai-enhancement",
-                name: "AI Art Quality Boosters",
+                name: "Quality Enhancement Prompts",
                 icon: "⚡",
                 prompts: [
                     { id: "ultra-detailed", title: "Ultra-Detailed Quality", content: "ultra-detailed, 8K resolution, highly detailed, hyper-realistic textures, professional photography quality, intricate details visible, sharp focus throughout, maximum quality rendering, professional grade output, no compression artifacts, crisp clean image, museum or gallery quality" },
@@ -785,18 +785,217 @@ export const promptCategories: PromptCategory[] = [
                     { id: "intricate-details", title: "Intricate Detail Emphasis", content: "intricate details, extremely detailed textures, every element carefully crafted, fine detail visible even when zoomed in, professional attention to detail, no simplified or blurry areas, meticulous craftsmanship, macro-level detail precision, ornate embellishments, complex patterns and decorations, jeweler or watchmaker precision, museum quality close-up examination approved" },
                     { id: "award-winning", title: "Award-Winning Photography", content: "award-winning photography, competition winner quality, international photography award standard, World Press Photo or Sony World Photography Awards level, expert composition and timing, perfect decisive moment, jury-selected excellence, professional photographer recognition, gallery exhibition and publication worthy, photographic excellence recognized by peers, technically and artistically superior, prize-winning photojournalism or fine art" }
                 ]
+            },
+            {
+                id: "vector-flat-design",
+                name: "Vector Design Prompts",
+                icon: "📐",
+                prompts: [
+                    { id: "vector-illustration", title: "Vector Illustration", content: "Clean vector illustration with smooth curves and geometric shapes, flat color fills without gradients, scalable vector graphics (SVG) quality, Adobe Illustrator style artwork, crisp edges and precise paths, minimalist modern design, professional vector art, icon-style clarity, infinitely scalable without quality loss, web and print ready, 8K resolution export, contemporary graphic design aesthetic" },
+                    { id: "flat-design-ui", title: "Flat Design UI", content: "Flat design user interface with minimalist aesthetic, solid colors without shadows or gradients, simple geometric shapes, clean typography, modern web design style, Material Design or iOS inspired, intuitive visual hierarchy, professional UI/UX design, vibrant color palette, grid-based layout, contemporary digital design, 8K quality mockup" },
+                    { id: "minimalist-art", title: "Minimalist Art", content: "Minimalist art with essential elements only, negative space emphasis, simple geometric forms, limited color palette (2-3 colors), clean composition, less is more philosophy, Scandinavian design influence, modern abstract minimalism, professional gallery quality, sophisticated simplicity, timeless aesthetic, 8K quality" },
+                    { id: "3d-design", title: "3D Design Render", content: "Professional 3D design render with realistic lighting and materials, ray-traced reflections and shadows, high-polygon model detail, Cinema 4D or Blender quality, photorealistic textures and surfaces, depth of field and ambient occlusion, modern product visualization, architectural rendering quality, ultra-detailed 3D modeling, 8K resolution render" },
+                    { id: "abstract-art", title: "Abstract Art", content: "Abstract art with non-representational forms, bold colors and dynamic shapes, expressive brushstrokes or geometric patterns, contemporary abstract expressionism, emotional visual language, modern gallery art, professional fine art quality, creative composition, vibrant or muted color schemes, thought-provoking imagery, 8K quality" },
+                    { id: "pop-art-style", title: "Pop Art Style", content: "Pop art style with bold colors and graphic elements, Andy Warhol or Roy Lichtenstein inspired, comic book aesthetic with Ben-Day dots, high contrast and vibrant hues, retro 1960s pop culture, screen printing effect, iconic imagery and repetition, contemporary pop art revival, professional gallery quality, 8K resolution" }
+                ]
+            },
+            {
+                id: "logo-branding",
+                name: "Logo Design Prompts",
+                icon: "🏷️",
+                prompts: [
+                    { id: "modern-logo", title: "Modern Logo Design", content: "Modern minimalist logo design with clean lines and simple shapes, memorable brand mark, scalable vector format, works in black and white, professional brand identity, timeless design aesthetic, versatile across all media, negative space cleverness, geometric or abstract symbol, corporate or startup appropriate, 8K quality presentation" },
+                    { id: "icon-design", title: "App Icon Design", content: "Professional app icon design with clear symbolism, recognizable at small sizes, iOS or Android style guidelines, rounded square or circle format, gradient or flat color scheme, modern digital aesthetic, memorable visual identity, works on light and dark backgrounds, professional UI design, 8K quality mockup" },
+                    { id: "branding-kit", title: "Complete Branding Kit", content: "Complete branding kit presentation with logo variations, color palette swatches, typography samples, business card mockup, letterhead design, brand guidelines layout, professional brand identity system, cohesive visual language, modern corporate aesthetic, print and digital applications, 8K quality presentation board" },
+                    { id: "ui-icon-set", title: "UI Icon Set", content: "Consistent UI icon set with unified style, line icons or filled style, pixel-perfect alignment, 24x24 or 32x32 grid, professional interface design, clear symbolism and recognition, modern app or website icons, scalable vector format, works in light and dark modes, complete icon family, 8K quality presentation" }
+                ]
+            },
+            {
+                id: "marketing-advertising",
+                name: "Marketing Design Prompts",
+                icon: "📢",
+                prompts: [
+                    { id: "product-mockup", title: "Product Mockup", content: "Professional product mockup with realistic presentation, clean white or lifestyle background, studio lighting setup, photorealistic rendering, packaging or device mockup, professional e-commerce quality, shadows and reflections, high-end commercial photography aesthetic, perfect for marketing materials, 8K resolution, ultra-detailed product showcase" },
+                    { id: "social-media-post", title: "Social Media Graphics", content: "Eye-catching social media graphic with bold typography, vibrant colors and modern design, Instagram or Facebook post format, engaging visual hierarchy, professional graphic design, brand-consistent aesthetic, attention-grabbing composition, mobile-optimized layout, contemporary digital marketing, 8K quality, shareable content design" },
+                    { id: "youtube-thumbnail", title: "YouTube Thumbnail", content: "Clickable YouTube thumbnail with bold text overlay, high contrast and vibrant colors, expressive face or dramatic imagery, 1280x720 resolution optimized, professional content creator quality, attention-grabbing design, readable at small sizes, modern YouTube aesthetic, engaging visual hooks, 8K quality render" },
+                    { id: "poster-design", title: "Poster & Flyer Design", content: "Professional poster or flyer design with strong visual hierarchy, bold headline typography, compelling imagery and graphics, event or promotional content, print-ready CMYK colors, A4 or custom size format, modern graphic design aesthetic, balanced composition, call-to-action emphasis, 8K quality print file" },
+                    { id: "ad-banner", title: "Digital Ad Banner", content: "Digital advertising banner with clear message, standard IAB sizes (leaderboard, rectangle, skyscraper), professional marketing design, brand colors and logo, compelling call-to-action button, web-optimized graphics, modern advertising aesthetic, conversion-focused layout, animated or static design, 8K quality" },
+                    { id: "ecommerce-product", title: "E-commerce Product Photo", content: "E-commerce product photography with clean white background, professional studio lighting, multiple angles and detail shots, Amazon or Shopify listing quality, shadow and reflection optional, high-resolution zoom capability, color-accurate representation, professional commercial photography, lifestyle context optional, 8K quality, ultra-detailed product features" }
+                ]
+            },
+            {
+                id: "food-beverage-photo",
+                name: "Food Photography Prompts",
+                icon: "☕",
+                prompts: [
+                    { id: "food-photography", title: "Professional Food Photography", content: "Professional food photography with appetizing presentation, natural lighting or studio setup, shallow depth of field, garnish and styling details, rustic or modern plating, overhead or 45-degree angle, vibrant fresh colors, steam or motion optional, restaurant menu quality, culinary magazine aesthetic, 8K resolution, ultra-detailed texture and freshness" },
+                    { id: "coffee-drinks", title: "Coffee & Drinks", content: "Artisan coffee or beverage photography with latte art, condensed droplets on glass, café aesthetic background, natural morning light, professional barista presentation, Instagram-worthy styling, warm inviting atmosphere, detailed foam or garnish, specialty drink showcase, 8K quality, ultra-detailed liquid and texture" },
+                    { id: "menu-photography", title: "Restaurant Menu Photography", content: "Restaurant menu photography with consistent lighting and style, appetizing food presentation, professional plating and garnish, clean background or contextual setting, color-accurate representation, multiple dish photography, cohesive visual style, print menu quality, commercial food photography, 8K resolution" }
+                ]
+            },
+            {
+                id: "fashion-beauty",
+                name: "Fashion Photography Prompts",
+                icon: "💄",
+                prompts: [
+                    { id: "fashion-editorial", title: "Fashion Editorial Photography", content: "High-fashion editorial photography with model in designer clothing, Vogue or Harper's Bazaar quality, dramatic lighting and composition, runway or studio setting, professional styling and makeup, contemporary fashion aesthetic, artistic creative direction, luxury brand quality, striking pose and expression, 8K resolution, ultra-detailed fabric and styling" },
+                    { id: "beauty-cosmetics", title: "Beauty & Cosmetics", content: "Beauty and cosmetics photography with flawless skin and professional makeup, product showcase or beauty editorial, soft flattering lighting, close-up detail shots, luxury beauty brand aesthetic, color-accurate cosmetics, professional retouching, magazine cover quality, aspirational beauty imagery, 8K quality, ultra-detailed skin and makeup" },
+                    { id: "apparel-photography", title: "Apparel Photography", content: "Professional apparel photography with clothing on model or flat lay, e-commerce or lookbook quality, clean presentation and accurate colors, detail shots of fabric and features, lifestyle or studio background, fashion brand aesthetic, professional styling, multiple angles available, 8K resolution, ultra-detailed fabric texture" }
+                ]
+            },
+            {
+                id: "home-living",
+                name: "Interior Design Prompts",
+                icon: "🏠",
+                prompts: [
+                    { id: "interior-design", title: "Interior Design Photography", content: "Professional interior design photography with beautifully styled room, natural light through windows, modern or classic aesthetic, architectural digest quality, designer furniture and decor, balanced composition, warm inviting atmosphere, real estate or design magazine quality, 8K resolution, ultra-detailed interior elements" },
+                    { id: "home-decor", title: "Home Decor Styling", content: "Home decor product styling with lifestyle context, cozy inviting atmosphere, natural materials and textures, Scandinavian or modern farmhouse aesthetic, professional product photography, Instagram-worthy interior, soft natural lighting, aspirational home design, 8K quality, ultra-detailed decor elements" },
+                    { id: "real-estate-interior", title: "Real Estate Interior", content: "Real estate interior photography with wide-angle lens, bright and spacious feeling, professionally staged rooms, HDR lighting for balanced exposure, architectural photography quality, clean and inviting presentation, luxury home aesthetic, multiple room angles, 8K resolution, ultra-detailed property features" }
+                ]
+            },
+            {
+                id: "travel-events",
+                name: "Travel Photography Prompts",
+                icon: "✈️",
+                prompts: [
+                    { id: "travel-photography", title: "Travel Photography", content: "Stunning travel photography with iconic landmarks or hidden gems, golden hour lighting, sense of place and adventure, National Geographic quality, cultural authenticity, dramatic landscapes or cityscapes, professional travel photographer aesthetic, wanderlust inspiration, 8K resolution, ultra-detailed scenery and atmosphere" },
+                    { id: "wedding-photography", title: "Wedding & Events", content: "Professional wedding or event photography with emotional candid moments, beautiful lighting and composition, romantic atmosphere, photojournalistic storytelling, detail shots of decor and rings, professional wedding photographer quality, timeless elegant aesthetic, joyful celebration captured, 8K quality, ultra-detailed emotional moments" },
+                    { id: "fitness-sports", title: "Fitness & Sports", content: "Dynamic fitness or sports photography with athletic action, motion blur or frozen moment, gym or outdoor setting, motivational energy and strength, professional sports photography, dramatic lighting, peak performance captured, athletic aesthetic, inspiring fitness imagery, 8K resolution, ultra-detailed muscle definition and movement" },
+                    { id: "kids-toys", title: "Kids & Toys", content: "Playful kids or toy photography with bright cheerful colors, joyful expressions and energy, safe inviting atmosphere, product photography or lifestyle context, professional children's photographer quality, fun engaging composition, natural or studio lighting, 8K quality, ultra-detailed toy features and happy moments" }
+                ]
+            },
+            {
+                id: "cartoon-stylized",
+                name: "Cartoon Character Prompts",
+                icon: "🎨",
+                prompts: [
+                    { id: "cartoon-character", title: "Cartoon Character Design", content: "Cartoon character design with exaggerated features and expressive personality, Disney or Pixar animation style, vibrant colors and clean lines, appealing character design, professional animation quality, memorable visual identity, full body character sheet, multiple expressions and poses, 8K quality render" },
+                    { id: "chibi-style", title: "Chibi Style Character", content: "Chibi style character with cute proportions, oversized head and small body, kawaii aesthetic, anime-inspired design, adorable expressions, pastel or vibrant colors, professional character illustration, Japanese chibi art style, charming personality, 8K quality artwork" },
+                    { id: "pixel-art-character", title: "Pixel Art Character", content: "Pixel art character with retro gaming aesthetic, 16-bit or 32-bit style, limited color palette, crisp pixel-perfect design, nostalgic video game feel, character sprite sheet, multiple animation frames, professional pixel artist quality, 8K upscaled presentation" },
+                    { id: "mascot-design", title: "Mascot Design", content: "Professional mascot design with friendly approachable personality, brand character identity, versatile across media, simple memorable design, corporate or sports team mascot, multiple poses and expressions, vector-based scalability, professional branding quality, 8K quality presentation" }
+                ]
+            },
+            {
+                id: "game-characters",
+                name: "Game Character Prompts",
+                icon: "🎮",
+                prompts: [
+                    { id: "game-character-concept", title: "Game Character Concept Art", content: "Game character concept art with detailed design and armor, fantasy RPG or action game style, professional game development quality, character turnaround sheet, weapon and accessory details, Unreal Engine or Unity ready, AAA game quality, dynamic pose and personality, 8K resolution artwork" },
+                    { id: "rpg-character", title: "RPG Character Design", content: "RPG character design with class-specific equipment, fantasy medieval or sci-fi setting, detailed armor and clothing, character stats visualization, professional game art, multiple customization options, hero or villain archetype, epic fantasy aesthetic, 8K quality character sheet" },
+                    { id: "superhero-design", title: "Superhero Character", content: "Superhero character design with iconic costume and powers, Marvel or DC Comics style, dynamic heroic pose, professional comic book art, cape and emblem details, origin story visual, cinematic superhero aesthetic, powerful presence, 8K quality illustration" }
+                ]
+            },
+            {
+                id: "avatar-profile",
+                name: "Avatar & Profile Prompts",
+                icon: "👤",
+                prompts: [
+                    { id: "profile-avatar", title: "Professional Profile Avatar", content: "Professional profile avatar with clean modern design, circular or square format, recognizable at small sizes, personal brand identity, LinkedIn or social media ready, illustrated or semi-realistic style, consistent visual identity, professional quality, 8K resolution" },
+                    { id: "gaming-avatar", title: "Gaming Avatar", content: "Gaming avatar with bold personality and style, Discord or Twitch profile picture, vibrant colors and striking design, gamer aesthetic, recognizable icon, professional esports quality, character or abstract design, 8K quality avatar" },
+                    { id: "social-media-avatar", title: "Social Media Avatar", content: "Eye-catching social media avatar with personal brand style, Instagram or Twitter profile picture, memorable visual identity, works on light and dark backgrounds, professional influencer quality, trendy aesthetic, 8K resolution profile image" }
+                ]
+            },
+            {
+                id: "retro-vintage",
+                name: "Retro & Vintage Prompts",
+                icon: "📻",
+                prompts: [
+                    { id: "vintage-aesthetic", title: "Vintage Retro Style", content: "Vintage retro aesthetic with aged film quality, 1950s-1980s era styling, faded colors and grain texture, nostalgic atmosphere, old photograph or poster feel, authentic period details, professional vintage restoration, timeless classic design, 8K quality with vintage overlay" },
+                    { id: "y2k-aesthetic", title: "Y2K Aesthetic", content: "Y2K aesthetic with early 2000s nostalgia, chrome and metallic elements, butterfly and star motifs, bubblegum pop culture, cyber grunge style, holographic effects, flip phone era vibes, trendy Gen-Z aesthetic, 8K quality modern interpretation" },
+                    { id: "vaporwave", title: "Vaporwave Style", content: "Vaporwave aesthetic with retro computer graphics, neon pink and cyan colors, Greek statues and palm trees, 1980s-90s nostalgia, glitch art effects, sunset grid backgrounds, internet culture art, surreal dreamlike atmosphere, 8K quality digital art" },
+                    { id: "synthwave", title: "Synthwave / Retrowave", content: "Synthwave retrowave aesthetic with neon grid landscapes, 1980s sci-fi inspiration, sunset gradient colors (pink, purple, orange), futuristic cars and cityscapes, Tron-like visual style, electronic music culture, professional retro-futuristic art, 8K quality illustration" }
+                ]
+            },
+            {
+                id: "modern-aesthetics",
+                name: "Modern Style Prompts",
+                icon: "🌃",
+                prompts: [
+                    { id: "cyberpunk-style", title: "Cyberpunk Aesthetic", content: "Cyberpunk aesthetic with neon-lit dystopian cityscape, high-tech low-life atmosphere, rain-soaked streets and holographic ads, Blade Runner or Cyberpunk 2077 inspired, futuristic urban decay, neon colors and dark shadows, professional sci-fi art, 8K quality cinematic render" },
+                    { id: "futuristic-scifi", title: "Futuristic Sci-Fi", content: "Futuristic sci-fi aesthetic with sleek technology and clean design, advanced civilization imagery, holographic interfaces and flying vehicles, utopian or space-age setting, professional concept art, cinematic lighting, cutting-edge visual effects, 8K resolution artwork" },
+                    { id: "neon-aesthetic", title: "Neon Glow Style", content: "Neon glow aesthetic with vibrant luminous colors, glowing edges and light trails, dark background contrast, electric energy atmosphere, nightclub or urban night scene, professional neon sign art, contemporary digital art, 8K quality with bloom effects" },
+                    { id: "gothic-dark", title: "Gothic Dark Aesthetic", content: "Gothic dark aesthetic with Victorian or medieval elements, dramatic shadows and moody lighting, ornate architecture and details, mysterious atmosphere, dark romantic style, professional gothic art, rich textures and deep colors, 8K quality dramatic imagery" }
+                ]
+            },
+            {
+                id: "soft-natural",
+                name: "Soft Aesthetic Prompts",
+                icon: "🌸",
+                prompts: [
+                    { id: "pastel-aesthetic", title: "Pastel Soft Aesthetic", content: "Pastel soft aesthetic with gentle muted colors, dreamy ethereal atmosphere, soft lighting and delicate details, Instagram-worthy aesthetic, calming peaceful vibes, professional lifestyle photography, contemporary soft design, 8K quality with soft focus" },
+                    { id: "boho-aesthetic", title: "Boho Bohemian Style", content: "Boho bohemian aesthetic with natural earthy tones, macramé and plants, free-spirited artistic vibe, vintage and handmade elements, cozy eclectic style, professional lifestyle photography, warm inviting atmosphere, 8K quality interior or fashion imagery" },
+                    { id: "nature-floral", title: "Nature & Floral", content: "Nature and floral aesthetic with botanical elements, garden or wildflower setting, natural organic beauty, soft natural lighting, professional botanical photography, romantic or fresh atmosphere, detailed plant textures, 8K resolution nature imagery" },
+                    { id: "kawaii-cute", title: "Kawaii Cute Style", content: "Kawaii cute aesthetic with adorable characters and pastel colors, Japanese cute culture, smiling faces and hearts, playful cheerful atmosphere, professional kawaii illustration, charming innocent design, popular culture appeal, 8K quality artwork" }
+                ]
+            },
+            {
+                id: "bold-artistic",
+                name: "Bold Art Style Prompts",
+                icon: "🎭",
+                prompts: [
+                    { id: "graffiti-street", title: "Graffiti & Street Art", content: "Graffiti and street art with bold spray paint style, urban wall mural aesthetic, vibrant colors and dynamic composition, Banksy or contemporary street artist quality, rebellious artistic expression, professional urban art, cultural commentary, 8K quality street photography" },
+                    { id: "psychedelic", title: "Psychedelic Art", content: "Psychedelic art with swirling patterns and vibrant colors, 1960s-70s counterculture style, kaleidoscopic effects and optical illusions, surreal dreamlike imagery, professional psychedelic poster art, mind-bending visual experience, 8K quality trippy artwork" },
+                    { id: "horror-dark-art", title: "Horror & Dark Art", content: "Horror and dark art with eerie unsettling atmosphere, gothic or supernatural themes, dramatic shadows and tension, professional horror illustration, cinematic scary aesthetic, detailed macabre elements, psychological thriller vibes, 8K quality dark imagery" },
+                    { id: "luxury-elegant", title: "Luxury & Elegant", content: "Luxury elegant aesthetic with high-end sophisticated design, gold and marble elements, premium brand quality, refined tasteful style, professional luxury photography, opulent details, timeless elegance, 8K quality premium imagery" },
+                    { id: "tattoo-style", title: "Tattoo Art Style", content: "Tattoo art style with bold lines and traditional or neo-traditional design, black and grey or vibrant color, professional tattoo artist quality, detailed shading and composition, American traditional or Japanese irezumi inspired, body art aesthetic, 8K quality illustration" }
+                ]
+            },
+            {
+                id: "digital-creative",
+                name: "Digital Art Prompts",
+                icon: "✨",
+                prompts: [
+                    { id: "sticker-style", title: "Sticker Design", content: "Sticker design with bold outline and vibrant colors, die-cut sticker format, white border optional, professional vinyl sticker quality, fun playful design, laptop or water bottle ready, contemporary sticker art, 8K quality vector design" },
+                    { id: "emoji-design", title: "Emoji & Icon Design", content: "Emoji or icon design with clear simple symbolism, circular or square format, recognizable at small sizes, professional digital icon quality, expressive or functional design, modern emoji aesthetic, 8K quality scalable icon" },
+                    { id: "meme-template", title: "Meme Template", content: "Meme template design with relatable scenario setup, viral internet culture aesthetic, text overlay space, humorous or satirical context, professional meme creator quality, shareable social media format, contemporary internet humor, 8K quality base image" },
+                    { id: "doodle-sketch", title: "Doodle & Sketch Style", content: "Doodle and sketch style with hand-drawn casual aesthetic, black and white or minimal color, playful artistic expression, professional illustration quality, notebook or whiteboard feel, creative brainstorm vibe, 8K quality digital sketch" },
+                    { id: "collage-art", title: "Collage Art", content: "Collage art with mixed media elements, magazine cutout or digital composite style, layered visual storytelling, contemporary collage artist quality, surreal or thematic composition, professional editorial art, creative juxtaposition, 8K quality artwork" }
+                ]
+            },
+            {
+                id: "specialty-creative",
+                name: "Creative Design Prompts",
+                icon: "🎪",
+                prompts: [
+                    { id: "album-cover", title: "Album Cover Art", content: "Album cover art with music genre-appropriate design, square format for streaming platforms, professional music industry quality, artist branding and visual identity, memorable iconic imagery, typography integration, contemporary or classic album aesthetic, 8K quality cover design" },
+                    { id: "book-cover", title: "Book Cover Design", content: "Book cover design with genre-appropriate imagery and typography, bestseller quality design, compelling visual storytelling, professional publishing standard, front cover composition, readable thumbnail size, contemporary book market aesthetic, 8K quality print file" },
+                    { id: "tarot-esoteric", title: "Tarot & Esoteric Art", content: "Tarot and esoteric art with mystical symbolism, traditional or modern tarot deck style, spiritual and occult imagery, professional tarot artist quality, rich symbolic details, ornate decorative borders, metaphysical aesthetic, 8K quality illustration" },
+                    { id: "festival-party", title: "Festival & Party Graphics", content: "Festival and party graphics with energetic vibrant design, event poster or flyer aesthetic, bold typography and dynamic composition, professional event marketing, music festival or celebration theme, eye-catching promotional art, 8K quality design" }
+                ]
+            },
+            {
+                id: "3d-specialty",
+                name: "3D Art Style Prompts",
+                icon: "🎲",
+                prompts: [
+                    { id: "origami-style", title: "Origami Paper Art", content: "Origami paper art style with folded paper aesthetic, geometric paper sculpture, minimalist Japanese art influence, clean crisp folds and edges, professional paper craft quality, delicate artistic design, contemporary origami art, 8K quality render" },
+                    { id: "clay-ceramic", title: "Clay & Ceramic Style", content: "Clay and ceramic style with handmade pottery aesthetic, earthy natural textures, artisan craft quality, rustic or refined finish, professional ceramics photography, tactile material presence, warm organic design, 8K quality product imagery" },
+                    { id: "claymation", title: "Claymation Style", content: "Claymation stop-motion animation style with handcrafted clay characters, Wallace and Gromit or Aardman Animations aesthetic, charming tactile quality, professional animation frame, nostalgic childhood feel, detailed clay textures, 8K quality render" },
+                    { id: "isometric-scene", title: "Isometric 3D Scenes", content: "Isometric 3D scene with geometric perspective, game or infographic style, clean organized composition, professional technical illustration, vibrant colors and clear details, modern digital design, architectural or environmental layout, 8K quality isometric art" }
+                ]
+            },
+            {
+                id: "technical-utility",
+                name: "Technical Design Prompts",
+                icon: "📊",
+                prompts: [
+                    { id: "infographic-design", title: "Infographic Design", content: "Professional infographic design with clear data visualization, charts and icons, information hierarchy, educational or business presentation, modern graphic design aesthetic, easy to understand layout, brand colors optional, 8K quality print or digital file" },
+                    { id: "pattern-texture", title: "Pattern & Texture Design", content: "Seamless pattern or texture design with repeating motifs, tileable background, fabric or wallpaper quality, professional surface design, geometric or organic patterns, contemporary or classic style, scalable vector format, 8K quality pattern tile" },
+                    { id: "pixel-game-assets", title: "Pixel Game Assets", content: "Pixel art game assets with retro gaming style, sprite sheet or tileset format, 8-bit or 16-bit aesthetic, professional game development quality, consistent pixel art style, animation-ready frames, indie game or mobile game ready, 8K upscaled presentation" },
+                    { id: "nft-style", title: "NFT Style Art", content: "NFT style digital art with crypto art aesthetic, generative art or unique collectible design, blockchain-ready artwork, professional NFT marketplace quality, contemporary digital art trends, rarity and trait variations, 8K quality digital collectible" }
+                ]
             }
         ]
     },
     {
         id: "video-generation",
-        name: "Video Generation",
+        name: "AI Video Generation Prompts",
         icon: "🎥",
-        description: "Professional video prompts for AI video generation tools",
+        description: "Free AI video prompts for Runway, Pika, and video generation tools",
         folders: [
             {
                 id: "cinematic-film",
-                name: "Cinematic & Film",
+                name: "Cinematic & Film Prompts",
                 icon: "🎬",
                 prompts: [
                     { id: "movie-trailer-epic", title: "Epic Movie Trailer", content: "Epic movie trailer style shot, wide cinematic landscape of a fantasy kingdom, dramatic lighting with god rays, 8K resolution, IMAX camera quality, emotional orchestral score vibe, slow majestic camera pan, high fantasy aesthetic, Lord of the Rings style, intense atmosphere, highly detailed environment" },
@@ -818,7 +1017,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "animation-anime",
-                name: "Animation & Anime",
+                name: "Animation & Anime Prompts",
                 icon: "🧚",
                 prompts: [
                     { id: "pixar-style-character", title: "3D Pixar Style Character", content: "Cute 3D character in Pixar animation style, expressive big eyes, soft lighting and subsurface scattering on skin, vibrant colors, clean shapes, heartwarming mood, Toy Story or Up aesthetic, high quality render, charming character design, smooth animation" },
@@ -840,7 +1039,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "realistic-stock",
-                name: "Realistic & Stock",
+                name: "Realistic & Stock Prompts",
                 icon: "📹",
                 prompts: [
                     { id: "drone-coastline", title: "Drone Coastline Shot", content: "Aerial drone shot flying over a dramatic coastline, waves crashing against cliffs, turquoise water, sunny day, smooth cinematic movement, 4K stock footage quality, travel video aesthetic, sense of scale and freedom, high dynamic range" },
@@ -862,7 +1061,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "character-performance",
-                name: "Character & Performance",
+                name: "Character & Performance Prompts",
                 icon: "🎭",
                 prompts: [
                     { id: "micro-expressions", title: "Facial Micro-Expressions", content: "Extreme close-up on a human eye and face, showing subtle micro-expressions of changing emotion (realization to fear), high fidelity skin texture, pores and iris detail, lifelike animation, Metahuman quality, emotional depth" },
@@ -884,7 +1083,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "camera-tech",
-                name: "Camera Movements & Tech",
+                name: "Camera Movement Prompts",
                 icon: "🎥",
                 prompts: [
                     { id: "dolly-zoom", title: "Dolly Zoom (Vertigo Effect)", content: "Cinematic Dolly Zoom effect (Vertigo shot) on a subject standing in a long hallway, background expanding/compressing while subject size remains constant, disorienting psychological effect, hitchcock style, high tension, smooth mechanical camera movement" },
@@ -906,7 +1105,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "music-video-abstract",
-                name: "Music Video & Abstract",
+                name: "Music Video & Abstract Prompts",
                 icon: "🎵",
                 prompts: [
                     { id: "audio-reactive-visuals", title: "Audio Reactive Pulse", content: "Abstract neon geometric shapes pulsing and morphing in sync with an invisible beat, audio-reactive simulation, vibrant EDM colors (pink, cyan), strobe light effects, high energy, VJ loop style" },
@@ -928,7 +1127,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "product-commercial",
-                name: "Product & Commercial",
+                name: "Product & Commercial Prompts",
                 icon: "🛍️",
                 prompts: [
                     { id: "luxury-watch-spin", title: "Luxury Watch Reveal", content: "Cinematic commercial shot of a luxury gold watch rotating slowly in dark void, rim lighting highlighting metallic edges, macro details of gears moving, sapphire glass reflection, premium elegance, Rolex style ad, 8K render" },
@@ -950,7 +1149,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "videogame-vfx",
-                name: "Video Game & VFX",
+                name: "Video Game & VFX Prompts",
                 icon: "🎮",
                 prompts: [
                     { id: "ue5-environment", title: "Unreal Engine 5 Forest", content: "Photorealistic forest environment rendered in Unreal Engine 5, Nanite geometry detail, Lumen global illumination, dense vegetation, 60fps smooth camera flythrough, next-gen graphics showcase, sunlight filtering through leaves" },
@@ -974,13 +1173,13 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "writing",
-        name: "Writing & Content",
+        name: "Writing & Content Prompts",
         icon: "✍️",
-        description: "Professional writing prompts for content creation",
+        description: "Free ChatGPT prompts for writing, blogging, and content creation",
         folders: [
             {
                 id: "blog-posts",
-                name: "Blog Posts",
+                name: "Blog Writing Prompts",
                 icon: "📝",
                 prompts: [
                     { id: "tutorial-outline", title: "Tutorial Outline", content: "Create a comprehensive tutorial outline for [TOPIC], including introduction, prerequisites, step-by-step instructions, common pitfalls, troubleshooting, and conclusion" },
@@ -1002,7 +1201,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "youtube-video",
-                name: "YouTube & Video",
+                name: "YouTube & Video Prompts",
                 icon: "🎬",
                 prompts: [
                     { id: "youtube-script", title: "YouTube Script", content: "Write a full YouTube video script on [TOPIC] including: attention-grabbing hook (first 15 seconds), main content with timestamps, examples and demonstrations, call-to-action, and outro" },
@@ -1024,7 +1223,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "business-writing",
-                name: "Business Writing",
+                name: "Business Writing Prompts",
                 icon: "💼",
                 prompts: [
                     { id: "business-proposal", title: "Business Proposal", content: "Write a professional business proposal for [PROJECT/SERVICE] including: executive summary, objectives, scope of work, methodology, timeline with milestones, pricing/budget breakdown, terms and conditions, and next steps" },
@@ -1046,7 +1245,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "social-media",
-                name: "Social Media Content",
+                name: "Social Media Prompts",
                 icon: "📱",
                 prompts: [
                     { id: "linkedin-post", title: "LinkedIn Post", content: "Write an engaging LinkedIn post about [TOPIC/ACHIEVEMENT]. Structure: strong hook first line to stop scrolling, personal story or insight, value-driven content (teach or inspire), 3-5 short paragraphs with line breaks for readability, call-to-action question to encourage comments, 3-5 relevant hashtags, professional yet personable tone, 1-3 minutes read time, tagging relevant people or companies optional, include data or results when possible, thought leadership angle, avoid salesy tone, engagement bait discouraged, authentic voice" },
@@ -1068,7 +1267,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "email-marketing",
-                name: "Email Marketing",
+                name: "Email Marketing Prompts",
                 icon: "📧",
                 prompts: [
                     { id: "welcome-series", title: "Welcome Email Series", content: "Create a 3-5 email welcome series for new subscribers to [BUSINESS/LIST]. Email 1: warm welcome, deliver promised lead magnet, set expectations for email frequency, quick brand introduction, first small ask (follow on social, whitelist email). Email 2 (day 2-3): tell brand story, introduce founder or team, share mission and values, social proof or testimonials, soft product/service introduction. Email 3 (day 5-7): educational content or how-to related to niche, establish authority, no selling yet. Email 4 (day 10): customer spotlight or case study, demonstrate results, first promotional offer (limited-time discount), clear CTA. Email 5 (day 14-21): check-in and ask for feedback/preferences, survey or reply ask, segment based on interests, nurture relationship, maintain engagement before regular newsletter cycle begins" },
@@ -1090,7 +1289,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "copywriting-sales",
-                name: "Copywriting & Sales",
+                name: "Copywriting & Sales Prompts",
                 icon: "💰",
                 prompts: [
                     { id: "landing-page", title: "Landing Page Copy", content: "Write high-converting landing page copy for [PRODUCT/SERVICE/OFFER]. Structure: attention-grabbing headline with clear value proposition (benefit-focused, not feature-focused), compelling subheadline expanding on promise, hero section with strong visual description and above-fold CTA, problem/agitation section (identify pain points), solution presentation (how your offer solves it), benefits over features (what they get, not what it is), social proof section (testimonials, reviews, trust badges, client logos, statistics), how it works (3-5 simple steps), FAQ addressing objections, urgency or scarcity element (limited time, bonuses, countdown), guarantee or risk reversal (money-back, free trial), final CTA section (stand-alone, bold, action-oriented), mobile-optimized single-column layout, A/B test variations, f-pattern or Z-pattern layout, conversion goal clarity (sale, signup, download), SEO considerations secondary to conversion, average 1000-2000 words for long-form" },
@@ -1112,7 +1311,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "creative-writing",
-                name: "Creative Writing",
+                name: "Creative Writing Prompts",
                 icon: "✨",
                 prompts: [
                     { id: "short-story", title: "Short Story Outline", content: "Outline a compelling short story for [GENRE/THEME]. Include: premise (one-sentence story idea capturing core conflict), protagonist introduction (name, key traits, motivation, flaw), inciting incident (event that disrupts protagonist's normal world and launches story), rising action (3-5 escalating complications or obstacles protagonist faces), midpoint twist (revelation or event that changes protagonist's understanding or stakes), climax (highest point of tension, protagonist's defining choice or confrontation), resolution (how conflict resolves, change in protagonist), theme (underlying message or question story explores), setting (time and place with sensory details), point of view (first person, third limited, third omniscient), target word count (flash fiction under 1000, short story 1500-5000, novelette 7500-20,000), tone and mood (dark, whimsical, tense, nostalgic), symbolism or motifs, estimated beats with word count allocation, character arc evident, emotional journey, satisfying yet possibly ambiguous ending" },
@@ -1135,7 +1334,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "academic-writing",
-                name: "Academic Writing",
+                name: "Academic Writing Prompts",
                 icon: "🎓",
                 prompts: [
                     { id: "research-paper", title: "Research Paper Outline", content: "Create a detailed outline for an academic research paper on [TOPIC]. Structure: Introduction (hook, background context, gap in research, thesis statement/research question), Literature Review (thematic organization of key theories and existing studies), Methodology (research design, participants, data collection, analysis methods), Results (key findings organization), Discussion (interpretation of results, implications, limitations, future research), Conclusion (summary of contributions, final thought), and References placeholder. Ensure logical flow and adherence to standard academic structure." },
@@ -1157,7 +1356,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "technical-writing",
-                name: "Technical Writing",
+                name: "Technical Writing Prompts",
                 icon: "🛠️",
                 prompts: [
                     { id: "api-docs", title: "API Documentation", content: "Write API documentation for a POST endpoint [ENDPOINT URL] that [FUNCTION]. Include: Description (what it does), Endpoint URL, Method (POST), Headers (Auth, Content-Type), Request Body parameters (Name, Type, Required/Optional, Description, constraints), Response Body fields (success 200), Error Codes (400, 401, 404, 500 examples), and a Code Snippet example (cURL or JSON). Follow OpenAPI/Swagger style conventions." },
@@ -1179,7 +1378,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "content-strategy",
-                name: "Content Strategy",
+                name: "Content Strategy Prompts",
                 icon: "📊",
                 prompts: [
                     { id: "content-audit", title: "Content Audit Framework", content: "Create a framework for a content audit of [WEBSITE/BLOG]. Columns to include: URL, Page Title, Content Type, Word Count, Topic/Category, Target Persona, SEO Keyword, Funnel Stage (Awareness/Consideration/Decision), Performance Metrics (Traffic, Bounce Rate, Conversions), Outdated? (Y/N), and Action (Keep, Update, Delete, Merge). Purpose: identify gaps and rot." },
@@ -1201,7 +1400,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "job-career-writing",
-                name: "Job & Career Writing",
+                name: "Job & Career Prompts",
                 icon: "👔",
                 prompts: [
                     { id: "resume-bullets", title: "Resume / CV Bullet Points", content: "Rewrite these resume bullet points to be impact-focused and metric-driven: [INSERT BULLETS]. Formula: Action Verb + Task + Result/Metric. Example: 'Managed a team' -> 'Led a cross-functional team of 10, increasing productivity by 20% in Q3.' Focus on achievements, not just responsibilities. Use strong verbs (Orchestrated, Spearheaded, Optimized) and quantify wherever possible ($, %, numbers)." },
@@ -1223,7 +1422,7 @@ export const promptCategories: PromptCategory[] = [
             },
             {
                 id: "legal-compliance",
-                name: "Legal & Compliance",
+                name: "Legal & Compliance Prompts",
                 icon: "⚖️",
                 prompts: [
                     { id: "contract-clause", title: "Contract Clause Explanation", content: "Explain the following legal contract clause in plain English: [INSERT CLAUSE]. Break down: What it means legally, What obligations it creates, What rights are given or waived, Risks involved. Simplify jargon like 'indemnification', 'force majeure', 'severability' for a non-lawyer." },
@@ -1261,9 +1460,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "coding",
-        name: "Coding & Tech",
+        name: "Coding & Programming Prompts",
         icon: "💻",
-        description: "Developer prompts for code generation and learning",
+        description: "Free AI prompts for developers, programmers, and software engineers",
         folders: [
             {
                 id: "system-design",
@@ -1533,9 +1732,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "design",
-        name: "Design & UI/UX",
+        name: "Design & Creative Prompts",
         icon: "🎨",
-        description: "Design prompts for interfaces and user experience",
+        description: "Free AI prompts for graphic design, UI/UX, and creative work",
         folders: [
             {
                 id: "branding",
@@ -1761,9 +1960,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "education",
-        name: "Education",
+        name: "Education & Learning Prompts",
         icon: "📚",
-        description: "Learning and educational prompts for all levels",
+        description: "Free AI prompts for teachers, students, and educational content",
         folders: [
             {
                 id: "basic-education",
@@ -2055,9 +2254,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "books",
-        name: "Books & Reading",
+        name: "Book & Reading Prompts",
         icon: "📖",
-        description: "Book analysis, summaries, and reading assistance",
+        description: "Free AI prompts for book analysis, summaries, and reading",
         folders: [
             {
                 id: "book-summaries",
@@ -2090,9 +2289,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "career",
-        name: "Career & Jobs",
+        name: "Career & Job Search Prompts",
         icon: "💼",
-        description: "Career guidance, resume building, and interview prep",
+        description: "Free AI prompts for career guidance, resume building, and interview prep",
         folders: [
             {
                 id: "career-guidance",
@@ -2126,9 +2325,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "health",
-        name: "Health & Lifestyle",
+        name: "Health & Wellness Prompts",
         icon: "🧘",
-        description: "Fitness, wellness, and healthy living prompts",
+        description: "Free AI prompts for fitness, nutrition, and wellness",
         folders: [
             {
                 id: "fitness",
@@ -2154,9 +2353,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "daily-life",
-        name: "Daily Life",
+        name: "Daily Life & Productivity Prompts",
         icon: "🏠",
-        description: "Personal management and everyday living",
+        description: "Free AI prompts for daily tasks, productivity, and life organization",
         folders: [
             {
                 id: "personal-management",
@@ -2181,9 +2380,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "travel",
-        name: "Travel & Culture",
+        name: "Travel & Adventure Prompts",
         icon: "🌍",
-        description: "Travel planning and cultural exploration",
+        description: "Free AI prompts for travel planning, itineraries, and adventures",
         folders: [
             {
                 id: "travel-planning",
@@ -2208,9 +2407,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "science",
-        name: "Science & Research",
-        icon: "🧪",
-        description: "Research assistance and scientific exploration",
+        name: "Science & Research Prompts",
+        icon: "🔬",
+        description: "Free AI prompts for scientific research, experiments, and analysis",
         folders: [
             {
                 id: "research",
@@ -2235,9 +2434,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "games",
-        name: "Games & Fun",
+        name: "Gaming & Entertainment Prompts",
         icon: "🎮",
-        description: "Gaming strategies and creative fun",
+        description: "Free AI prompts for game design, gaming content, and entertainment",
         folders: [
             {
                 id: "gaming",
@@ -2262,9 +2461,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "philosophy",
-        name: "Philosophy & Thinking",
+        name: "Philosophy & Critical Thinking Prompts",
         icon: "🧠",
-        description: "Philosophical concepts and critical thinking",
+        description: "Free AI prompts for philosophical thinking, ethics, and deep questions",
         folders: [
             {
                 id: "philosophy",
@@ -2280,9 +2479,9 @@ export const promptCategories: PromptCategory[] = [
     },
     {
         id: "tools",
-        name: "Practical Tools",
+        name: "AI Tools & Utilities Prompts",
         icon: "🧰",
-        description: "Templates and utility prompts",
+        description: "Free AI prompts for productivity tools, utilities, and automation",
         folders: [
             {
                 id: "templates",
@@ -2301,6 +2500,278 @@ export const promptCategories: PromptCategory[] = [
                 prompts: [
                     { id: "workflow-automation", title: "Workflow Automation Ideas", content: "Suggest automation for [WORKFLOW/PROCESS]. Identify: Repetitive tasks, Tool recommendations, Step-by-step automation, Time saved estimate, Cost-benefit analysis, Implementation difficulty, Maintenance needs, Scalability." },
                     { id: "ai-usecase", title: "AI Use-Case Brainstorm", content: "Brainstorm AI applications for [DOMAIN/PROBLEM]. Generate: Specific use-cases, AI techniques applicable, Data requirements, Expected benefits, Implementation challenges, Ethical considerations, Success metrics, Phased rollout plan." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "developer",
+        name: "Developer Career Prompts",
+        icon: "🛠️",
+        description: "Free AI prompts for software developer careers, interviews, and growth",
+        folders: [
+            {
+                id: "debugging",
+                name: "Debugging & Production",
+                icon: "🐛",
+                prompts: [
+                    { id: "prod-debug", title: "Production Debugging Assistant", content: "Debug production issues with limited logs and incomplete information. Analyze the following production issue: [DESCRIBE SYMPTOMS]. Given constraints: Limited access to production environment, incomplete error logs, intermittent occurrence, user-reported behavior. Systematic debugging approach: 1) Analyze available logs and error messages for patterns, 2) Identify potential root causes based on symptoms, 3) Suggest safe diagnostic steps that won't impact production, 4) Recommend logging improvements for future incidents, 5) Propose temporary workarounds while investigating, 6) Create incident timeline and impact assessment. Consider: Database connection issues, memory leaks, race conditions, third-party service failures, configuration drift, caching issues, network problems. Provide step-by-step investigation plan with minimal production impact." },
+                    { id: "intermittent-bug", title: "Intermittent Bug Root Cause Analyzer", content: "Identify root causes of bugs that occur randomly and are difficult to reproduce. Bug description: [DESCRIBE BEHAVIOR]. Analysis framework: 1) Timing and concurrency issues - race conditions, thread safety, async operations, 2) Environmental factors - specific user data, browser/device variations, network conditions, time zones, 3) State management - improper cleanup, shared state, caching issues, 4) External dependencies - third-party APIs, database locks, service availability, 5) Resource constraints - memory pressure, CPU spikes, connection pool exhaustion. Investigation strategy: Add comprehensive logging, implement feature flags for controlled testing, use monitoring tools to capture state, create reproduction scenarios, analyze patterns in occurrence (time, users, actions). Suggest specific debugging techniques: distributed tracing, correlation IDs, state snapshots, load testing under various conditions." },
+                    { id: "error-explainer", title: "Error Message Explainer", content: "Explain complex error messages in simple, actionable terms for developers at any level. Error message: [PASTE ERROR]. Breakdown: 1) Plain English explanation - what this error actually means, 2) Root cause - why this error occurs, 3) Common scenarios - when developers typically encounter this, 4) Step-by-step fix - concrete actions to resolve, 5) Prevention - how to avoid in future, 6) Related concepts - underlying technical concepts to understand. Include: Stack trace interpretation, error code meanings, framework-specific context, environment considerations. Make technical jargon accessible. Provide code examples showing both the problem and the solution. Link to relevant documentation. Explain any cryptic variable names or internal framework details mentioned in the error." },
+                    { id: "perf-debug", title: "Performance Issue Debugger", content: "Identify and fix performance bottlenecks in applications systematically. Performance problem: [DESCRIBE SLOWNESS]. Diagnostic approach: 1) Measure and profile - use browser DevTools, profilers, APM tools to identify slow operations, 2) Analyze metrics - response times, database query duration, render times, memory usage, network requests, 3) Identify bottlenecks - slow database queries, N+1 problems, inefficient algorithms, large bundle sizes, unnecessary re-renders, 4) Prioritize fixes - impact vs effort matrix. Common issues: Unoptimized database queries (missing indexes, full table scans), inefficient loops and algorithms (O(n²) when O(n) possible), memory leaks, large payload sizes, synchronous blocking operations, excessive DOM manipulation, unoptimized images/assets. Provide specific optimization strategies with before/after performance metrics." },
+                    { id: "edge-cases", title: "Edge Case Identifier", content: "Systematically identify edge cases that could break features before they reach production. Feature description: [DESCRIBE FEATURE]. Edge case categories: 1) Boundary values - empty inputs, null/undefined, zero, negative numbers, maximum values, 2) Data type variations - different formats, encodings, special characters, unicode, 3) State combinations - concurrent operations, partial failures, interrupted flows, 4) User behavior - rapid clicks, back button, browser refresh, multiple tabs, 5) Environment - slow networks, offline mode, different browsers/devices, time zones, 6) Scale - large datasets, many concurrent users, long-running operations. Generate comprehensive test scenarios covering: happy path, sad path, malicious input, unexpected sequences, resource constraints. Create test cases with expected behavior for each edge case." }
+                ]
+            },
+            {
+                id: "performance",
+                name: "Performance Optimization",
+                icon: "⚡",
+                prompts: [
+                    { id: "bottleneck-finder", title: "Performance Bottleneck Finder", content: "Find and analyze slow areas causing performance degradation. Application context: [DESCRIBE APP/FEATURE]. Performance analysis methodology: 1) Frontend bottlenecks - JavaScript execution time, render blocking, layout thrashing, excessive re-renders, large bundle size, unoptimized images, 2) Backend bottlenecks - slow database queries, N+1 queries, inefficient algorithms, blocking I/O, memory leaks, 3) Network bottlenecks - too many requests, large payloads, missing compression, no caching, 4) Infrastructure - insufficient resources, poor scaling, database connection limits. Profiling strategy: Use Chrome DevTools Performance tab, Lighthouse, backend APM tools, database query analyzers. Provide optimization recommendations with expected performance gains. Prioritize fixes by impact and implementation effort." },
+                    { id: "loop-optimizer", title: "Loop and Algorithm Optimizer", content: "Optimize inefficient loops and algorithms for better time and space complexity. Code to optimize: [PASTE CODE]. Optimization analysis: 1) Current complexity - Big O time and space analysis, 2) Inefficiencies - nested loops, repeated calculations, unnecessary iterations, poor data structure choice, 3) Optimization opportunities - use hash maps for O(1) lookup instead of arrays O(n), eliminate nested loops, cache computed values, use early returns, choose appropriate data structures, 4) Refactored code - optimized version with complexity improvement. Show before/after comparison with complexity analysis. Explain trade-offs between time and space complexity. Provide benchmarks showing performance improvement with different input sizes." },
+                    { id: "memory-optimizer", title: "Memory Usage Optimizer", content: "Reduce memory usage and prevent memory leaks in applications. Memory issue: [DESCRIBE PROBLEM]. Memory optimization strategy: 1) Identify leaks - event listeners not removed, closures holding references, detached DOM nodes, global variables, intervals/timeouts not cleared, 2) Reduce footprint - lazy loading, pagination, virtual scrolling, image optimization, data structure efficiency, 3) Profiling - use browser memory profiler, heap snapshots, allocation timeline, 4) Garbage collection - understand GC behavior, avoid creating unnecessary objects in loops, reuse objects when possible. Provide code examples showing: proper cleanup in useEffect/componentWillUnmount, WeakMap for caching, object pooling, streaming large datasets. Include monitoring strategy to detect memory issues in production." },
+                    { id: "load-time", title: "Load Time Optimization Expert", content: "Improve initial application load time for better user experience and SEO. Current load time: [METRICS]. Optimization checklist: 1) Bundle optimization - code splitting, tree shaking, lazy loading routes, remove unused dependencies, 2) Asset optimization - compress images (WebP), minify CSS/JS, use CDN, implement caching headers, 3) Critical rendering path - inline critical CSS, defer non-critical JS, preload key resources, 4) Network - HTTP/2, compression (gzip/brotli), reduce request count, 5) Metrics - measure FCP, LCP, TTI, CLS. Provide specific webpack/vite configuration, image optimization tools, CDN setup, caching strategies. Target: FCP < 1.8s, LCP < 2.5s, TTI < 3.8s. Include monitoring setup to track improvements." }
+                ]
+            },
+            {
+                id: "architecture",
+                name: "Architecture & Design",
+                icon: "🏗️",
+                prompts: [
+                    { id: "scalable-arch", title: "Scalable Architecture Designer", content: "Design systems that scale gracefully with user growth and data volume. System requirements: [DESCRIBE SYSTEM]. Scalability dimensions: 1) Horizontal scaling - stateless services, load balancing, distributed caching, database sharding, 2) Vertical scaling - resource optimization, efficient algorithms, 3) Data scaling - database partitioning, read replicas, caching strategy (Redis/Memcached), CDN for static assets, 4) Microservices - service decomposition, API gateway, message queues, event-driven architecture. Architecture patterns: CQRS for read-heavy systems, event sourcing, saga pattern for distributed transactions. Include: capacity planning, monitoring and alerting, auto-scaling policies, database indexing strategy, caching layers. Provide architecture diagram and technology stack recommendations." },
+                    { id: "monolith-breakdown", title: "Monolith Breakdown Planner", content: "Plan safe decomposition of monolithic applications into microservices. Current monolith: [DESCRIBE SYSTEM]. Decomposition strategy: 1) Identify bounded contexts - domain-driven design, business capabilities, 2) Prioritize extraction - start with least coupled modules, high change frequency areas, 3) Strangler fig pattern - gradually replace functionality, run old and new in parallel, 4) Data decomposition - separate databases per service, handle distributed transactions, 5) Communication - REST APIs, message queues, event bus. Migration phases: Phase 1 - identify service boundaries, Phase 2 - extract first service, Phase 3 - iterate, Phase 4 - decommission monolith. Address challenges: data consistency, distributed transactions, service discovery, monitoring, testing. Provide detailed migration roadmap with risk mitigation." },
+                    { id: "design-pattern", title: "Design Pattern Selector", content: "Choose the right design pattern for specific problems. Problem description: [DESCRIBE PROBLEM]. Pattern analysis: 1) Creational patterns - Singleton (global state), Factory (object creation logic), Builder (complex object construction), 2) Structural patterns - Adapter (interface compatibility), Decorator (add behavior), Facade (simplify interface), 3) Behavioral patterns - Observer (event handling), Strategy (algorithm selection), Command (encapsulate actions). For your problem, recommend: [PATTERN NAME]. Justification: why this pattern fits, what problem it solves, trade-offs. Provide: UML diagram, implementation in [LANGUAGE], real-world example, when NOT to use this pattern, alternative patterns considered." },
+                    { id: "high-traffic", title: "High Traffic System Planner", content: "Design systems to handle traffic spikes and high concurrent users. Expected traffic: [METRICS]. High availability architecture: 1) Load balancing - distribute requests across servers, health checks, failover, 2) Caching - CDN for static content, Redis for application cache, browser caching, 3) Database - read replicas, connection pooling, query optimization, 4) Async processing - message queues for non-critical operations, background jobs, 5) Rate limiting - protect against abuse, throttle requests per user. Infrastructure: Auto-scaling groups, multi-region deployment, DDoS protection. Monitoring: Real-time metrics, alerting, distributed tracing. Provide: architecture diagram, technology stack, capacity planning, cost estimation, disaster recovery plan." },
+                    { id: "fault-tolerant", title: "Fault-Tolerant System Designer", content: "Design systems resilient to failures with graceful degradation. System: [DESCRIBE]. Resilience patterns: 1) Circuit breaker - prevent cascading failures, fail fast, automatic recovery, 2) Retry with exponential backoff - handle transient failures, 3) Timeout - don't wait forever, 4) Bulkhead - isolate resources, prevent total failure, 5) Fallback - provide degraded functionality. Implementation: Health checks, redundancy (multiple instances), data replication, chaos engineering to test failure scenarios. Handle: service failures, network issues, database downtime, third-party API failures. Provide: failure mode analysis, recovery procedures, monitoring and alerting setup, SLA targets (99.9% uptime)." }
+                ]
+            },
+            {
+                id: "api-database",
+                name: "API & Database",
+                icon: "🗄️",
+                prompts: [
+                    { id: "rest-api", title: "REST API Designer", content: "Design clean, scalable, and developer-friendly REST APIs. API purpose: [DESCRIBE]. Design principles: 1) Resource naming - use nouns not verbs, plural names, hierarchical structure (/users/:id/posts), 2) HTTP methods - GET (read), POST (create), PUT/PATCH (update), DELETE (remove), 3) Status codes - 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Server Error, 4) Versioning - URL versioning (/v1/users) or header-based, 5) Pagination - limit/offset or cursor-based, 6) Filtering and sorting - query parameters, 7) Error responses - consistent format with error codes and messages. Include: authentication (JWT, OAuth), rate limiting, CORS, documentation (OpenAPI/Swagger), request/response examples, validation rules. Provide complete API specification." },
+                    { id: "db-optimizer", title: "Database Query Optimizer", content: "Optimize slow database queries for better performance. Slow query: [PASTE QUERY]. Optimization strategy: 1) Analyze execution plan - identify full table scans, missing indexes, 2) Add indexes - on WHERE, JOIN, ORDER BY columns, consider composite indexes, 3) Query rewrite - eliminate N+1 queries, use JOINs efficiently, avoid SELECT *, limit result sets, 4) Denormalization - for read-heavy workloads, 5) Caching - query results, computed values. Database-specific optimizations: PostgreSQL (EXPLAIN ANALYZE, partial indexes), MySQL (query cache, covering indexes), MongoDB (compound indexes, aggregation pipeline). Provide: optimized query, index creation statements, before/after performance metrics, explain plan analysis. Consider: query frequency, data volume, read vs write ratio." }
+                ]
+            },
+            {
+                id: "devops-security",
+                name: "DevOps & Security",
+                icon: "🔒",
+                prompts: [
+                    { id: "deployment-checklist", title: "Deployment Checklist Generator", content: "Generate comprehensive pre-deployment checklist to ensure safe releases. Application: [DESCRIBE]. Deployment checklist: **Pre-Deployment:** 1) Code review completed and approved, 2) All tests passing (unit, integration, E2E), 3) Security scan completed (no critical vulnerabilities), 4) Database migrations tested, 5) Environment variables configured, 6) Dependencies updated and audited, 7) Rollback plan documented. **Deployment:** 1) Backup database, 2) Enable maintenance mode if needed, 3) Deploy to staging first, 4) Run smoke tests on staging, 5) Deploy to production (blue-green or canary), 6) Run database migrations, 7) Verify deployment health checks. **Post-Deployment:** 1) Monitor error rates and performance, 2) Check logs for errors, 3) Verify critical user flows, 4) Update documentation, 5) Notify stakeholders, 6) Monitor for 24 hours. Include rollback procedure and incident response plan." },
+                    { id: "security-review", title: "Security Vulnerability Reviewer", content: "Identify security vulnerabilities and provide remediation guidance. Code/system to review: [DESCRIBE]. Security checklist: 1) **Authentication** - secure password storage (bcrypt), session management, MFA support, 2) **Authorization** - proper access controls, RBAC, prevent IDOR, 3) **Input validation** - sanitize all inputs, prevent SQL injection, XSS, command injection, 4) **Data protection** - encrypt sensitive data at rest and in transit, HTTPS only, secure cookies, 5) **Dependencies** - audit for known vulnerabilities (npm audit, Snyk), 6) **API security** - rate limiting, CORS configuration, API keys in environment variables, 7) **Error handling** - don't expose stack traces, log security events. Provide: vulnerability severity (Critical/High/Medium/Low), exploitation scenario, remediation code examples, security testing recommendations (OWASP ZAP, Burp Suite)." }
+                ]
+            },
+            {
+                id: "testing-qa",
+                name: "Testing & QA",
+                icon: "✅",
+                prompts: [
+                    { id: "unit-test-gen", title: "Unit Test Generator", content: "Generate comprehensive unit tests from code and requirements. Code to test: [PASTE CODE]. Test generation approach: 1) Identify testable units - functions, methods, components, 2) Test cases - happy path, edge cases, error conditions, boundary values, 3) Arrange-Act-Assert pattern - setup, execute, verify, 4) Mocking - external dependencies, API calls, database, 5) Coverage - aim for 80%+ line and branch coverage. Generate tests using: [Jest/Mocha/Pytest/JUnit]. Include: test descriptions, assertions, mock setup, teardown. Cover: null/undefined inputs, empty arrays/objects, large inputs, concurrent calls, error throwing. Provide runnable test suite with clear test names describing what is being tested." },
+                    { id: "test-coverage", title: "Test Coverage Strategist", content: "Improve meaningful test coverage beyond just hitting percentage targets. Current coverage: [METRICS]. Coverage strategy: 1) **Prioritize critical paths** - authentication, payment, data loss scenarios, 2) **Test pyramid** - 70% unit tests (fast, isolated), 20% integration tests (component interaction), 10% E2E tests (user flows), 3) **Mutation testing** - verify tests actually catch bugs, 4) **Edge cases** - not just happy path, 5) **Regression tests** - for every bug fixed. Focus on: business logic, complex algorithms, security-critical code, frequently changing code. Avoid: testing framework code, trivial getters/setters, third-party libraries. Provide: coverage improvement roadmap, test case examples, metrics to track (branch coverage, mutation score), CI/CD integration for coverage enforcement." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "career",
+        name: "Career & Interview Prompts",
+        icon: "💼",
+        description: "Free AI prompts for resume building, interview prep, and career development",
+        folders: [
+            {
+                id: "resume",
+                name: "Resume & Application",
+                icon: "📄",
+                prompts: [
+                    { id: "ats-resume", title: "ATS Resume Optimizer", content: "Optimize resume for Applicant Tracking Systems and recruiter visibility. Current resume: [PASTE]. ATS optimization: 1) Format - use standard sections (Experience, Education, Skills), avoid tables/graphics/headers, use standard fonts, 2) Keywords - match job description terms, include technical skills, certifications, tools, 3) Action verbs - led, developed, implemented, increased, reduced, 4) Quantify achievements - numbers, percentages, scale, 5) File format - .docx or PDF with selectable text. Structure: Contact info, Professional summary (2-3 lines), Work experience (reverse chronological, bullet points with STAR method), Education, Skills (technical and soft), Certifications. Optimize for: keyword density without stuffing, clear job titles, company names, dates, measurable impact in each role." },
+                    { id: "resume-bullets", title: "Resume Bullet Point Rewriter", content: "Rewrite resume bullets with clarity and measurable impact. Current bullet: [PASTE]. Rewrite using formula: [Action Verb] + [What you did] + [How you did it] + [Measurable result/impact]. Examples: Before: 'Responsible for managing team' → After: 'Led cross-functional team of 8 engineers to deliver 3 major features, reducing customer churn by 15%'. Before: 'Worked on improving performance' → After: 'Optimized database queries and implemented caching, reducing API response time from 2s to 200ms (90% improvement)'. Focus on: quantifiable results, business impact, scope/scale, technologies used, leadership/collaboration. Avoid: vague responsibilities, passive voice, 'helped with', generic duties." },
+                    { id: "project-to-resume", title: "Project to Resume Converter", content: "Convert technical projects into compelling resume bullet points. Project description: [DESCRIBE PROJECT]. Conversion framework: 1) Context - what problem were you solving, 2) Action - technologies used, your specific role, technical challenges overcome, 3) Result - impact metrics, users affected, performance improvements, learning outcomes. Format: Start with strong action verb, highlight technical stack, quantify when possible. Example: 'Built full-stack e-commerce platform using React, Node.js, and PostgreSQL, implementing secure payment processing with Stripe API, serving 500+ daily active users with 99.9% uptime'. Include: architecture decisions, scalability considerations, team collaboration, deployment/DevOps." },
+                    { id: "job-tailor", title: "Job-Specific Resume Tailor", content: "Tailor resume for specific job description to maximize relevance. Job description: [PASTE JD]. Your resume: [PASTE RESUME]. Tailoring strategy: 1) Keyword matching - identify required skills, tools, qualifications from JD and mirror language, 2) Reorder sections - put most relevant experience first, 3) Emphasize relevant projects - expand bullets matching job requirements, condense less relevant ones, 4) Skills section - prioritize skills mentioned in JD, 5) Summary - customize to match role requirements. Highlight: direct experience with required technologies, similar industry/domain experience, matching job level/seniority, relevant certifications. Maintain honesty while optimizing presentation." },
+                    { id: "resume-gap", title: "Resume Gap Analyzer", content: "Identify gaps and weaknesses in resume with improvement suggestions. Resume: [PASTE]. Analysis: 1) Missing elements - quantifiable achievements, technical skills, leadership examples, education details, 2) Weak areas - vague descriptions, lack of impact metrics, poor formatting, typos, 3) Gaps - employment gaps, skill gaps for target role, missing keywords, 4) Improvements - stronger action verbs, better structure, more specific accomplishments, relevant projects to add. Provide: specific line-by-line feedback, rewritten examples, missing skills to acquire, overall impression from recruiter perspective." }
+                ]
+            },
+            {
+                id: "hr-interview",
+                name: "HR Interview Prep",
+                icon: "🗣️",
+                prompts: [
+                    { id: "tell-me-about", title: "Tell Me About Yourself Answer Builder", content: "Craft confident, concise self-introduction for interviews. Background: [YOUR INFO]. Structure (2-3 minutes): 1) Present - current role, key responsibilities, recent achievements, 2) Past - relevant experience, career progression, notable accomplishments, 3) Future - why you're interested in this role, what you bring. Formula: 'I'm currently [ROLE] at [COMPANY] where I [KEY ACHIEVEMENT]. Previously, I [RELEVANT EXPERIENCE] which taught me [SKILLS]. I'm excited about this opportunity because [CONNECTION TO ROLE].' Keep professional, relevant to job, highlight 2-3 key strengths, avoid personal life details, end with enthusiasm for the role." },
+                    { id: "star-method", title: "Behavioral Interview Answer (STAR)", content: "Answer behavioral questions using STAR method. Question: [PASTE QUESTION]. STAR framework: **Situation** - set context (when, where, what was happening), **Task** - your responsibility/challenge, **Action** - specific steps YOU took (focus on 'I' not 'we'), **Result** - quantifiable outcome, what you learned. Example for 'Tell me about a time you solved a difficult problem': S: 'During Q4, our API response times increased to 5 seconds, affecting 10,000 users', T: 'I was tasked with identifying and fixing the performance issue within 1 week', A: 'I profiled the application, identified N+1 database queries, implemented query optimization and caching', R: 'Reduced response time to 200ms (96% improvement), improved user satisfaction scores by 25%'. Keep answer 2-3 minutes, focus on YOUR actions, quantify results." },
+                    { id: "career-gap", title: "Career Gap Explanation Builder", content: "Explain career gaps confidently and positively. Gap period: [DATES]. Reason: [REASON]. Explanation strategy: 1) Be honest and brief - don't over-explain or apologize, 2) Focus on growth - skills learned, courses taken, projects completed, 3) Show readiness - emphasize you're now fully committed and prepared, 4) Redirect to strengths - quickly pivot to relevant qualifications. Examples: Layoff: 'I was affected by company-wide layoffs. I used the time to upskill in [TECHNOLOGY] and contribute to open-source projects.' Personal reasons: 'I took time to handle family matters. During this period, I completed [CERTIFICATION] and stayed current with industry trends. I'm now fully available and excited to contribute.' Keep positive, forward-looking, confident." },
+                    { id: "salary-expectation", title: "Salary Expectation Answer Builder", content: "Answer salary questions professionally without underselling or overpricing. Research: [MARKET RATE FOR ROLE]. Your target: [RANGE]. Response strategies: 1) Deflect early - 'I'd like to learn more about the role first. What's the budgeted range?' 2) Give range - 'Based on my research and experience, I'm looking for $X to $Y' (set floor at your minimum, ceiling at 15-20% above), 3) Emphasize fit - 'I'm flexible for the right opportunity and total compensation package'. Research using: Glassdoor, Levels.fyi, Payscale, industry reports. Consider: base salary, bonus, equity, benefits, remote flexibility, growth opportunity. Never give single number, always range. If pressed for current salary, deflect or give total compensation." },
+                    { id: "conflict-resolution", title: "Conflict Resolution Interview Answer", content: "Answer conflict-related questions showing maturity and professionalism. Question: [PASTE]. Framework: 1) Describe conflict objectively - avoid blaming, state facts, 2) Your approach - active listening, seeking to understand, finding common ground, 3) Resolution - compromise reached, how you maintained relationship, 4) Learning - what you'd do differently, growth from experience. Example: 'I disagreed with a colleague about technical approach. I scheduled a meeting to understand their perspective, presented data supporting my view, and we agreed to prototype both approaches and measure results. This taught me the value of data-driven decisions and maintaining collaborative relationships even during disagreements.' Show: emotional intelligence, communication skills, focus on solutions not problems, professional maturity." },
+                    { id: "explain-project", title: "Explain Past Project Clearly", content: "Explain technical projects clearly to non-technical interviewers. Project: [DESCRIBE]. Explanation structure: 1) Problem - what business problem were you solving (avoid jargon), 2) Your role - your specific contributions, team size, 3) Approach - high-level solution (use analogies for technical concepts), 4) Challenges - obstacles overcome, 5) Impact - business results, users affected, metrics improved. Example: Instead of 'Implemented microservices architecture with Kubernetes', say 'I broke down our large application into smaller, independent services, which allowed our team to deploy updates faster and reduced downtime from 2 hours to 15 minutes.' Use: business language, analogies, focus on outcomes not technologies, quantify impact." }
+                ]
+            },
+            {
+                id: "tech-interview",
+                name: "Technical Interview Prep",
+                icon: "💻",
+                prompts: [
+                    { id: "system-design", title: "System Design Interview Answer", content: "Structure system design interview answers methodically. Problem: [DESIGN X SYSTEM]. Framework: 1) **Clarify requirements** - functional (core features), non-functional (scale, performance, availability), 2) **Estimate scale** - users, requests/second, data volume, storage needs, 3) **High-level design** - client, API, services, database, cache, 4) **Deep dive** - database schema, API endpoints, scalability (load balancer, caching, sharding), 5) **Trade-offs** - discuss SQL vs NoSQL, consistency vs availability, monolith vs microservices. Example for 'Design Twitter': Clarify - tweet posting, timeline, follow. Scale - 500M users, 10K tweets/sec. Design - API gateway, tweet service, timeline service, PostgreSQL + Redis, CDN. Deep dive - fan-out on write vs read, caching strategy. Show: systematic thinking, asking clarifying questions, considering trade-offs, scalability awareness." },
+                    { id: "problem-solving", title: "Problem-Solving Approach Explainer", content: "Explain your problem-solving methodology clearly. Approach: 1) **Understand the problem** - restate in own words, ask clarifying questions, identify constraints, 2) **Break it down** - divide into smaller sub-problems, identify patterns, 3) **Explore solutions** - brainstorm approaches, consider trade-offs, 4) **Choose approach** - justify decision based on requirements, 5) **Implement** - write clean code, test edge cases, 6) **Optimize** - analyze complexity, improve if needed, 7) **Communicate** - explain thinking throughout. Example: 'When faced with a bug, I first reproduce it consistently, then use debugging tools to isolate the issue, form hypotheses about root cause, test each hypothesis, implement fix, and add tests to prevent regression.' Demonstrate: structured thinking, communication skills, thoroughness." },
+                    { id: "unknown-question", title: "Handle Unknown Technical Questions", content: "Respond confidently when you don't know the answer. Response strategy: 1) **Be honest** - 'I haven't worked with that specific technology, but...' 2) **Show related knowledge** - connect to similar concepts you know, 3) **Demonstrate learning ability** - explain how you'd learn it, 4) **Ask clarifying questions** - show curiosity and engagement. Examples: 'I haven't used Kubernetes in production, but I understand containerization through Docker and the benefits of orchestration. I'd start by setting up a local cluster and deploying a simple app.' OR 'That's not something I've encountered. Can you explain more about the context? I'm curious to learn.' Avoid: making up answers, saying just 'I don't know' without elaboration, appearing disinterested. Show: honesty, learning mindset, problem-solving ability." },
+                    { id: "optimize-answer", title: "Optimize Interview Answers", content: "Improve clarity and structure of interview answers. Current answer: [PASTE]. Optimization: 1) **Conciseness** - remove filler words, get to point faster, aim for 2-3 minutes, 2) **Structure** - use frameworks (STAR, problem-solution-result), clear beginning-middle-end, 3) **Specificity** - replace vague terms with concrete examples and numbers, 4) **Relevance** - tie back to job requirements, 5) **Energy** - show enthusiasm, avoid monotone. Before: 'I worked on various projects and helped the team with different tasks...' After: 'I led development of a customer dashboard using React, which reduced support tickets by 30% by giving users self-service access to their data.' Practice: record yourself, time answers, remove redundancy, add quantifiable results." }
+                ]
+            },
+            {
+                id: "mock-interview",
+                name: "Mock Interviews & Feedback",
+                icon: "🎯",
+                prompts: [
+                    { id: "mock-technical", title: "Mock Technical Interview", content: "Simulate realistic technical interview with questions and evaluation. Role: [JOB TITLE]. Interview format: 1) **Coding challenge** - solve [PROBLEM] in [LANGUAGE], explain approach, analyze complexity, 2) **System design** - design [SYSTEM], discuss scalability and trade-offs, 3) **Technical questions** - explain [CONCEPT], compare [TECH A vs B], 4) **Behavioral** - describe challenging project, team conflict resolution. Provide: realistic questions for role level (junior/mid/senior), time limits, evaluation criteria (correctness, communication, problem-solving, code quality). After each answer, give feedback: strengths, areas for improvement, better approaches." },
+                    { id: "mock-hr", title: "Mock HR Interview", content: "Simulate HR interview with common questions. Questions: 1) Tell me about yourself, 2) Why are you interested in this role/company? 3) What are your strengths and weaknesses? 4) Describe a challenging situation and how you handled it, 5) Where do you see yourself in 5 years? 6) Why are you leaving your current job? 7) What's your salary expectation? 8) Do you have any questions for us? Provide: sample answers using STAR method, tips for each question, red flags to avoid, questions to ask interviewer. Evaluate: clarity, relevance, confidence, honesty, professionalism." },
+                    { id: "interview-feedback", title: "Interview Answer Feedback", content: "Get constructive feedback on interview answers. Your answer: [PASTE]. Question: [PASTE QUESTION]. Feedback framework: 1) **Strengths** - what worked well (specific examples, good structure, confidence), 2) **Weaknesses** - what to improve (too long, vague, missing quantification), 3) **Suggestions** - specific improvements with rewritten examples, 4) **Score** - rate 1-10 with justification. Evaluate: relevance to question, structure (STAR method), specificity and examples, conciseness, enthusiasm, quantifiable results. Provide improved version of answer." },
+                    { id: "communication", title: "Interview Communication Improver", content: "Improve communication clarity and confidence in interviews. Issue: [DESCRIBE PROBLEM - rambling, nervous, too quiet, etc.]. Improvement strategies: 1) **Pacing** - practice pausing, avoid rushing, take breath before answering, 2) **Structure** - use frameworks to organize thoughts, 3) **Filler words** - eliminate 'um', 'like', 'you know', 4) **Volume and tone** - speak clearly and confidently, vary tone to show enthusiasm, 5) **Body language** - maintain eye contact, sit up straight, use hand gestures naturally. Practice techniques: record yourself, practice with friend, use STAR method for structure, prepare stories in advance, do mock interviews. For virtual: test tech beforehand, look at camera not screen, minimize distractions." },
+                    { id: "confidence", title: "Interview Confidence Builder", content: "Build confidence before interviews through preparation and mindset. Preparation: 1) **Research** - company, role, interviewers (LinkedIn), recent news, 2) **Practice** - common questions, technical concepts, mock interviews, 3) **Prepare questions** - thoughtful questions about role, team, culture, 4) **Logistics** - test tech for virtual, plan route for in-person, prepare materials. Mindset: 1) **Reframe** - it's a conversation, not interrogation; they want you to succeed, 2) **Focus on fit** - you're evaluating them too, 3) **Prepare success stories** - 5-7 STAR stories covering different skills, 4) **Positive self-talk** - replace 'I hope I don't mess up' with 'I'm prepared and qualified', 5) **Physical prep** - good sleep, exercise, professional outfit. Day-of: arrive early, deep breathing, power pose, smile." }
+                ]
+            },
+            {
+                id: "career-dev",
+                name: "Career Development",
+                icon: "📈",
+                prompts: [
+                    { id: "career-path", title: "Career Path Decision Helper", content: "Decide your next career move strategically. Current situation: [DESCRIBE]. Decision framework: 1) **Self-assessment** - skills, interests, values, strengths, 2) **Options** - list possible paths (new role, promotion, company switch, career change), 3) **Evaluation criteria** - growth opportunity, compensation, work-life balance, learning, impact, 4) **Pros/cons** - for each option, 5) **Timeline** - short-term vs long-term goals, 6) **Action steps** - what's needed for each path. Consider: market demand, skill gaps, financial implications, risk tolerance, personal circumstances. Provide: decision matrix, recommended path with justification, 3-month action plan." },
+                    { id: "skill-gap", title: "Skill Gap Analyzer", content: "Identify skills needed for target role. Target role: [JOB TITLE]. Current skills: [LIST]. Analysis: 1) **Required skills** - from job descriptions, industry standards, 2) **Your current skills** - technical and soft skills, 3) **Gap analysis** - what's missing, what needs strengthening, 4) **Prioritization** - must-have vs nice-to-have, 5) **Learning plan** - resources for each skill (courses, projects, books), timeline. Provide: skill matrix (have/don't have), learning roadmap with specific resources (Coursera, Udemy, documentation), project ideas to practice, estimated time to proficiency, how to demonstrate skills (portfolio, certifications)." },
+                    { id: "role-transition", title: "Role Transition Planner", content: "Plan safe transition to new role or career. From: [CURRENT ROLE]. To: [TARGET ROLE]. Transition strategy: 1) **Assess transferable skills** - what carries over, what's new, 2) **Build bridge** - side projects, freelance, open source in target area, 3) **Network** - connect with people in target role, informational interviews, 4) **Upskill** - courses, certifications, bootcamps if needed, 5) **Positioning** - update resume/LinkedIn emphasizing relevant experience, 6) **Financial planning** - savings buffer, potential pay cut, 7) **Timeline** - realistic transition period. Provide: 6-month transition plan, skill-building roadmap, networking strategy, resume positioning tips, risk mitigation." },
+                    { id: "long-term-career", title: "Long-Term Career Planner", content: "Create long-term career growth plan. Current: [ROLE/LEVEL]. Goal: [5-YEAR VISION]. Planning framework: **Year 1-2:** Focus on [SKILL DEVELOPMENT], achieve [MILESTONE], target role [TITLE]. **Year 3-4:** Transition to [NEXT LEVEL], lead [TYPE OF PROJECTS], expand to [NEW AREA]. **Year 5:** Reach [GOAL ROLE], earning [SALARY RANGE], working on [TYPE OF WORK]. For each phase: specific skills to develop, certifications to earn, types of projects to seek, networking goals, companies to target. Include: skill progression path (junior → mid → senior → lead → principal), compensation benchmarks, industry trends to watch, backup plans, work-life balance considerations." },
+                    { id: "salary-negotiation", title: "Salary Negotiation Assistant", content: "Negotiate salary confidently and professionally. Offer: [DETAILS]. Market rate: [RESEARCH]. Negotiation strategy: 1) **Research** - know your worth (Glassdoor, Levels.fyi, Blind), 2) **Total compensation** - base, bonus, equity, benefits, 3) **Anchor high** - start 10-20% above offer, 4) **Justify** - your value, market data, competing offers, 5) **Be flexible** - if base is fixed, negotiate bonus, equity, sign-on, remote days, 6) **Get it in writing** - all agreed terms. Script: 'Thank you for the offer. I'm excited about the role. Based on my research and experience, I was expecting closer to $X. Can we discuss?' If they can't budge: 'I understand the base is fixed. Can we discuss [equity/bonus/sign-on/vacation days]?' Stay professional, enthusiastic, collaborative. Know your walk-away number." },
+                    { id: "concept-simplifier", title: "Technical Concept Simplifier", content: "Explain complex technical concepts in simple terms for learning or teaching. Concept: [TECHNICAL TOPIC]. Simplification approach: 1) **Analogy** - relate to everyday experience, 2) **Core idea** - one-sentence essence, 3) **Why it matters** - practical use case, 4) **How it works** - step-by-step without jargon, 5) **Example** - concrete scenario. Example for 'API': Analogy: 'Like a waiter taking your order to the kitchen and bringing back food.' Core: 'APIs let different software talk to each other.' Why: 'Your weather app uses an API to get forecast data.' How: 'Your app sends request → API processes → sends back data.' Make accessible to non-technical audience while maintaining accuracy." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "content",
+        name: "Content Creation Prompts",
+        icon: "📱",
+        description: "Free AI prompts for content creators, influencers, and media production",
+        folders: [
+            {
+                id: "linkedin",
+                name: "LinkedIn & Professional",
+                icon: "💼",
+                prompts: [
+                    { id: "linkedin-post", title: "Professional LinkedIn Post Generator", content: "Write authority-building LinkedIn posts with strong hooks and engagement. Topic: [SUBJECT]. Post structure: **Hook** (first 2 lines, stop the scroll) - ask provocative question, share surprising stat, make bold statement. **Body** (value delivery) - share insight, tell story, provide framework, use line breaks for readability. **CTA** (call-to-action) - ask question, request opinion, encourage sharing. Format: Short paragraphs (2-3 lines max), use emojis sparingly, tag relevant people/companies. Tone: Professional but conversational, authentic, thought-leadership. Length: 150-300 words optimal. Example hook: 'I just turned down a $200K job offer. Here's why:' or '3 years ago I was fired. Today I run a 7-figure business. The difference?' Focus on: personal experience, actionable insights, storytelling, relatability." },
+                    { id: "learning-journey", title: "Learning Journey LinkedIn Post", content: "Share authentic learning journeys that build trust and engagement. Learning: [WHAT YOU LEARNED]. Structure: **What you learned** - specific skill/insight. **Why you learned it** - context, motivation, problem you faced. **How you learned it** - resources, process, challenges overcome. **Results** - what changed, how you applied it, impact. **Lesson** - key takeaway for audience. Tone: Humble, authentic, vulnerable about struggles. Example: 'I spent 6 months learning system design. Here's what I wish I knew on day 1: [insights].' Include: specific resources (books, courses), mistakes made, timeline, before/after comparison. Avoid: humble bragging, making it seem easy, gatekeeping knowledge." },
+                    { id: "opinion-post", title: "Opinion-Based Engagement Post", content: "Create opinionated posts that spark discussion and engagement. Opinion: [YOUR TAKE]. Framework: **State opinion clearly** - no hedging, be direct. **Provide reasoning** - why you believe this, evidence/experience. **Acknowledge counterargument** - show you've considered other views. **Invite discussion** - ask audience their perspective. Example: 'Unpopular opinion: Code reviews are overrated. Here's why: [reasons]. Change my mind.' or 'Hot take: You don't need a CS degree to be a great developer. Here's what matters more: [list].' Tone: Confident but not arrogant, open to debate, thought-provoking. Avoid: being inflammatory for clicks, dismissing other views, political/controversial topics unrelated to your niche." },
+                    { id: "brand-story", title: "Personal Brand Story Post", content: "Tell personal stories that strengthen your brand and connect with audience. Story: [EXPERIENCE]. Storytelling structure: **Setup** - where you were, the challenge/situation. **Conflict** - what went wrong, the struggle, the turning point. **Resolution** - how you overcame it, what you learned. **Lesson** - how audience can apply this. Make it: Specific (names, dates, details), emotional (how you felt), visual (paint the picture), relatable (common struggle). Example: 'My first code review was brutal. The senior dev left 47 comments. I almost quit. Here's what I learned about feedback: [insights].' Avoid: making yourself the hero, vague platitudes, stories without clear lesson." },
+                    { id: "brand-voice", title: "Personal Brand Voice Definer", content: "Define consistent personal brand voice for content. Current content: [EXAMPLES]. Brand voice framework: 1) **Core values** - what you stand for (authenticity, innovation, helping others), 2) **Expertise areas** - your niche topics, 3) **Tone** - professional/casual, serious/humorous, formal/conversational, 4) **Unique angle** - what makes your perspective different, 5) **Audience** - who you're speaking to, their level. Create: Voice guidelines (do's and don'ts), example phrases, topics to cover/avoid, posting frequency. Example: 'Voice: Conversational expert. I explain complex tech simply, share real failures, and always include actionable takeaways. I avoid: jargon, humble bragging, generic advice.' Consistency builds recognition and trust." }
+                ]
+            },
+            {
+                id: "social-media",
+                name: "Social Media Content",
+                icon: "📸",
+                prompts: [
+                    { id: "reel-hooks", title: "Instagram Reel Hook Generator", content: "Generate scroll-stopping hooks for short-form video content. Topic: [VIDEO TOPIC]. Hook types: **Question hooks** - 'Want to know the #1 mistake developers make?' **Stat hooks** - '87% of programmers don't know this trick' **Challenge hooks** - 'I tried coding for 100 days straight. Here's what happened' **Listicle hooks** - '5 VS Code extensions that will change your life' **Curiosity hooks** - 'This one line of code saved me 10 hours' **Controversial hooks** - 'Stop using React. Here's why.' First 3 seconds are critical. Use: text overlay, visual interest, promise of value. Test multiple hooks for same content." },
+                    { id: "video-script", title: "Short-Form Video Script Writer", content: "Write concise, engaging scripts for TikTok/Reels/Shorts. Topic: [SUBJECT]. Length: 30-60 seconds. Script structure: **Hook (0-3s)** - grab attention immediately. **Promise (3-5s)** - what they'll learn. **Content (5-50s)** - deliver value in quick tips/steps. **CTA (50-60s)** - like, follow, comment. Format: Short sentences, conversational tone, on-screen text for key points. Example: 'Hook: This debugging trick will save you hours. Promise: I'm going to show you 3 steps. Content: 1) Use console.log strategically 2) Check network tab 3) Reproduce consistently. CTA: Follow for more dev tips!' Keep: fast-paced, visual, one clear takeaway." },
+                    { id: "educational-reels", title: "Educational Reel Idea Generator", content: "Generate educational content ideas for short-form video. Niche: [YOUR EXPERTISE]. Idea formats: **Tutorial** - 'How to [SKILL] in 60 seconds' **Myth-busting** - 'Common misconception about [TOPIC]' **Before/After** - 'My code before vs after learning [CONCEPT]' **Tool showcase** - 'This [TOOL] feature you didn't know existed' **Mistake breakdown** - 'I made this error so you don't have to' **Quick tips** - '3 ways to improve [SKILL]' **Comparison** - '[OPTION A] vs [OPTION B] explained' Generate 10 ideas with hooks, key points, and visual suggestions. Focus on: actionable value, quick wins, relatable problems." },
+                    { id: "viral-caption", title: "Viral Caption Generator", content: "Write short, high-impact captions that drive engagement. Post: [DESCRIBE CONTENT]. Caption formula: **Hook line** - attention-grabbing first sentence. **Value** - 1-2 sentences of insight/story. **CTA** - clear action (save this, tag someone, share your experience). Length: 50-150 characters for maximum impact. Use: line breaks, emojis strategically, relevant hashtags (3-5). Examples: 'This changed everything for me. [insight]. Try it and let me know ↓' or 'Wish I knew this 3 years ago: [tip]. Save this for later 📌' Tone: Conversational, direct, valuable. Test: questions vs statements, different CTAs." },
+                    { id: "hook-variations", title: "Content Hook Variations", content: "Generate multiple hook variations for A/B testing. Content: [TOPIC/POST]. Create 10 different hooks: 1) Question format, 2) Stat/number format, 3) Controversial statement, 4) Personal story, 5) 'How to' format, 6) Mistake/lesson format, 7) Comparison format, 8) Time-based (X days/years ago), 9) Curiosity gap, 10) Direct benefit. Example for 'Learning Python' topic: 'Why is Python so popular?' / '73% of developers use Python' / 'Python is overrated. Here's why I still use it' / 'I learned Python in 30 days' / 'How to learn Python faster' / 'My biggest Python mistake' / 'Python vs JavaScript' / '3 years ago I couldn't code. Now I build AI apps with Python' / 'The Python feature nobody talks about' / 'Learn Python and 10x your career'. Test and measure engagement." },
+                    { id: "engagement-caption", title: "High-Engagement Caption Writer", content: "Write captions that drive comments, saves, and shares. Post: [CONTENT]. Engagement tactics: **Ask questions** - 'What's your experience with this?' **Request opinions** - 'Agree or disagree?' **Tag a friend** - 'Tag someone who needs this' **Fill in blank** - 'My favorite tool is ___' **Share experience** - 'Drop your story below' **Debate** - 'Hot take: [opinion]. Thoughts?' **Save prompt** - 'Save this for later when you need it' Structure: Hook + Value + Engagement CTA. Use: emojis for visual breaks, line breaks for readability, conversational tone. Example: 'Just discovered this VS Code shortcut 🤯 Saves me 2 hours every week. What's your favorite shortcut? Drop it below 👇' Algorithm favors: comments > saves > shares > likes." },
+                    { id: "cta-optimizer", title: "CTA Optimization Assistant", content: "Improve call-to-action effectiveness in content. Current CTA: [PASTE]. CTA types: **Engagement** - 'Comment below', 'Share your thoughts', 'Tag someone' **Save** - 'Save this for later', 'Bookmark for reference' **Follow** - 'Follow for more tips', 'Join 10K developers' **Click** - 'Link in bio', 'Swipe up', 'Check comments' **Share** - 'Send this to a friend', 'Share if you agree' Best practices: Be specific ('Comment your favorite tool' not 'Comment below'), create urgency ('Limited spots'), show benefit ('Follow for daily tips'), make it easy (one clear action). Test: question CTAs vs command CTAs, single vs multiple CTAs. Place: end of caption, mid-content, pinned comment." }
+                ]
+            },
+            {
+                id: "blogging",
+                name: "Blogging & Long-Form",
+                icon: "✍️",
+                prompts: [
+                    { id: "blog-outline", title: "Blog Outline Generator", content: "Create structured, comprehensive blog outlines. Topic: [BLOG TOPIC]. Target length: [WORDS]. Outline structure: **Title** - compelling, SEO-friendly, includes keyword. **Introduction** (10%) - hook, problem statement, what reader will learn, why it matters. **Main sections** (80%) - 3-5 major points, each with subsections, examples, data. **Conclusion** (10%) - summary, key takeaways, CTA. For each section: Main point, supporting details, examples/data, transition to next. Example: Title: 'Complete Guide to React Hooks'. Intro: Why hooks changed React. Section 1: useState basics. Section 2: useEffect explained. Section 3: Custom hooks. Section 4: Common mistakes. Conclusion: Next steps. Include: keyword placement, internal links, images/diagrams needed." },
+                    { id: "idea-to-blog", title: "Idea to Blog Converter", content: "Convert rough ideas into full blog posts. Idea: [ROUGH CONCEPT]. Expansion process: 1) **Clarify angle** - what's the unique perspective? 2) **Define audience** - who is this for, what's their level? 3) **Outline structure** - intro, main points, conclusion. 4) **Add depth** - examples, code snippets, visuals, data. 5) **Optimize for SEO** - keywords, meta description, headings. 6) **Write** - conversational tone, short paragraphs, scannable. Example: Idea: 'Async/await is confusing' → Blog: 'Async/Await Explained: A Complete Guide for Beginners' with sections on promises, syntax, error handling, real examples, common mistakes. Length: 1500-2500 words for depth. Include: actionable takeaways, code examples, further reading." },
+                    { id: "seo-blog", title: "SEO-Friendly Blog Structurer", content: "Optimize blog structure for search engines and readability. Blog draft: [PASTE]. SEO optimization: **Title tag** - 60 chars, include primary keyword. **Meta description** - 155 chars, compelling, keyword-rich. **URL slug** - short, descriptive, keyword. **Headings** - H1 (title), H2 (main sections), H3 (subsections), include keywords naturally. **Content** - keyword density 1-2%, LSI keywords, internal links, external authoritative links. **Images** - alt text with keywords, compressed, descriptive filenames. **Readability** - short paragraphs (3-4 lines), bullet points, bold key terms, transition words. **Schema markup** - article schema, FAQ schema if applicable. Tools: Yoast, Surfer SEO, Ahrefs. Target: featured snippet, 'People also ask'." },
+                    { id: "clarity-rewrite", title: "Rewrite Blog for Clarity", content: "Improve blog clarity and readability without losing depth. Original text: [PASTE]. Clarity improvements: 1) **Simplify sentences** - break long sentences, remove jargon or explain it, active voice. 2) **Improve structure** - logical flow, clear transitions, one idea per paragraph. 3) **Add examples** - concrete illustrations of abstract concepts. 4) **Visual hierarchy** - headings, bullet points, bold key terms. 5) **Remove fluff** - cut unnecessary words, get to point faster. Before: 'The utilization of asynchronous programming paradigms facilitates non-blocking operations.' After: 'Async programming lets your code run without waiting. Here's how it works: [example].' Readability score: aim for grade 8-10 (Hemingway App). Keep: technical accuracy, depth, personality." },
+                    { id: "content-editing", title: "Content Editing Assistant", content: "Edit content professionally for grammar, style, and impact. Content: [PASTE]. Editing checklist: **Grammar** - spelling, punctuation, subject-verb agreement. **Style** - consistent tense, voice, tone. **Clarity** - remove ambiguity, simplify complex sentences. **Conciseness** - eliminate redundancy, tighten prose. **Flow** - smooth transitions, logical progression. **Impact** - strong verbs, active voice, compelling examples. **Consistency** - terminology, formatting, capitalization. Provide: tracked changes, explanation of major edits, readability score, suggestions for improvement. Use: Grammarly, Hemingway, ProWritingAid. Focus on: maintaining author's voice while improving clarity and professionalism." }
+                ]
+            },
+            {
+                id: "repurposing",
+                name: "Content Repurposing",
+                icon: "♻️",
+                prompts: [
+                    { id: "blog-to-linkedin", title: "Blog to LinkedIn Converter", content: "Repurpose blog posts into engaging LinkedIn content. Blog: [PASTE/LINK]. Conversion strategy: **Extract key insight** - one main takeaway from blog. **Rewrite for LinkedIn** - conversational tone, shorter, personal angle. **Structure** - hook (2 lines), value (3-5 points), CTA. **Add context** - why this matters, your experience. Example: Blog: '5000-word guide to React hooks' → LinkedIn: 'I just spent 2 weeks mastering React hooks. Here are the 3 concepts that clicked for me: [list]. Full guide in comments.' Create: 3-5 LinkedIn posts from one blog, each highlighting different angle. Include: link to full blog (in comments to avoid algorithm penalty), relevant hashtags, tag mentioned tools/people." },
+                    { id: "video-to-text", title: "Video to Text Converter", content: "Convert video content into written posts and articles. Video: [LINK/TRANSCRIPT]. Conversion process: 1) **Transcribe** - use Otter.ai, Rev, or YouTube auto-captions. 2) **Clean up** - remove filler words, fix grammar, organize thoughts. 3) **Structure** - add headings, break into sections, bullet points. 4) **Enhance** - add context, examples, links that weren't in video. 5) **Optimize** - SEO keywords, meta description, images. Formats: Blog post (long-form), LinkedIn article, Twitter thread, Instagram carousel. Example: 30-min tutorial video → 2000-word blog post + 10-post Twitter thread + LinkedIn article. Benefits: reach different audiences, improve SEO, evergreen content." },
+                    { id: "long-to-shorts", title: "Long Content to Shorts Generator", content: "Break long-form content into bite-sized pieces for social media. Long content: [BLOG/VIDEO/PODCAST]. Micro-content strategy: **Identify quotable moments** - key insights, surprising stats, actionable tips. **Create formats** - Quote graphics, Carousel posts (Instagram/LinkedIn), Twitter threads, TikTok/Reels, Infographics. **Maintain context** - each piece should standalone but link back to full content. Example: 3000-word blog → 10 quote graphics, 1 carousel post (10 slides), 1 Twitter thread (8 tweets), 3 short videos. Tools: Canva for graphics, Kapwing for video clips. Schedule: drip content over weeks, test different formats, track engagement." },
+                    { id: "multi-platform", title: "Multi-Platform Content Adapter", content: "Adapt single piece of content for multiple platforms. Original content: [DESCRIBE]. Platform adaptations: **LinkedIn** - professional tone, 150-300 words, business value, document/carousel. **Twitter** - thread format, punchy, 280 chars per tweet, visuals. **Instagram** - visual-first, carousel or reel, short caption, hashtags. **TikTok/Reels** - video, 30-60s, hook in first 3s, trending audio. **Blog** - long-form, SEO-optimized, 1500+ words, detailed. **YouTube** - video tutorial, 10-15 min, chapters, description with timestamps. **Newsletter** - personal tone, story format, exclusive insights. Tailor: tone, length, format, CTA for each platform. Maintain: core message, brand voice." },
+                    { id: "content-calendar", title: "Content Calendar Planner", content: "Create structured content calendar for consistent posting. Goals: [OBJECTIVES]. Timeframe: [DURATION]. Calendar structure: **Frequency** - how often per platform (LinkedIn 3x/week, Twitter daily, etc.). **Content pillars** - 3-5 themes to rotate (tutorials, personal stories, industry news, tips, case studies). **Format mix** - text posts, videos, carousels, threads, blogs. **Planning** - batch create content, schedule in advance, leave room for trending topics. **Tracking** - engagement metrics, best performing content types, optimal posting times. Template: Week 1: Monday (LinkedIn tutorial), Tuesday (Twitter tips), Wednesday (Blog post), Thursday (Instagram reel), Friday (LinkedIn story). Tools: Notion, Trello, Buffer, Later. Review monthly: what worked, what didn't, adjust strategy." }
+                ]
+            },
+            {
+                id: "copywriting",
+                name: "Copywriting & Editing",
+                icon: "✏️",
+                prompts: [
+                    { id: "boring-copy", title: "Rewrite Boring Copy", content: "Transform dull copy into engaging, compelling content. Original: [PASTE BORING COPY]. Rewrite techniques: 1) **Stronger verbs** - replace weak verbs (is, has, does) with action verbs (transforms, accelerates, eliminates). 2) **Specific details** - replace vague terms with concrete numbers, examples. 3) **Active voice** - subject performs action. 4) **Sensory language** - help reader see, feel, experience. 5) **Cut fluff** - remove unnecessary words, get to point. Before: 'Our product is good and helps people do things better.' After: 'Cut your workflow time by 50% with automated task management that learns your patterns.' Show: benefit over feature, specificity over generality, action over description." },
+                    { id: "tone-adjustment", title: "Tone Adjustment Assistant", content: "Adjust content tone without changing core message. Content: [PASTE]. Target tone: [FORMAL/CASUAL/PROFESSIONAL/FRIENDLY/AUTHORITATIVE]. Tone elements: **Word choice** - formal (utilize, commence) vs casual (use, start). **Sentence length** - formal (longer, complex) vs casual (short, punchy). **Contractions** - casual uses them, formal avoids. **Personal pronouns** - casual (you, I, we) vs formal (one, the user). **Humor/emotion** - casual includes, formal minimizes. Examples: Formal: 'It is recommended that one utilize this methodology.' Casual: 'You should try this approach.' Professional-friendly: 'We recommend using this method.' Maintain: key information, accuracy, message. Adjust: vocabulary, sentence structure, personality." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "startup",
+        name: "Startup & Entrepreneurship Prompts",
+        icon: "🚀",
+        description: "Free AI prompts for startups, entrepreneurs, and business founders",
+        folders: [
+            {
+                id: "validation",
+                name: "Idea Validation",
+                icon: "✅",
+                prompts: [
+                    { id: "startup-validator", title: "Startup Idea Validator", content: "Validate startup idea for demand, feasibility, and risk. Idea: [DESCRIBE IDEA]. Validation framework: **1) Problem validation** - Is this a real, painful problem? Who has it? How do they solve it now? Will they pay for solution? **2) Market validation** - Market size (TAM/SAM/SOM), growth trends, competition analysis. **3) Solution validation** - Does your solution actually solve the problem? Is it 10x better than alternatives? **4) Founder-market fit** - Do you have domain expertise? Unique insights? Passion to persist? **5) Business model** - How will you make money? Unit economics, pricing strategy. **6) Risk assessment** - Technical risks, market risks, execution risks. Provide: validation score (1-10), key assumptions to test, recommended next steps (customer interviews, MVP, market research)." },
+                    { id: "market-demand", title: "Market Demand Analyzer", content: "Analyze whether a market is worth entering. Market: [DESCRIBE MARKET/NICHE]. Analysis framework: **1) Market size** - TAM (Total Addressable Market), SAM (Serviceable Available Market), SOM (Serviceable Obtainable Market). Use: industry reports, competitor revenue, Google Trends. **2) Growth rate** - Is market growing, stable, or declining? **3) Competition** - Who are the players? Market share distribution. Fragmented or dominated? **4) Customer pain** - How painful is the problem? Willingness to pay? **5) Barriers to entry** - Capital requirements, regulations, network effects, technology. **6) Trends** - Technology shifts, regulatory changes, consumer behavior. Verdict: Green light (large, growing, underserved), Yellow (proceed with caution), Red (avoid). Provide: data sources, key metrics, recommended positioning." },
+                    { id: "competitive-analysis", title: "Competitive Analysis Generator", content: "Analyze competitors and identify positioning opportunities. Product: [YOUR PRODUCT]. Competitors: [LIST COMPETITORS]. Analysis framework: **1) Competitor mapping** - For each competitor: target customer, key features, pricing, strengths, weaknesses. **2) Feature comparison matrix** - Your product vs competitors across key features. **3) Positioning** - How do they position themselves? What's their unique value prop? **4) Gaps** - What are they missing? Underserved segments? **5) Differentiation** - How can you be different (better features, lower price, better UX, niche focus)? **6) Threats** - What could they do to compete with you? Create: competitive matrix, positioning map, differentiation strategy. Avoid: competing on features alone, ignoring indirect competitors." },
+                    { id: "problem-solution-fit", title: "Problem-Solution Fit Checker", content: "Validate that your solution actually solves the problem. Problem: [DESCRIBE PROBLEM]. Solution: [YOUR SOLUTION]. Fit assessment: **1) Problem clarity** - Is the problem well-defined? Who experiences it? How often? **2) Current alternatives** - How do people solve this now? Why are alternatives insufficient? **3) Solution match** - Does your solution directly address the core problem? Or just symptoms? **4) User validation** - Have you talked to potential users? Do they agree this solves their problem? **5) Willingness to pay** - Would they pay for this? How much? **6) Adoption barriers** - What prevents them from using your solution? (learning curve, switching costs, integrations). Red flags: You're solving a problem you assume exists, solution is looking for a problem, users say 'nice to have' not 'must have'. Validation: 10+ customer interviews, prototype testing, pre-sales." },
+                    { id: "feasibility-check", title: "Idea Feasibility Checker", content: "Evaluate technical and business feasibility of idea. Idea: [DESCRIBE]. Feasibility dimensions: **Technical feasibility** - Can this be built with current technology? Do you have the skills? Time estimate? Technical risks? **Financial feasibility** - Development costs, operating costs, runway needed, path to profitability. **Market feasibility** - Is there demand? Can you reach customers? Distribution channels? **Legal/regulatory** - Any compliance requirements? IP considerations? **Resource feasibility** - Do you have the team, time, money? What's missing? **Timeline feasibility** - Can you build and launch before market shifts or you run out of money? Scoring: Rate each dimension 1-10. Overall feasibility = average. <6 = high risk, 6-8 = proceed with caution, >8 = feasible. Provide: risk mitigation strategies, resource requirements, go/no-go recommendation." }
+                ]
+            },
+            {
+                id: "mvp-product",
+                name: "MVP & Product Development",
+                icon: "🛠️",
+                prompts: [
+                    { id: "mvp-scope", title: "MVP Scope Definer", content: "Define minimum viable product scope - what to build first. Product vision: [FULL VISION]. MVP definition: **1) Core value prop** - What's the ONE problem you're solving? **2) Must-have features** - Minimum features to deliver core value (typically 3-5 features). **3) Nice-to-have** - Features to add later. **4) Out of scope** - Features to explicitly exclude from MVP. **5) Success metrics** - How will you know if MVP works? (user retention, engagement, conversions). **6) Timeline** - How long to build MVP? (aim for 4-12 weeks). Example: For a task management app, MVP = create tasks, mark complete, basic lists. NOT in MVP = collaboration, integrations, mobile app, AI features. Principle: Build minimum to test core hypothesis. You can always add more. You can't get time back." },
+                    { id: "feature-prioritization", title: "Feature Prioritization Matrix", content: "Prioritize features objectively using frameworks. Features to prioritize: [LIST FEATURES]. Prioritization methods: **1) RICE Score** - Reach (users affected) × Impact (1-3) × Confidence (%) / Effort (person-weeks). **2) MoSCoW** - Must have, Should have, Could have, Won't have. **3) Kano Model** - Basic (expected), Performance (more is better), Delight (unexpected wow). **4) Value vs Effort** - 2×2 matrix: High value + Low effort = Do first. High value + High effort = Plan carefully. Low value + Low effort = Maybe. Low value + High effort = Don't do. Create: Prioritized backlog, rationale for each decision, roadmap timeline. Consider: user impact, business value, technical dependencies, strategic importance. Review quarterly." },
+                    { id: "mvp-roadmap", title: "MVP Roadmap Creator", content: "Create realistic MVP delivery roadmap. MVP scope: [FEATURES]. Team: [SIZE/SKILLS]. Timeline: [TARGET LAUNCH]. Roadmap structure: **Phase 1: Foundation (Week 1-2)** - Setup (repo, CI/CD, design system), core architecture, database schema. **Phase 2: Core Features (Week 3-6)** - Build must-have features, basic UI, authentication. **Phase 3: Integration (Week 7-8)** - Connect features, end-to-end flows, error handling. **Phase 4: Polish (Week 9-10)** - UX improvements, performance optimization, bug fixes. **Phase 5: Launch Prep (Week 11-12)** - Testing, documentation, deployment, monitoring setup. Include: milestones, dependencies, risks, buffer time (20%). Format: Gantt chart, sprint planning, weekly goals. Review: weekly progress, adjust timeline as needed." },
+                    { id: "tech-feasibility", title: "Technical Feasibility Assessment", content: "Assess technical feasibility and choose tech stack. Product requirements: [DESCRIBE]. Assessment: **1) Technical challenges** - Identify hard problems (scale, real-time, AI/ML, security). **2) Tech stack options** - Evaluate frameworks, databases, infrastructure. **3) Scalability** - Can it handle growth? Bottlenecks? **4) Team expertise** - Does team know these technologies? Learning curve? **5) Development speed** - Time to MVP with each option? **6) Costs** - Infrastructure, licensing, third-party services. **7) Risks** - Technical debt, vendor lock-in, maintenance burden. Recommendation: Specific tech stack with justification. Example: 'React + Node.js + PostgreSQL + AWS because: team expertise, fast development, scalable, cost-effective for MVP.' Avoid: over-engineering, using new tech just to learn, ignoring team skills." },
+                    { id: "mvp-launch", title: "MVP Launch Checklist", content: "Prepare for successful MVP launch. MVP: [PRODUCT]. Launch checklist: **Pre-launch:** ✓ Core features working, ✓ Critical bugs fixed, ✓ User testing completed, ✓ Analytics setup (Mixpanel/Amplitude), ✓ Error tracking (Sentry), ✓ Landing page live, ✓ Onboarding flow tested, ✓ Support channel ready, ✓ Pricing decided, ✓ Legal (terms, privacy policy). **Launch day:** ✓ Deploy to production, ✓ Smoke tests, ✓ Announce on social media, ✓ Email waitlist, ✓ Post on Product Hunt/HackerNews, ✓ Monitor errors and performance. **Post-launch (Week 1):** ✓ Collect user feedback, ✓ Fix critical bugs, ✓ Monitor key metrics, ✓ User interviews, ✓ Iterate quickly. Success metrics: signups, activation rate, retention, feedback quality. Goal: Learn fast, iterate fast." }
+                ]
+            },
+            {
+                id: "user-research",
+                name: "User Research",
+                icon: "👥",
+                prompts: [
+                    { id: "user-persona", title: "User Persona Generator", content: "Create realistic, research-based user personas. Product: [YOUR PRODUCT]. Persona framework: **Demographics** - Age, location, job title, income, education. **Psychographics** - Goals, motivations, values, frustrations. **Behaviors** - How they currently solve the problem, tools they use, decision-making process. **Pain points** - Specific problems they face, impact on their work/life. **Needs** - What they need from a solution, must-haves vs nice-to-haves. **Quote** - Fictional quote capturing their perspective. Create: 2-4 personas (primary, secondary). Example: 'Sarah, 32, Product Manager. Goal: Ship features faster. Frustration: Too many meetings, unclear priorities. Needs: Simple prioritization framework, stakeholder alignment. Quote: I spend more time in meetings than building product.' Base on: real user interviews, surveys, data, not assumptions." },
+                    { id: "pain-points", title: "User Pain Point Analyzer", content: "Identify and prioritize real user pain points. Users: [TARGET USERS]. Research methods: **1) User interviews** - Ask about their workflow, challenges, frustrations. 'Tell me about the last time you [did task].' **2) Surveys** - Quantify pain points, frequency, severity. **3) Analytics** - Where do users drop off? What features are unused? **4) Support tickets** - Common complaints, feature requests. **5) Competitor reviews** - What do users complain about? Pain point framework: **Frequency** - How often does this happen? **Severity** - How painful is it? (1-10). **Workarounds** - How do they solve it now? **Willingness to pay** - Would they pay to solve this? Prioritize: High frequency + High severity + No good workaround = Top priority. Create: Pain point map, prioritized list, opportunity areas." },
+                    { id: "customer-journey", title: "Customer Journey Mapper", content: "Map user journey from discovery to retention. Product: [YOUR PRODUCT]. Journey stages: **1) Awareness** - How do they discover you? (search, referral, ads). Touchpoints: landing page, social media, content. **2) Consideration** - How do they evaluate you? Touchpoints: product page, pricing, testimonials, competitor comparison. **3) Acquisition** - How do they sign up? Touchpoints: signup flow, onboarding, first-time experience. **4) Activation** - When do they get value? Touchpoints: aha moment, core feature usage. **5) Retention** - Why do they come back? Touchpoints: email, notifications, new features. **6) Referral** - Why do they recommend you? Touchpoints: referral program, social sharing. For each stage: User actions, thoughts/emotions, pain points, opportunities. Identify: drop-off points, friction, moments of delight. Optimize: conversion at each stage." },
+                    { id: "user-interview-questions", title: "User Interview Question Generator", content: "Generate effective user interview questions. Research goal: [WHAT YOU WANT TO LEARN]. Question types: **Background** - 'Tell me about your role', 'Walk me through a typical day'. **Current behavior** - 'How do you currently [do task]?', 'What tools do you use?'. **Pain points** - 'What's frustrating about [process]?', 'What takes the most time?'. **Needs** - 'What would make this easier?', 'If you had a magic wand...'. **Past experiences** - 'Tell me about the last time you [did task]', 'What went wrong?'. **Solution validation** - 'How would you feel if you could [feature]?', 'Would you pay for this?'. Best practices: Open-ended questions, ask 'why' 5 times, listen more than talk, avoid leading questions, focus on past behavior not hypotheticals. Interview length: 30-45 minutes. Number: 10-15 interviews for patterns." },
+                    { id: "persona-validation", title: "Persona Validation Checklist", content: "Validate assumptions about your users with real data. Personas: [YOUR PERSONAS]. Validation methods: **1) Quantitative validation** - Survey 50+ users, analyze demographics, behaviors, tool usage. Do they match personas? **2) Qualitative validation** - Interview 10-15 users, ask about goals, pain points, workflows. Do quotes match persona quotes? **3) Behavioral validation** - Analyze product analytics, feature usage, user flows. Do behaviors match persona behaviors? **4) Segment analysis** - Can you identify distinct user segments in data? Do they align with personas? Red flags: Personas based on assumptions not research, too many personas (>5), personas that all look the same, no data to support. Update: Quarterly based on new research, user feedback, product analytics. Personas should evolve as you learn." }
+                ]
+            },
+            {
+                id: "fundraising",
+                name: "Fundraising & Pitch",
+                icon: "💰",
+                prompts: [
+                    { id: "pitch-deck", title: "Pitch Deck Improver", content: "Improve pitch deck for investor presentations. Current deck: [DESCRIBE/ATTACH]. Pitch deck structure (10-15 slides): **1) Cover** - Company name, tagline, your name. **2) Problem** - What problem are you solving? Make it relatable. **3) Solution** - Your product. Show, don't just tell. **4) Market opportunity** - TAM/SAM/SOM, market trends. **5) Product** - Demo or screenshots, key features. **6) Traction** - Users, revenue, growth rate, key metrics. **7) Business model** - How you make money, unit economics. **8) Competition** - Competitive landscape, your differentiation. **9) Go-to-market** - Customer acquisition strategy, channels. **10) Team** - Founders, key hires, advisors, why you're uniquely qualified. **11) Financials** - Revenue projections, burn rate, runway. **12) Ask** - How much you're raising, what you'll use it for. Design: Clean, visual, minimal text, consistent branding. Tell a story." },
+                    { id: "investor-storytelling", title: "Investor Storytelling Assistant", content: "Craft compelling narrative for investors. Company: [YOUR STARTUP]. Story structure: **1) The hook** - Start with surprising insight or personal story. 'Did you know [stat]?' or 'Three years ago, I experienced [problem]...' **2) The problem** - Paint vivid picture of the pain. Make it personal and relatable. **3) The aha moment** - When did you realize this was a big opportunity? **4) The solution** - Your unique insight. Why now? Why you? **5) The vision** - Where is this going? What's the big opportunity? **6) The proof** - Traction, validation, why it's working. **7) The ask** - What you need to get there. Storytelling principles: Concrete examples over abstract concepts, show don't tell, make it personal, create emotional connection, build tension and resolution. Practice: 2-minute elevator pitch, 10-minute meeting pitch, 30-minute deep dive." },
+                    { id: "problem-solution-narrative", title: "Problem-Solution Narrative Builder", content: "Clearly articulate problem and solution for investors. Problem: [DESCRIBE]. Solution: [YOUR PRODUCT]. Narrative framework: **Problem statement:** '[TARGET USER] struggles with [SPECIFIC PROBLEM] which causes [NEGATIVE IMPACT]. Current solutions [ALTERNATIVES] are insufficient because [WHY THEY FAIL]. This affects [MARKET SIZE] people/companies, costing them [TIME/MONEY].' **Solution statement:** '[YOUR PRODUCT] solves this by [HOW IT WORKS]. Unlike [ALTERNATIVES], we [UNIQUE APPROACH]. This enables users to [BENEFIT], saving them [QUANTIFIED VALUE].' **Proof:** 'We've validated this with [TRACTION/DATA]. Users tell us [QUOTE]. Our [METRIC] is growing [GROWTH RATE].' Make it: Specific (numbers, names), relatable (investors can understand the pain), credible (backed by data), compelling (big opportunity)." },
+                    { id: "market-sizing", title: "Market Sizing Explainer", content: "Explain TAM, SAM, and SOM clearly with defensible numbers. Product: [YOUR PRODUCT]. Market sizing: **TAM (Total Addressable Market)** - If you had 100% market share with no constraints. Calculation: Total potential users × Average revenue per user. Example: '500M small businesses globally × $1000/year = $500B TAM'. **SAM (Serviceable Available Market)** - Portion of TAM you can reach with your current product/business model. Example: 'English-speaking countries, B2B SaaS only = $50B SAM'. **SOM (Serviceable Obtainable Market)** - Realistic market share you can capture in 3-5 years. Example: 'Capturing 1% of SAM = $500M SOM'. Data sources: Industry reports (Gartner, Forrester), competitor revenue, census data, surveys. Bottom-up validation: 'We have 1000 customers paying $1000/year = $1M ARR. There are 50,000 similar companies = $50M realistic market.' Investors want: Large TAM (>$1B), growing market, bottom-up validation." },
+                    { id: "funding-readiness", title: "Funding Readiness Checker", content: "Assess if you're ready to raise funding. Stage: [PRE-SEED/SEED/SERIES A]. Readiness checklist: **Product** - ✓ MVP built and working, ✓ Users are using it, ✓ Core features validated. **Traction** - ✓ User growth, ✓ Revenue (if applicable), ✓ Engagement metrics, ✓ Testimonials/case studies. **Team** - ✓ Founders committed full-time, ✓ Complementary skills, ✓ Relevant experience, ✓ Advisors. **Market** - ✓ Large addressable market, ✓ Clear target customer, ✓ Competitive differentiation. **Financials** - ✓ Financial model, ✓ Unit economics, ✓ Use of funds plan, ✓ 18-month runway post-raise. **Materials** - ✓ Pitch deck, ✓ Executive summary, ✓ Financial projections, ✓ Data room. Red flags: No traction, unclear business model, team conflicts, no clear use of funds. Typical traction: Pre-seed (idea + prototype), Seed (10K+ users or $10K+ MRR), Series A ($100K+ MRR, clear PMF)." }
+                ]
+            },
+            {
+                id: "gtm",
+                name: "Go-To-Market",
+                icon: "📈",
+                prompts: [
+                    { id: "gtm-strategy", title: "Go-To-Market Strategy Builder", content: "Plan how to acquire first 100, 1000, 10000 customers. Product: [YOUR PRODUCT]. Target: [CUSTOMER SEGMENT]. GTM strategy: **1) Customer acquisition channels** - Where does your target customer hang out? (LinkedIn, Twitter, Reddit, communities, conferences). **2) Channel strategy** - First 100: Do things that don't scale (manual outreach, founder-led sales, content, communities). First 1000: Scale what worked (paid ads, partnerships, content marketing, SEO). First 10000: Optimize and diversify (multiple channels, automation, sales team). **3) Messaging** - What's your value prop? How do you explain it? **4) Pricing** - Freemium, free trial, or paid from day 1? **5) Onboarding** - How do you activate users? **6) Metrics** - CAC, LTV, conversion rates, retention. Example: B2B SaaS: First 100 via LinkedIn outreach + content. First 1000 via SEO + partnerships. First 10000 via paid ads + sales team." },
+                    { id: "user-acquisition", title: "User Acquisition Strategy Planner", content: "Plan systematic user acquisition across channels. Product: [DESCRIBE]. Budget: [AMOUNT]. Acquisition channels: **Organic** - SEO (blog content, keywords), Social media (LinkedIn, Twitter), Communities (Reddit, Discord, Slack groups), PR/Media, Referrals. **Paid** - Google Ads, Facebook/Instagram Ads, LinkedIn Ads, Sponsorships, Influencers. **Partnerships** - Integration partners, Affiliate programs, Co-marketing. **Sales** - Outbound (cold email, LinkedIn), Inbound (demos, trials). For each channel: Target audience, Expected CAC, Expected volume, Timeline to results, Resources needed. Start with: 2-3 channels, test, measure, double down on what works. Metrics: CAC, LTV, CAC payback period, channel ROI. Goal: CAC < LTV/3, multiple acquisition channels." },
+                    { id: "messaging-positioning", title: "Messaging & Positioning Assistant", content: "Define clear, compelling messaging and positioning. Product: [YOUR PRODUCT]. Positioning framework: **1) Target customer** - Who is this for? Be specific. **2) Problem** - What problem do they have? **3) Category** - What category do you compete in? (or create new category). **4) Unique value** - Why are you different/better? **5) Proof** - Why should they believe you? April Dunford framework: 'For [TARGET CUSTOMER] who [PROBLEM], [PRODUCT] is a [CATEGORY] that [UNIQUE VALUE]. Unlike [ALTERNATIVES], we [DIFFERENTIATION].' Example: 'For busy developers who struggle with API documentation, ReadMe is a documentation platform that keeps docs always up-to-date. Unlike static docs, we integrate with your codebase and auto-update.' Test: Does target customer immediately understand? Do they care? Is it differentiated? Avoid: jargon, being everything to everyone, feature lists without benefits." }
                 ]
             }
         ]

@@ -60,7 +60,7 @@ export default function Navbar() {
                         </svg>
                         <input
                             type="text"
-                            placeholder="Search prompts..."
+                            placeholder="Search free AI prompts..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             onFocus={() => searchQuery && setShowResults(true)}
