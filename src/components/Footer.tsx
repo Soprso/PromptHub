@@ -44,7 +44,7 @@ export default function Footer() {
                         maxWidth: "300px",
                         lineHeight: "1.5"
                     }}>
-                        A universal prompt library for creators
+                        The open prompt library for builders.
                     </p>
                 </div>
 

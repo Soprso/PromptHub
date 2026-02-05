@@ -10,9 +10,10 @@ export default function Home() {
                     fontWeight: 700,
                     marginBottom: "1rem",
                     color: "var(--text-primary)",
-                    letterSpacing: "-0.02em"
+                    letterSpacing: "-0.02em",
+                    lineHeight: "1.2"
                 }}>
-                    Discover Free AI Prompts for Every Task
+                    Internet's Best Collection of <span style={{ color: "var(--accent-color)" }}>Free AI </span> Prompts
                 </h1>
                 <p style={{
                     color: "var(--text-secondary)",
@@ -20,7 +21,7 @@ export default function Home() {
                     lineHeight: "1.75",
                     marginBottom: "2rem"
                 }}>
-                    Browse our comprehensive collection of free AI prompts for ChatGPT, Midjourney, DALL·E, and more. Perfect for image generation, content writing, coding, and creative projects—no signup required.
+                    Access 2,000+ curated prompts for coding, design, and content creation. Optimized for ChatGPT, Claude, and Midjourney. No signup required.
                 </p>
             </div>
 
@@ -37,7 +38,7 @@ export default function Home() {
                     marginBottom: "1.25rem",
                     color: "var(--text-primary)"
                 }}>
-                    How to Use Free AI Prompts
+                    Streamline Your Workflow
                 </h2>
                 <ul style={{
                     listStyle: "none",
@@ -45,24 +46,24 @@ export default function Home() {
                     margin: 0,
                     display: "flex",
                     flexDirection: "column",
-                    gap: "1rem"
+                    gap: "1.5rem"
                 }}>
                     <li style={{ display: "flex", alignItems: "start", gap: "0.875rem" }}>
                         <span style={{ color: "var(--accent-color)", marginTop: "0.25rem" }}><BookOpen size={20} /></span>
                         <span style={{ color: "var(--text-secondary)", lineHeight: "1.6" }}>
-                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Browse categories</strong> in the sidebar to explore different prompt types
+                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Explore Stacks</strong> — Navigate specialized categories for developers and designers
                         </span>
                     </li>
                     <li style={{ display: "flex", alignItems: "start", gap: "0.875rem" }}>
                         <span style={{ color: "var(--accent-color)", marginTop: "0.25rem" }}><Search size={20} /></span>
                         <span style={{ color: "var(--text-secondary)", lineHeight: "1.6" }}>
-                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Use the search bar</strong> to quickly find specific prompts
+                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Search Instantly</strong> — Find specific solutions in seconds without the fluff
                         </span>
                     </li>
                     <li style={{ display: "flex", alignItems: "start", gap: "0.875rem" }}>
                         <span style={{ color: "var(--accent-color)", marginTop: "0.25rem" }}><Copy size={20} /></span>
                         <span style={{ color: "var(--text-secondary)", lineHeight: "1.6" }}>
-                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Copy prompts</strong> with one click to use in your AI tools
+                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Copy & Ship</strong> — One-click copy formatted for immediate use
                         </span>
                     </li>
                 </ul>
