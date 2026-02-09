@@ -81,6 +81,12 @@
     border-radius: 4px;
     background: var(--bg-primary);
     color: var(--text-primary);
+    cursor: text;
+    transition: border-color 0.2s ease;
+}
+
+.builder-input:hover {
+    border-color: var(--border-hover);
 }
 
 .builder-input:focus {
