@@ -30,7 +30,7 @@ const templates: Template[] = [
     }
 ];
 
-// Preset suggestions for each variable
+// Preset options for each variable
 const presets: Record<string, string[]> = {
     // Image Generation
     style: ["cinematic", "photorealistic", "anime", "3D render", "studio photography", "minimalist", "watercolor illustration", "oil painting", "cyberpunk", "fantasy art", "vintage film", "pixel art", "isometric", "flat design", "hyperreal"],
@@ -38,6 +38,7 @@ const presets: Record<string, string[]> = {
     lighting: ["soft light", "golden hour", "studio lighting", "neon glow", "dramatic shadows", "rim light", "backlit", "natural daylight", "low key", "high key", "volumetric light", "moody dark"],
     mood: ["calm", "dreamy", "energetic", "mysterious", "dark", "romantic", "cozy", "epic", "playful", "minimal", "luxurious", "futuristic"],
     camera: ["35mm lens", "50mm lens", "85mm portrait lens", "wide angle", "telephoto", "DSLR", "mirrorless", "film camera", "polaroid", "fisheye", "cinema camera", "IMAX"],
+    subject: ["person", "landscape", "product", "animal", "building", "food", "nature", "abstract", "vehicle", "interior"],
 
     // Video Generation
     duration: ["15 second", "30 second", "1 minute", "2 minute", "5 minute", "short clip", "long form"],
@@ -47,13 +48,13 @@ const presets: Record<string, string[]> = {
     // Writing
     tone: ["professional", "casual", "friendly", "formal", "humorous", "persuasive", "informative", "inspirational", "conversational", "authoritative"],
     format: ["blog post", "article", "essay", "email", "social media post", "product description", "story", "script", "tutorial", "guide"],
-    topic: [],
+    topic: ["technology", "business", "health", "lifestyle", "education", "entertainment", "travel", "food", "fashion", "sports"],
     audience: ["general public", "professionals", "beginners", "experts", "students", "business owners", "developers", "marketers"],
     length: ["short (100-300 words)", "medium (300-700 words)", "long (700-1500 words)", "comprehensive (1500+ words)"],
 
     // Coding
     language: ["JavaScript", "TypeScript", "Python", "Java", "C++", "Go", "Rust", "PHP", "Ruby", "Swift", "Kotlin"],
-    task: [],
+    task: ["API endpoint", "data validation", "authentication", "database query", "file processing", "algorithm", "UI component", "utility function"],
     framework: ["React", "Vue", "Angular", "Next.js", "Express", "Django", "Flask", "Spring Boot", "Laravel", "Rails"],
     features: ["error handling", "TypeScript types", "unit tests", "comments", "async/await", "validation", "logging"]
 };
@@ -76,7 +77,11 @@ export default function PromptBuilder() {
     const generatedPrompt = useMemo(() => {
         let result = currentTemplate.prompt;
         extractedVariables.forEach(varName => {
-            const value = variables[varName] || `{${varName}}`;
+            let value = variables[varName] || `{${varName}}`;
+            // If custom is selected, use the custom value
+            if (value === 'custom') {
+                value = variables[`${varName}_custom`] || `{${varName}}`;
+            }
             result = result.replace(new RegExp(`\\{${varName}\\}`, 'g'), value);
         });
         return result;
@@ -132,30 +137,36 @@ export default function PromptBuilder() {
                         <label className="builder-label">Variables</label>
                         <div className="builder-inputs">
                             {extractedVariables.map(varName => {
-                                const hasPresets = presets[varName] && presets[varName].length > 0;
-                                const datalistId = `presets-${varName}`;
+                                const options = presets[varName] || [];
 
                                 return (
                                     <div key={varName} className="builder-input-group">
                                         <label htmlFor={`var-${varName}`} className="input-label">
                                             {varName.replace(/_/g, ' ')}
                                         </label>
-                                        <input
+                                        <select
                                             id={`var-${varName}`}
-                                            type="text"
                                             value={variables[varName] || ''}
                                             onChange={(e) => handleVariableChange(varName, e.target.value)}
-                                            placeholder={`Enter ${varName.replace(/_/g, ' ')}`}
-                                            className="builder-input"
-                                            list={hasPresets ? datalistId : undefined}
-                                            autoComplete="off"
-                                        />
-                                        {hasPresets && (
-                                            <datalist id={datalistId}>
-                                                {presets[varName].map(preset => (
-                                                    <option key={preset} value={preset} />
-                                                ))}
-                                            </datalist>
+                                            className="builder-select"
+                                        >
+                                            <option value="">Select {varName.replace(/_/g, ' ')}</option>
+                                            {options.map(option => (
+                                                <option key={option} value={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                            <option value="custom">✏️ Custom (type your own)</option>
+                                        </select>
+
+                                        {variables[varName] === 'custom' && (
+                                            <input
+                                                type="text"
+                                                placeholder={`Enter custom ${varName.replace(/_/g, ' ')}`}
+                                                className="builder-custom-input"
+                                                onChange={(e) => handleVariableChange(`${varName}_custom`, e.target.value)}
+                                                autoFocus
+                                            />
                                         )}
                                     </div>
                                 );
