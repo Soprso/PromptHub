@@ -53,7 +53,7 @@
 
 .builder-select:focus {
     outline: none;
-    border-color: var(--primary-color);
+    border-color: var(--accent-color);
 }
 
 .builder-inputs {
@@ -85,7 +85,7 @@
 
 .builder-input:focus {
     outline: none;
-    border-color: var(--primary-color);
+    border-color: var(--accent-color);
 }
 
 .builder-textarea {
@@ -102,7 +102,7 @@
 
 .builder-textarea:focus {
     outline: none;
-    border-color: var(--primary-color);
+    border-color: var(--accent-color);
 }
 
 .builder-actions {
@@ -122,12 +122,12 @@
 }
 
 .builder-button-primary {
-    background: var(--primary-color);
+    background: var(--accent-color);
     color: white;
 }
 
 .builder-button-primary:hover {
-    opacity: 0.9;
+    background: #2563eb;
 }
 
 .builder-button-secondary {
