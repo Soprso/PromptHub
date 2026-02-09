@@ -142,18 +142,68 @@
 
 @media (max-width: 640px) {
     .prompt-builder {
-        padding: 1.5rem 1rem;
+        padding: 1rem 0.75rem;
+    }
+
+    .builder-header {
+        margin-bottom: 1.5rem;
     }
 
     .builder-header h1 {
         font-size: 1.5rem;
     }
 
+    .builder-header p {
+        font-size: 0.875rem;
+    }
+
+    .builder-content {
+        gap: 1.25rem;
+    }
+
+    .builder-section {
+        gap: 0.5rem;
+    }
+
+    .builder-label {
+        font-size: 0.8125rem;
+    }
+
+    .builder-select,
+    .builder-input,
+    .builder-textarea {
+        font-size: 16px;
+        /* Prevents zoom on iOS */
+        padding: 0.75rem;
+    }
+
+    .builder-textarea {
+        min-height: 120px;
+    }
+
+    .input-label {
+        font-size: 0.8125rem;
+    }
+
     .builder-actions {
         flex-direction: column;
+        gap: 0.625rem;
     }
 
     .builder-button {
         width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 0.9375rem;
+    }
+}
+
+/* Tablet breakpoint */
+@media (max-width: 768px) and (min-width: 641px) {
+    .prompt-builder {
+        padding: 1.5rem 1rem;
+    }
+
+    .builder-header h1 {
+        font-size: 1.75rem;
     }
 }
