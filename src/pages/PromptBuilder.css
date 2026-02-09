@@ -1,0 +1,159 @@
+.prompt-builder {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.builder-header {
+    margin-bottom: 2rem;
+}
+
+.builder-header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.builder-header p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.builder-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.builder-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.builder-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.builder-select {
+    padding: 0.625rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.builder-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.builder-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.builder-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.input-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-transform: capitalize;
+}
+
+.builder-input {
+    padding: 0.625rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.builder-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.builder-textarea {
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 1.5;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    resize: vertical;
+}
+
+.builder-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.builder-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.builder-button {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.builder-button-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.builder-button-primary:hover {
+    opacity: 0.9;
+}
+
+.builder-button-secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.builder-button-secondary:hover {
+    background: var(--bg-secondary);
+}
+
+@media (max-width: 640px) {
+    .prompt-builder {
+        padding: 1.5rem 1rem;
+    }
+
+    .builder-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .builder-actions {
+        flex-direction: column;
+    }
+
+    .builder-button {
+        width: 100%;
+    }
+}

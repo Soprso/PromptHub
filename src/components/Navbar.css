@@ -189,6 +189,48 @@
     background-color: var(--bg-primary);
 }
 
+/* Builder Button */
+.builder-link {
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.builder-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.builder-button:hover {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+.builder-button:active {
+    transform: scale(0.98);
+}
+
+.builder-text {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .builder-text {
+        display: inline;
+    }
+}
+
 /* Theme Toggle */
 .theme-toggle {
     flex-shrink: 0;
