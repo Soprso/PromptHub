@@ -2,14 +2,14 @@ import type { PromptCategory } from "../types/prompt";
 
 export const promptCategories: PromptCategory[] = [
     {
-        id: "image",
+        id: "ai-image-generation",
         name: "AI Image Generation Prompts",
         icon: "🖼️",
         description: "Free AI image prompts for Midjourney, DALL·E, Stable Diffusion, and Leonardo AI",
         folders: [
             {
-                id: "portraits",
-                name: "Portrait Prompts",
+                id: "portrait-photography-prompts",
+                name: "AI Portrait Photography Prompts",
                 icon: "👤",
                 prompts: [
                     { id: "realistic-portrait", title: "Realistic Portrait", content: "Ultra-realistic portrait of a person, natural lighting, DSLR quality, sharp focus, detailed skin texture, professional photography" },
@@ -34,8 +34,8 @@ export const promptCategories: PromptCategory[] = [
                 ]
             },
             {
-                id: "character-sheet",
-                name: "Character Design Prompts",
+                id: "character-design-prompts",
+                name: "Character Design & Reference Sheets",
                 icon: "📋",
                 prompts: [
                     { id: "full-turnaround-sheet", title: "Full Character Turnaround Sheet", content: "Create a professional character reference sheet based strictly on the uploaded reference image. Use a clean, neutral plain background and present the sheet as a technical model turnaround while matching the exact visual style of the reference (same realism level, rendering approach, texture, color treatment, and overall aesthetic). Arrange the composition into two horizontal rows. Top row: four full-body standing views placed side-by-side in this order: front view, left profile view (facing left), right profile view (facing right), back view. Bottom row: three highly detailed close-up portraits aligned beneath the full-body row in this order: front portrait, left profile portrait (facing left), right profile portrait (facing right). Maintain perfect identity consistency across every panel. Keep the subject in a relaxed A-pose and with consistent scale and alignment between views, accurate anatomy, and clear silhouette; ensure even spacing and clean panel separation, with uniform framing and consistent head height across the full-body lineup and consistent facial scale across the portraits. Lighting should be consistent across all panels (same direction, intensity, and softness), with natural, controlled shadows that preserve detail without dramatic mood shifts. Output a crisp, print-ready reference sheet look, sharp details." },
@@ -49,8 +49,8 @@ export const promptCategories: PromptCategory[] = [
                 ]
             },
             {
-                id: "anime-to-real",
-                name: "Anime to Realistic Prompts",
+                id: "anime-realistic-conversion",
+                name: "Anime to Realistic AI Conversion",
                 icon: "✨",
                 prompts: [
                     { id: "anime-to-photorealistic", title: "Anime to Photorealistic Conversion", content: "Convert the uploaded anime character image into a photorealistic real-life person while preserving the character's core identity and distinctive features. Transform the stylized anime aesthetics into natural human features: replace large anime eyes with realistically proportioned human eyes that maintain the original eye color and expression, convert simplified anime nose into a natural human nose with proper bridge and nostril definition, transform anime mouth into realistic lips with natural texture and proportions, and replace flat anime skin with realistic human skin featuring natural pores, subtle imperfections, skin texture variation, and appropriate undertones matching the original character's skin tone. Maintain the character's hairstyle but render with realistic hair strands, natural hair texture, volume, and light interaction showing individual hairs and realistic flow. Preserve the character's facial structure, expression, and personality while adapting proportions to human anatomy. Convert clothing and accessories from anime style to photorealistic fabric with proper texture, wrinkles, and material properties. Use natural photographic lighting (soft daylight or studio lighting) that shows dimensional form and realistic shadows. Background should be photographically realistic or neutral. Output should look like a professional portrait photograph of a real person who embodies the anime character's appearance and essence. 8K photorealistic quality, DSLR camera aesthetic, natural color grading, lifelike skin rendering." },
@@ -64,8 +64,8 @@ export const promptCategories: PromptCategory[] = [
                 ]
             },
             {
-                id: "clothes",
-                name: "Fashion & Clothing Prompts",
+                id: "fashion-clothing-prompts",
+                name: "Fashion Design & Clothing Prompts",
                 icon: "👔",
                 prompts: [
                     { id: "mens-business-suit", title: "Men's Business Suit", content: "Professional men's business suit with tailored fit, charcoal gray or navy blue wool fabric, crisp white dress shirt underneath, silk tie with subtle pattern, polished leather oxford shoes, professional corporate aesthetic, sharp clean lines and precise tailoring, modern slim-fit or classic cut, professional fashion photography, studio lighting emphasizing fabric texture, confident business professional styling, high-quality menswear craftsmanship, suitable for boardroom or office, ultra-detailed fabric weave and stitching, 8K quality, executive presence" },
@@ -114,8 +114,8 @@ export const promptCategories: PromptCategory[] = [
                 ]
             },
             {
-                id: "items",
-                name: "Object & Item Prompts",
+                id: "product-photography-prompts",
+                name: "Product Photography & Object Prompts",
                 icon: "🎁",
                 prompts: [
                     { id: "luxury-watch", title: "Luxury Wristwatch", content: "Luxury Swiss mechanical wristwatch with intricate craftsmanship, polished stainless steel or 18k gold case, sapphire crystal glass with anti-reflective coating, visible automatic movement through exhibition caseback, detailed watch face with luminous hands and hour markers, leather or metal bracelet with deployment clasp, professional product photography on black or white background, studio lighting emphasizing metallic reflections and details, macro photography showing fine details and finishing, ultra-detailed texture of brushed and polished surfaces, luxury timepiece aesthetic, Swiss watchmaking precision, 8K quality, museum-quality craftsmanship" },
@@ -180,8 +180,8 @@ export const promptCategories: PromptCategory[] = [
                 ]
             },
             {
-                id: "dishes-cuisines",
-                name: "Food & Cuisine Prompts",
+                id: "food-photography-prompts",
+                name: "Food Photography & Culinary Prompts",
                 icon: "🍽️",
                 prompts: [
                     { id: "margherita-pizza", title: "Margherita Pizza", content: "Authentic Neapolitan margherita pizza with charred leopard-spotted crust, fresh mozzarella, San Marzano tomato sauce, fresh basil leaves, drizzle of olive oil, wood-fired oven baked, professional food photography, overhead or 45-degree angle, rustic wooden table, natural lighting, ultra-detailed cheese stretch and crust texture, Italian cuisine, 8K quality" },
@@ -3239,6 +3239,277 @@ export const promptCategories: PromptCategory[] = [
                     { id: "analytics-dashboard", title: "Analytics Dashboard Generator", content: "Generate analytics dashboard for business intelligence. Analytics type: [WEB/SALES/MARKETING/PRODUCT]. Data source: [DESCRIBE]. Generate: **1) Data collection** - Google Analytics API, database queries, event tracking, custom metrics, data warehousing (BigQuery, Snowflake). **2) Key metrics** - **Web**: Page views, sessions, bounce rate, conversion rate, user flow. **Sales**: Revenue, MRR, ARR, CAC, LTV, churn rate. **Marketing**: CTR, CPC, ROAS, lead generation. **Product**: DAU, MAU, retention, feature usage. **3) Dashboard sections** - Overview (key metrics), traffic sources, user demographics, conversion funnel, revenue analysis, cohort analysis, custom reports. **4) Visualizations** - Line charts (trends), bar charts (comparisons), pie charts (distribution), funnel charts, cohort tables, heatmaps, geographic maps. **5) Filtering** - Date range, segment filters (country, device, channel), comparison periods (vs last month, vs last year), saved filters. **6) Real-time analytics** - Live visitor count, real-time events, active users, recent conversions, live feed. **7) Custom events** - Event tracking, custom dimensions, user properties, event parameters, conversion goals. **8) Reports** - Automated reports, scheduled email reports, PDF export, custom report builder, saved reports. **9) Tech stack** - **Frontend**: React/Vue with Chart.js/D3.js. **Backend**: Node.js/Python for API. **Database**: PostgreSQL, ClickHouse for analytics. **Analytics**: Google Analytics, Mixpanel, Amplitude. **10) Features** - User segmentation, A/B test results, attribution modeling, predictive analytics, anomaly detection, alerts. Provide: Complete analytics dashboard, data pipeline, visualization components, report templates, deployment guide. Production analytics platform." },
                     { id: "excel-automation", title: "Excel/Sheets Automation Scripts", content: "Generate Excel/Google Sheets automation scripts. Task: [DESCRIBE AUTOMATION]. Tool: [EXCEL VBA/PYTHON OPENPYXL/GOOGLE APPS SCRIPT]. Generate: **1) Common automations** - Data import/export, report generation, data cleaning, formula automation, chart creation, pivot tables, email reports. **2) Excel VBA** - Macros, subroutines, worksheet manipulation, range operations, loops, conditional logic, user forms, error handling. **3) Python (openpyxl/xlsxwriter)** - Read Excel files, write data, formatting (fonts, colors, borders), formulas, charts, multiple sheets, data validation. **4) Google Apps Script** - Spreadsheet service, read/write data, formatting, formulas, charts, triggers (onOpen, onEdit, time-based), Gmail integration, custom menus. **5) Data operations** - Filter data, sort data, remove duplicates, find and replace, data validation, conditional formatting, merge cells. **6) Formulas** - VLOOKUP, INDEX-MATCH, SUMIF, COUNTIF, array formulas, dynamic arrays, custom functions (UDFs). **7) Reporting** - Generate reports from data, create summary sheets, dashboard creation, automated charts, data consolidation from multiple sheets. **8) Integration** - Import from database, export to database, API data import, email automation, file operations, web scraping to sheets. **9) Scheduling** - Time-based triggers, email on schedule, auto-refresh data, periodic backups, scheduled reports. **10) Error handling** - Try-catch, validation, user prompts, error logging, rollback on error. Provide: Complete automation script, usage instructions, setup guide, example data, documentation. Production Excel/Sheets automation." },
                     { id: "file-converter", title: "PDF/CSV/Excel Converter Tools", content: "Build file format conversion tools. Conversion: [SPECIFY FORMATS]. Features: [BATCH/MERGE/SPLIT/etc]. Generate: **1) Supported conversions** - PDF to Word/Excel/Images, Excel to CSV/JSON/PDF, CSV to Excel/JSON, Word to PDF, Images to PDF, JSON to CSV/Excel. **2) PDF operations** - Extract text, extract tables, extract images, merge PDFs, split PDF, compress PDF, add watermark, encrypt/decrypt. **3) Excel/CSV operations** - Convert between formats, merge multiple files, split by criteria, filter rows, transform data, change encoding. **4) Conversion libraries** - **PDF**: PyPDF2, pdfplumber, pdf2image, ReportLab. **Excel**: openpyxl, pandas, xlrd. **CSV**: pandas, csv module. **Images**: Pillow, img2pdf. **5) Batch processing** - Process multiple files, recursive folder processing, file filtering (by name, date, size), parallel processing, progress tracking. **6) Data preservation** - Maintain formatting, preserve formulas, keep images, retain metadata, handle special characters, encoding detection. **7) Advanced features** - OCR for scanned PDFs (Tesseract), table detection in PDFs, smart column detection in CSV, data type inference, merge strategies. **8) CLI interface** - Command-line arguments, input/output paths, conversion options, verbose mode, dry-run, help text. **9) GUI (optional)** - File selection dialog, drag-and-drop, conversion options, progress bar, preview, batch queue. **10) Error handling** - Invalid files, corrupted data, encoding errors, missing dependencies, user-friendly errors, partial success handling. Provide: Complete converter tool, CLI interface, batch processing, usage examples, installation guide. Production file converter." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "business-strategy-prompts",
+        name: "Business Strategy & Pricing Prompts",
+        icon: "💼",
+        description: "Professional business strategy, pricing models, and analysis prompts",
+        folders: [
+            {
+                id: "pricing-strategy-models",
+                name: "Pricing Strategy & Models",
+                icon: "💰",
+                prompts: [
+                    { id: "b2b-marketplace-pricing", title: "B2B Marketplace Pricing", content: "Develop a comprehensive pricing strategy for a B2B marketplace connecting [suppliers] and [buyers]. Analyze different revenue models (commission, subscription, listing fees, lead fees) and recommend the optimal mix for early-stage growth versus long-term profitability. Address dynamic pricing mechanisms, tiered service levels for power users, and strategies to prevent platform leakage (disintermediation)." },
+                    { id: "industry-saas-pricing", title: "Industry-Specific SaaS Pricing", content: "Create a tailored pricing model for a SaaS platform serving the [specific industry, e.g., construction, healthcare] sector. Consider industry-specific budget cycles, procurement processes, and key value metrics (e.g., number of projects, patient volume). Propose three pricing tiers (Starter, Professional, Enterprise) with feature differentiators that align with customer growth stages in this specific vertical." },
+                    { id: "ecommerce-pricing", title: "E-commerce Dynamic Pricing", content: "Design a dynamic pricing algorithm framwork for an e-commerce store selling [product category]. Outline variables to consider (competitor prices, demand fluctuations, inventory levels, time of day, customer segment). Propose rules for automated price adjustments to maximize margins without eroding brand trust. Include strategies for psychological pricing and promotional discounting." },
+                    { id: "subscription-saas-pricing", title: "Subscription-Based SaaS Pricing", content: "Structure a subscription pricing model for a [product type] SaaS tool. Define value metrics (per user, per seat, usage-based, flat rate) and justify the choice based on customer value alignment. Create detailed descriptions for 'Freemium', 'Pro', and 'Business' plans, highlighting the features that drive upgrades/upsells at each level. Include a strategy for annual vs. monthly billing incentives." },
+                    { id: "enterprise-saas-pricing", title: "Enterprise SaaS Pricing", content: "Formulate an enterprise pricing strategy for large organizations using [software type]. Focus on custom quoting, volume discounts, SLA (Service Level Agreement) premiums, and dedicated support costs. Structure a 'Call for Pricing' tier that accounts for complex implementations, security compliance needs (SSO, SOC2), and account management. detailed negotiation levers for sales teams." },
+                    { id: "pricing-analysis", title: "Comprehensive Pricing Analysis", content: "Conduct a pricing audit for [company/product]. Analyze current pricing against top 3 competitors. Identify gaps in value capture (underpricing) or barriers to entry (overpricing). Evaluate the effectiveness of current packaging and bundling. Recommend specific price point adjustments and A/B testing experiments to optimize conversion rates and average revenue per user (ARPU)." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "email-communication-prompts",
+        name: "Email Marketing & Communication Scripts",
+        icon: "📧",
+        description: "Templates for professional emails, responses, and customer communication",
+        folders: [
+            {
+                id: "cold-email-responses",
+                name: "Cold Email & Response Templates",
+                icon: "reply",
+                prompts: [
+                    { id: "client-response", title: "Professional Client Response", content: "Draft a polite and professional email response to a client who is asking for [specific request/feature] that is currently out of scope or delayed. Acknowledge their request, explain the situation clearly without being defensive, propose a reasonable alternative or timeline, and maintain a positive, helpful tone. Ensure the email preserves the relationship while setting firm boundaries." },
+                    { id: "negotiation-email", title: "Negotiation Counter-Offer", content: "Write a negotiation email responding to a salary offer or contract proposal of [amount]. Express gratitude for the offer, clearly state your counter-proposal of [amount/terms], and justify it with 3 key value points or market data. Maintain a collaborative and professional tone that invites further discussion rather than issuing an ultimatum." },
+                    { id: "cold-outreach", title: "Cold Outreach Email", content: "Compose a cold email to a potential [client/partner] at [company]. The goal is to [specific goal: schedule a call, get feedback, introduce product]. Use a catchy but professional subject line. Keep the body concise (under 150 words), focusing on their pain points and your unique value proposition. End with a clear, low-friction call strictly to action (CTA)." }
+                ]
+            },
+            {
+                id: "customer-support-scripts",
+                name: "Customer Support & Service Scripts",
+                icon: "🎧",
+                prompts: [
+                    { id: "angry-customer", title: "Response to Angry Customer", content: "Write an empathetic response to a customer who is angry about [issue: delayed shipping, bug, billing error]. Follow the HEARD framework (Hear, Empathize, Apologize, Resolve, Diagnose). Acknowledge their frustration legitimately, apologize for the specific inconvenience, explain the immediate solution you are providing, and offer a gesture of goodwill (refund, credit, discount) to restore trust." },
+                    { id: "feature-request", title: "Feature Request Response", content: "Draft a response to a user requesting a feature that is [not on roadmap / planned for later]. Thank them for the feedback, explain why it's not currently prioritized (focusing on current goals), and if possible, offer a workaround. Tag them as a 'beta tester' for future updates to make them feel valued." }
+                ]
+            },
+            {
+                id: "social-media-chat",
+                name: "Social Media Chat & DM Scripts",
+                icon: "💬",
+                prompts: [
+                    { id: "chatbot-flow", title: "Chatbot Conversation Flow", content: "Design a conversation script for a customer support chatbot handling [inquiry type: refund returns, tracking]. Map out specific user inputs and bot responses. Include branches for 'Order not found', 'Eligible for return', and 'Escalate to human agent'. Ensure the bot's tone is helpful, concise, and on-brand." },
+                    { id: "social-reply", title: "Social Media Comment Reply", content: "Write a short, engaging reply to a [positive/negative] comment on a social media post about [topic]. For positive: show appreciation and encourage further engagement. For negative: address the concern publicly and professionally, then move the conversation to DM for resolution." }
+                ]
+            },
+            {
+                id: "internal-communication-docs",
+                name: "Internal Communications & Documentation",
+                icon: "📝",
+                prompts: [
+                    { id: "faq-generation", title: "FAQ Generator", content: "Generate a list of 10 Frequently Asked Questions (FAQs) and answers for [product/service]. Cover topics like pricing, refund policy, core features, troubleshooting, and account management. Write in a clear, user-friendly 'How-to' style." },
+                    { id: "proposal-writing", title: "Project Proposal", content: "Draft a comprehensive project proposal for [project name]. Include sections: Executive Summary, Problem Statement, Proposed Solution (Scope of Work), Timeline/Milestones, Budget/Pricing, and Terms & Conditions. The tone should be persuasive and professional." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "marketing-growth-prompts",
+        name: "Marketing Strategy & Growth Hacking",
+        icon: "📈",
+        description: "Strategies for content, ads, social media, and detailed analytics",
+        folders: [
+            {
+                id: "content-marketing-strategy",
+                name: "Content Marketing Strategy",
+                icon: "✍️",
+                prompts: [
+                    { id: "blog-post-outline", title: "SEO Blog Post Outline", content: "Create a detailed SEO-optimized blog post outline for the keyword '[keyword]'. dedicated to [target audience]. Include H1, H2, and H3 headings. Suggest bullet points for each section. Recommend internal linking opportunities and a meta description promoting high CTR." },
+                    { id: "social-calendar", title: "Social Media Content Calendar", content: "Develop a 1-week social media content calendar for [brand/niche]. Platforms: [LinkedIn, Twitter, Instagram]. For each day, specify: Post Topic, Format (Video/Image/Text), Main Hook, Caption Draft, and Relevant Hashtags. Balance promotional, educational, and entertaining content." },
+                    { id: "copywriting-frameworks", title: "Copywriting (AIDA/PAS)", content: "Write three variations of ad copy for [product] using different copywriting frameworks: 1. AIDA (Attention, Interest, Desire, Action), 2. PAS (Problem, Agitation, Solution), 3. BAB (Before, After, Bridge). Highlight the unique selling points effectively in each." }
+                ]
+            },
+            {
+                id: "advertising-copy-ads",
+                name: "Advertising Copy & Ad Creatives",
+                icon: "📢",
+                prompts: [
+                    { id: "fb-ad-creative", title: "Facebook Ad Creative Brief", content: "Write a creative brief for a Facebook/Instagram ad campaign promoting [product]. Define: Target Audience, Campaign Objective, Visual Style (Video/Image suggestions), Primary Text, Headline and CTA. Include ideas for 3 distinct hooks to test (e.g., social proof, problem/solution, fear of missing out)." },
+                    { id: "video-script-promo", title: "Promotional Video Script", content: "Write a 60-second script for a promotional video for [product/service]. Structure: 0-5s Hook (grab attention), 5-20s Problem Agitation, 20-40s Solution/Demo, 40-50s Social Proof/Benefits, 50-60s Strong Call to Action. Include visual cues and voiceover text." }
+                ]
+            },
+            {
+                id: "growth-marketing-analytics",
+                name: "Growth Marketing & Analytics",
+                icon: "📊",
+                prompts: [
+                    { id: "campaign-analysis", title: "Campaign Performance Analysis", content: "Analyze the provided campaign data [insert data or metrics]. detailed breakdown of CPA, ROAS, CTR, and Conversion Rate. Identify underperforming ad sets and winning creatives. Provide 3 actionable recommendations to optimize the budget for the next phase." },
+                    { id: "lead-scoring", title: "Lead Qualification Framework", content: "Design a lead scoring model for [business type]. Define explicit criteria (job title, company size, budget) and implicit criteria (website visits, content downloads, email opens). Assign point values to each to categorize leads into Hot (Sales Ready), Warm (Nurture), and Cold." },
+                    { id: "customer-segmentation", title: "Customer Segmentation Strategy", content: "Develop a customer segmentation strategy for [business]. Identify 3-4 key personas based on demographics, psychographics, and behavioral data. For each segment, propose a tailored marketing message and preferred channel of communication." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "market-research-analysis",
+        name: "Market Research & Strategic Analysis",
+        icon: "🧠",
+        description: "Market research, user experience studies, and data analysis guides",
+        folders: [
+            {
+                id: "market-trend-analysis",
+                name: "Market Trend Analysis & Research",
+                icon: "🌐",
+                prompts: [
+                    { id: "market-research-education", title: "EdTech Market Analysis", content: "Conduct a market research analysis on the current state of the EdTech industry. Identify key trends (e.g., AI tutors, micro-learning), major competitors, and underserved market segments. Analyze the impact of remote learning shifts. Provide data-backed predictions for growth in the next 3 years." },
+                    { id: "market-research-healthcare", title: "Healthcare/MedTech Analysis", content: "Analyze the [HealthTech/Telemedicine] market landscape. Focus on regulatory challenges, adoption barriers for patients/doctors, and emerging technologies (IoT, AI diagnostics). SWOT analysis of entering this market with a new [product idea]." },
+                    { id: "market-research-saas", title: "SaaS Vertical Analysis", content: "Research the competitive landscape for [specific SaaS niche, e.g., Project Management Tools]. Map out the 'Red Ocean' (saturated features) and 'Blue Ocean' (innovation opportunities). Analyze pricing strategies and feature sets of top 5 competitors to identify a unique value proposition." },
+                    { id: "market-research-finance", title: "FinTech Market Review", content: "Evaluate the current trends in [FinTech sector, e.g., DeFi, Neobanks, Personal Finance]. deep dive into user trust factors, security regulations, and demographic adoption rates. Identify opportunities for a product focused on [specific financial goal]." }
+                ]
+            },
+            {
+                id: "user-experience-research",
+                name: "User Experience (UX) Research",
+                icon: "👤",
+                prompts: [
+                    { id: "usability-study-plan", title: "Usability Study Plan", content: "Create a plan for a moderated usability study of [feature/website]. Define research questions, participant recruitment criteria, and task scenarios. Draft a script for the moderator including pre-test interview questions and post-task usability ratings (SEQ/SUS)." },
+                    { id: "user-persona", title: "User Persona Creation", content: "Develop 2 detailed user personas for [app/service]. Include: Demographics, Bio, Goals/Motivations, Frustrations/Pain Points, Tech Savviness, and Brands they trust. Use these to justify design decisions for [specific feature]." }
+                ]
+            },
+            {
+                id: "data-analysis-reporting",
+                name: "Data Analysis & Reporting",
+                icon: "📉",
+                prompts: [
+                    { id: "data-analysis-report", title: "Data Analysis Report", content: "Structure a professional data analysis report based on [dataset description]. Sections: Executive Summary, Methodology, Key Findings (with visualization suggestions), insights interpretation, and Strategic Recommendations. Ensure the tone is objective and data-driven." },
+                    { id: "competitor-report", title: "Competitor Analysis Report", content: "Write a comprehensive competitor analysis report comparing [My Brand] vs [Competitor A] and [Competitor B]. Compare: Product Features, UX/UI, Pricing, Marketing Strategy, and Customer Sentiment (reviews). Conclude with a 'gap analysis' of opportunities." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "ecommerce-product-prompts",
+        name: "E-commerce & Product Management",
+        icon: "🛍️",
+        description: "Product descriptions, personalization, and website optimization",
+        folders: [
+            {
+                id: "product-descriptions-copy",
+                name: "Product Descriptions & Copywriting",
+                icon: "🏷️",
+                prompts: [
+                    { id: "product-description", title: "SEO Product Description", content: "Write a persuasive, SEO-friendly product description for [product name]. Highlight key features (Material, Size, Tech specs) and translate them into benefits (Why it matters). Use sensory words to help the customer visualize using it. Include a bulleted list for readability and target keywords: [list keywords]." },
+                    { id: "product-categorization", title: "Catalog Categorization", content: "Propose a logical category taxonomy for an e-commerce store selling [niche]. Structure high-level categories (L1), sub-categories (L2), and filters (L3 attributes like size, color, brand). Ensure the structure is intuitive for user navigation and SEO-friendly." }
+                ]
+            },
+            {
+                id: "customer-personalization",
+                name: "Customer Personalization Strategies",
+                icon: "🎯",
+                prompts: [
+                    { id: "recommendation-logic", title: "Recommendation Engine Logic", content: "Design the logic for product recommendations on a [fashion/electronics] e-commerce site. Define rules for: 'Frequently Bought Together' (cross-sell), 'You May Also Like' (upsell/alternative), and 'Recently Viewed'. base logic on user behavior, purchase history, and product attributes." },
+                    { id: "personalized-offers", title: "Personalized Offer Strategy", content: "Create a strategy for dynamic personalized offers. Example: 'If user abandons cart > send 10% off email'; 'If user buys running shoes > show ad for running socks'. Map out 5 key user triggers and the corresponding personalized incentive to maximize conversion." }
+                ]
+            },
+            {
+                id: "conversion-rate-optimization",
+                name: "Conversion Rate Optimization (CRO)",
+                icon: "⚡",
+                prompts: [
+                    { id: "landing-page-audit", title: "Landing Page CRO Audit", content: "Critique the provided landing page [link/description] for Conversion Rate Optimization. Analyze: Headline clarity, Hero image relevance, Trust signals, Form friction, and Call-to-Action visibility. Propose 3 specific A/B tests to improve the conversion rate." },
+                    { id: "checkout-flow", title: "Checkout Flow Optimization", content: "Map out an ideal friction-free checkout process for mobile users. Address: Guest checkout, auto-fill address, payment options (Apple Pay/PayPal), progress indicators, and trust badges. Identify common drop-off points and how to fix them." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "software-engineering-prompts",
+        name: "Software Engineering & DevOps",
+        icon: "👩‍💻",
+        description: "Code reviews, documentation, testing, and dev workflows",
+        folders: [
+            {
+                id: "code-review-standards",
+                name: "Code Quality & Review Standards",
+                icon: "✅",
+                prompts: [
+                    { id: "code-review", title: "Code Review Assistant", content: "Review the following code snippet [paste code] for: 1. Potential bugs or edge cases, 2. Performance inefficiencies (time/space complexity), 3. Readability and adherence to best practices (e.g., DRY, SOLID). Suggest refactored code with comments explaining the improvements." },
+                    { id: "generate-docs", title: "Documentation Generator", content: "Write comprehensive documentation for the function/class [paste code]. Include: Description, Parameters (inputs), Return values, Exception/Error handling, and a practical Usage Example. Format in [JSDoc/Python Docstring/Markdown]." }
+                ]
+            },
+            {
+                id: "devops-deployment-ci-cd",
+                name: "DevOps, Deployment & CI/CD",
+                icon: "🚀",
+                prompts: [
+                    { id: "ci-cd-pipeline", title: "CI/CD Pipeline Strategy", content: "Design a CI/CD pipeline workflow for a [Node.js/Python/Go] application context. Stages: Linting, Unit Testing, Build/Containerization (Docker), Integration Testing, Staging Deployment, and Production Release. Suggest tools (GitHub Actions, Jenkins) and release strategies (Blue-Green, Canary)." },
+                    { id: "bug-tracking", title: "Bug Report Template", content: "Create a standardized Bug Report template for the QA team. Fields: Issue Title, Environment (OS, Browser, Version), Steps to Reproduce (numbered list), Expected Result, Actual Result, Severity/Priority, and Attachments (Screenshots/Logs). Ensure it provides all info needed for devs to fix it." }
+                ]
+            },
+            {
+                id: "qa-testing-automation",
+                name: "QA Testing & Automation",
+                icon: "🐞",
+                prompts: [
+                    { id: "unit-test-gen", title: "Unit Test Generator", content: "Write unit tests for the following code [paste code] using [Jest/PyTest/Mocha]. Cover: Happy path (valid inputs), Edge cases (empty, null, limits), and Error handling. Ensure high code coverage and clear test descriptions." },
+                    { id: "test-case-generation", title: "Manual Test Case Generation", content: "Generate a list of manual test cases for the [Login/Signup/Checkout] feature. For each case: Test Scenario, Pre-conditions, Test Steps, Test Data, and Expected Result. Include positive flows (successful login) and negative flows (invalid password, locked account)." }
+                ]
+            },
+            {
+                id: "blockchain-smart-contracts",
+                name: "Blockchain & Smart Contracts",
+                icon: "⛓️",
+                prompts: [
+                    { id: "solidity-contract", title: "Smart Contract Logic", content: "Draft a Solidity smart contract for a [use case: Crowdfunding, Voting, Token]. Include: State variables, Events, Modifiers (e.g., onlyOwner), and core Functions. Add comments explaining security considerations (reentrancy guard, access control)." },
+                    { id: "contract-audit", title: "Smart Contract Audit Check", content: "Perform a security audit checklist on [code snippet]. Check for: Reentrancy attacks, Integer overflow/underflow, Access control flaws, Gas optimization issues, and Logic errors. detailed recommendations for fixing vulnerabilities." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "creative-design-prompts",
+        name: "Creative Design & UI/UX",
+        icon: "🎨",
+        description: "Concept art, UI/UX prototyping, and creative ideation",
+        folders: [
+            {
+                id: "concept-art-illustration",
+                name: "Concept Art & Illustration",
+                icon: "🖌️",
+                prompts: [
+                    { id: "concept-env", title: "Environment Concept Art", content: "Generate a detailed prompt for an environment concept artist. Setting: [Cyberpunk City / Fantasy Forest]. focal point: [Specific building/tree]. Mood: [Eerie/Hopeful]. Lighting: [Neon/Moonlight]. Style: [Digital Painting, Unreal Engine 5 render]. Include details on textures, atmosphere, and perspective." },
+                    { id: "concept-ideation", title: "Creative Ideation Session", content: "Brainstorm 5 unique concept ideas for a [Topic: Mobile Game, Logo, Packaging]. For each idea: Title, Visual Description, Core Theme/Vibe, and Target Audience appeal. Ensure the ideas vary in style (e.g., Minimalist vs. Complex, Retro vs. Modern)." }
+                ]
+            },
+            {
+                id: "ui-ux-prototyping",
+                name: "user Interface (UI) & UX Prototyping",
+                icon: "📱",
+                prompts: [
+                    { id: "ui-prototype", title: "UI Prototype Description", content: "Describe the high-fidelity UI layout for a [Mobile App Screen: Dashboard/Profile]. Header: [elements]. Main Content Area: [widgets/cards]. Navigation: [tab bar items]. Visual Style: [Glassmorphism/Material Design]. Color Palette: [Colors]. helping a designer visualize the screen before opening Figma." },
+                    { id: "interaction-design", title: "Micro-interaction specs", content: "Define the micro-interactions for a [Button/Card/Loader]. State: Default, Hover, Active, Loading, Disabled. Describe the animation properties (duration, easing curve, scale/opacity changes) to guide the developer in CSS/Motion implementation." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "education-course-prompts",
+        name: "Education & Community Management",
+        icon: "🎓",
+        description: "Course planning, community management, and onboarding",
+        folders: [
+            {
+                id: "course-curriculum-design",
+                name: "Course Curriculum Design & Planning",
+                icon: "📚",
+                prompts: [
+                    { id: "syllabus-gen", title: "Course Scheduling & Syllabus", content: "Develop a 6-week course syllabus for [Topic: Intro to Python / Digital Marketing]. Week-by-week breakdown: Learning Objective, Key Topics, Practical Exercises/Assignments, and Resources. Ensure a logical progression from beginner to intermediate concepts." },
+                    { id: "lesson-plan", title: "Detailed Lesson Plan", content: "Create a 60-minute lesson plan for [Specific Topic]. Sections: Learning Goals, Warm-up Activity (5 min), Core Instruction (20 min), Guided Practice (15 min), Independent Activity (15 min), and Wrap-up/Assessment. Include discussion questions." }
+                ]
+            },
+            {
+                id: "community-engagement-strategy",
+                name: "Community Engagement Strategy",
+                icon: "🤝",
+                prompts: [
+                    { id: "community-engagement", title: "Community Engagement Plan", content: "Draft a plan to increase engagement in a [Slack/Discord/Facebook] community. Ideas: Weekly rituals (e.g., Show & Tell Fridays), AMAs with experts, Contests/Challenges, and Recognition (Member of the Month). Define metrics to measure success (active users, comments per post)." },
+                    { id: "onboarding-flow", title: "Customer Onboarding Sequence", content: "Design an onboarding email/message sequence for new community members. Day 1: Welcome & Mission. Day 3: 'How to get started' / Tour. Day 7: 'Introduce yourself' prompt. Day 14: Value-add resource. Goal is to turn new signups into active contributors." }
                 ]
             }
         ]

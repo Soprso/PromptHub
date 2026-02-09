@@ -6,202 +6,207 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image</loc>
+    <loc>https://promptshub.shop/builder</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/portraits</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/character-sheet</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/portrait-photography-prompts</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/anime-to-real</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/character-design-prompts</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/clothes</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/anime-realistic-conversion</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/items</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/fashion-clothing-prompts</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/dishes-cuisines</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/product-photography-prompts</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/photography-styles</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/food-photography-prompts</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/ai-art-styles</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/photography-styles</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/landscapes</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/ai-art-styles</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/urban-cityscapes</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/landscapes</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/camera-settings</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/urban-cityscapes</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/studio-lighting</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/camera-settings</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/realistic-humans</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/studio-lighting</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/fantasy-scifi</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/realistic-humans</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/anime-popular</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/fantasy-scifi</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/anime-generator</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/anime-popular</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/mythical-creatures</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/anime-generator</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/vehicles</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/mythical-creatures</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/houses</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/vehicles</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/art-mediums</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/houses</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/ai-enhancement</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/art-mediums</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/vector-flat-design</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/ai-enhancement</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/logo-branding</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/vector-flat-design</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/marketing-advertising</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/logo-branding</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/food-beverage-photo</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/marketing-advertising</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/fashion-beauty</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/food-beverage-photo</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/home-living</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/fashion-beauty</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/travel-events</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/home-living</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/cartoon-stylized</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/travel-events</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/game-characters</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/cartoon-stylized</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/avatar-profile</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/game-characters</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/retro-vintage</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/avatar-profile</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/modern-aesthetics</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/retro-vintage</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/soft-natural</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/modern-aesthetics</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/bold-artistic</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/soft-natural</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/digital-creative</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/bold-artistic</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/specialty-creative</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/digital-creative</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/3d-specialty</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/specialty-creative</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/image/technical-utility</loc>
+    <loc>https://promptshub.shop/category/ai-image-generation/3d-specialty</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/ai-image-generation/technical-utility</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -736,27 +741,32 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer/resume</loc>
+    <loc>https://promptshub.shop/category/career</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer/hr-interview</loc>
+    <loc>https://promptshub.shop/category/career/resume</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer/tech-interview</loc>
+    <loc>https://promptshub.shop/category/career/hr-interview</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer/mock-interview</loc>
+    <loc>https://promptshub.shop/category/career/tech-interview</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/developer/career-dev</loc>
+    <loc>https://promptshub.shop/category/career/mock-interview</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/career/career-dev</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -852,6 +862,156 @@
   </url>
   <url>
     <loc>https://promptshub.shop/category/developer-tools/specialized-builders</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/business-strategy-prompts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/business-strategy-prompts/pricing-strategy-models</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/email-communication-prompts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/email-communication-prompts/cold-email-responses</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/email-communication-prompts/customer-support-scripts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/email-communication-prompts/social-media-chat</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/email-communication-prompts/internal-communication-docs</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/marketing-growth-prompts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/marketing-growth-prompts/content-marketing-strategy</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/marketing-growth-prompts/advertising-copy-ads</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/marketing-growth-prompts/growth-marketing-analytics</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/market-research-analysis</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/market-research-analysis/market-trend-analysis</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/market-research-analysis/user-experience-research</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/market-research-analysis/data-analysis-reporting</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/ecommerce-product-prompts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/ecommerce-product-prompts/product-descriptions-copy</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/ecommerce-product-prompts/customer-personalization</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/ecommerce-product-prompts/conversion-rate-optimization</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/software-engineering-prompts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/software-engineering-prompts/code-review-standards</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/software-engineering-prompts/devops-deployment-ci-cd</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/software-engineering-prompts/qa-testing-automation</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/software-engineering-prompts/blockchain-smart-contracts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/creative-design-prompts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/creative-design-prompts/concept-art-illustration</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/creative-design-prompts/ui-ux-prototyping</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/education-course-prompts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/education-course-prompts/course-curriculum-design</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/education-course-prompts/community-engagement-strategy</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

@@ -5,17 +5,17 @@ import {
     Sliders, PenTool, Code2, BookOpen, Briefcase, Heart, Coffee,
     Globe, FlaskConical, LayoutGrid, Terminal, Cpu, Database,
     Smartphone, Search, ChevronRight, ChevronDown, Copy, Check,
-    Menu, X, Home
+    Menu, X, Home, TrendingUp, ShoppingCart
 } from "lucide-react";
 import React from "react";
 
 // Map for category IDs
 export const categoryIcons: Record<string, React.ElementType> = {
-    "image": Image,
+    "ai-image-generation": Image,
     "writing": PenTool,
     "coding": Code2,
-    "design": Layout,
-    "education": BookOpen,
+    "creative-design-prompts": Layout,
+    "education-course-prompts": BookOpen,
     "career": Briefcase,
     "health": Heart,
     "daily": Coffee,
@@ -23,13 +23,19 @@ export const categoryIcons: Record<string, React.ElementType> = {
     "science": FlaskConical,
     "games": Gamepad2,
     "philosophy": Lightbulb,
-    "practical": Sliders
+    "practical": Sliders,
+    "business-strategy-prompts": Briefcase,
+    "email-communication-prompts": FileText,
+    "marketing-growth-prompts": TrendingUp,
+    "market-research-analysis": Search,
+    "ecommerce-product-prompts": ShoppingCart,
+    "software-engineering-prompts": Code2
 };
 
 // Map for folder IDs - fallback to generic icons if not found
 export const folderIcons: Record<string, React.ElementType> = {
     // Image Generation
-    "portraits": UserRound,
+    "portrait-photography-prompts": UserRound,
     "photography-styles": Camera,
     "ai-art-styles": Palette,
     "landscapes": MountainSnow,
@@ -62,7 +68,36 @@ export const folderIcons: Record<string, React.ElementType> = {
     "python-scripting": Terminal,
     "database-sql": Database,
     "mobile-dev": Smartphone,
-    "algorithms": Cpu
+    "algorithms": Cpu,
+
+    // New/Renamed Folders
+    "character-design-prompts": Ghost,
+    "anime-realistic-conversion": ScanFace,
+    "fashion-clothing-prompts": Sliders,
+    "product-photography-prompts": Sliders,
+    "food-photography-prompts": Coffee,
+    "pricing-strategy-models": Briefcase,
+    "cold-email-responses": FileText,
+    "customer-support-scripts": Users,
+    "social-media-chat": Users,
+    "internal-communication-docs": FileText,
+    "content-marketing-strategy": PenTool,
+    "advertising-copy-ads": Lightbulb,
+    "growth-marketing-analytics": TrendingUp,
+    "market-trend-analysis": Globe,
+    "user-experience-research": Users,
+    "data-analysis-reporting": Database,
+    "product-descriptions-copy": FileText,
+    "customer-personalization": Users,
+    "conversion-rate-optimization": TrendingUp,
+    "code-review-standards": Check,
+    "devops-deployment-ci-cd": Terminal,
+    "qa-testing-automation": Code2,
+    "blockchain-smart-contracts": Code2,
+    "concept-art-illustration": Palette,
+    "ui-ux-prototyping": Layout,
+    "course-curriculum-design": BookOpen,
+    "community-engagement-strategy": Users
 };
 
 // Helper to get icon

@@ -3,4 +3,4 @@ Allow: /
 
 Sitemap: https://promptshub.shop/sitemap.xml
 
-Sitemap: https://promptshub.shop/sitemap.xml
+
