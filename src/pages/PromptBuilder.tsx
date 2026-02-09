@@ -115,7 +115,7 @@ export default function PromptBuilder() {
 
             <div className="builder-content">
                 <div className="builder-section">
-                    <label htmlFor="template-select" className="builder-label">
+                    <label htmlFor="template-select" className="builder-label" data-tooltip="Choose the type of AI content you want to create">
                         Select Template
                     </label>
                     <select
@@ -141,7 +141,11 @@ export default function PromptBuilder() {
 
                                 return (
                                     <div key={varName} className="builder-input-group">
-                                        <label htmlFor={`var-${varName}`} className="input-label">
+                                        <label
+                                            htmlFor={`var-${varName}`}
+                                            className="input-label"
+                                            data-tooltip={`Enter value for ${varName.replace(/_/g, ' ')}`}
+                                        >
                                             {varName.replace(/_/g, ' ')}
                                         </label>
                                         <select
@@ -189,10 +193,18 @@ export default function PromptBuilder() {
                 </div>
 
                 <div className="builder-actions">
-                    <button onClick={handleCopy} className="builder-button builder-button-secondary">
+                    <button
+                        onClick={handleCopy}
+                        className="builder-button builder-button-secondary"
+                        data-tooltip="Copy result to clipboard"
+                    >
                         {copied ? 'Copied!' : 'Copy to Clipboard'}
                     </button>
-                    <button onClick={handleReset} className="builder-button builder-button-secondary">
+                    <button
+                        onClick={handleReset}
+                        className="builder-button builder-button-secondary"
+                        data-tooltip="Clear all fields"
+                    >
                         Reset
                     </button>
                 </div>
