@@ -136,7 +136,7 @@ export default function PromptBuilder() {
                 </div>
 
                 <div className="builder-actions">
-                    <button onClick={handleCopy} className="builder-button builder-button-primary">
+                    <button onClick={handleCopy} className="builder-button builder-button-secondary">
                         {copied ? 'Copied!' : 'Copy to Clipboard'}
                     </button>
                     <button onClick={handleReset} className="builder-button builder-button-secondary">
