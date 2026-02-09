@@ -251,6 +251,26 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://promptshub.shop/category/video-generation/nature-wildlife</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/video-generation/sports-action</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/video-generation/social-media-content</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/video-generation/educational-explainer</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://promptshub.shop/category/writing</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
