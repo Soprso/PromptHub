@@ -156,7 +156,7 @@ export default function PromptBuilder() {
                                                     {option}
                                                 </option>
                                             ))}
-                                            <option value="custom">✏️ Custom (type your own)</option>
+                                            <option value="custom">📝 Custom</option>
                                         </select>
 
                                         {variables[varName] === 'custom' && (
