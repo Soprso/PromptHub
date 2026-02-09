@@ -84,7 +84,7 @@ export default function Home() {
                     gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
                     gap: "1rem"
                 }}>
-                    <Link to="/category/image" style={{ textDecoration: "none" }}>
+                    <Link to="/category/ai-image-generation" style={{ textDecoration: "none" }}>
                         <div style={{
                             padding: "1.25rem",
                             border: "1px solid var(--border-color)",
