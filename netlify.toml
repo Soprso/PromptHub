@@ -2,8 +2,8 @@
 # Documentation: https://docs.netlify.com/configure-builds/file-based-configuration/
 
 [build]
-  # Build command with legacy peer deps for React 19 compatibility
-  command = "npm install --legacy-peer-deps && npm run build"
+  # Build command (.npmrc handles legacy-peer-deps)
+  command = "npm run build"
   
   # Directory with the build output
   publish = "dist"
