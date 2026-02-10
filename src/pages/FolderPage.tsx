@@ -100,16 +100,35 @@ export default function FolderPage() {
                             alignItems: "flex-start",
                             marginBottom: "1rem",
                         }}>
-                            <h2 style={{
-                                margin: 0,
-                                fontSize: "1.25rem",
-                                fontWeight: 600,
-                                color: "var(--text-primary)",
-                                letterSpacing: "-0.01em"
-                            }}>
-                                {prompt.title}
-                            </h2>
-                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+                                <h2 style={{
+                                    margin: 0,
+                                    fontSize: "1.25rem",
+                                    fontWeight: 600,
+                                    color: "var(--text-primary)",
+                                    letterSpacing: "-0.01em"
+                                }}>
+                                    {prompt.title}
+                                </h2>
+                                {prompt.tags && prompt.tags.length > 0 && (
+                                    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                                        {prompt.tags.map((tag, i) => (
+                                            <span key={i} style={{
+                                                fontSize: "0.75rem",
+                                                padding: "0.125rem 0.5rem",
+                                                borderRadius: "12px",
+                                                backgroundColor: "var(--bg-tertiary, #f3f4f6)",
+                                                color: "var(--text-secondary)",
+                                                border: "1px solid var(--border-color)",
+                                                fontWeight: 500
+                                            }}>
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", alignSelf: "flex-start" }}>
                                 <LikeButton promptSlug={prompt.id} />
                                 <button
                                     onClick={() => handleCopy(prompt.id, prompt.content)}
@@ -170,6 +189,6 @@ export default function FolderPage() {
                     </article>
                 ))}
             </div>
-        </div>
+        </div >
     );
 }

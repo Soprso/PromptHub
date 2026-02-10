@@ -7,6 +7,7 @@ export interface SeoPageData {
     prompts: {
         title: string;
         content: string;
+        tags?: string[];
     }[];
     cta: string;
 }
@@ -22,7 +23,8 @@ export const seoPages: SeoPageData[] = [
             // --- Frameworks ---
             {
                 title: "The CO-STAR Framework",
-                content: "Context: [Insert Context]\nObjective: [Insert Goal]\nStyle: [Insert Style]\nTone: [Insert Tone]\nAudience: [Insert Audience]\nResponse: [Insert Format]"
+                content: "Context: [Insert Context]\nObjective: [Insert Goal]\nStyle: [Insert Style]\nTone: [Insert Tone]\nAudience: [Insert Audience]\nResponse: [Insert Format]",
+                tags: ["Framework", "Structure", "Popular"]
             },
             {
                 title: "The CARE Framework",
@@ -34,7 +36,8 @@ export const seoPages: SeoPageData[] = [
             },
             {
                 title: "Chain of Thought Prompting",
-                content: "I want you to solve this problem step-by-step. For each step, explain your reasoning before moving to the next one. Finally, provide the conclusion based on the steps above."
+                content: "I want you to solve this problem step-by-step. For each step, explain your reasoning before moving to the next one. Finally, provide the conclusion based on the steps above.",
+                tags: ["Reasoning", "Logic", "Advanced"]
             },
             // --- Role-Playing ---
             {
@@ -158,7 +161,8 @@ export const seoPages: SeoPageData[] = [
             // --- Blog Writing ---
             {
                 title: "Blog Post Outline Generator",
-                content: "Create a comprehensive outline for a blog post titled \"[Title]\". Include H2 and H3 headings, bullet points for key arguments under each section, and a suggestion for a compelling introduction and conclusion."
+                content: "Create a comprehensive outline for a blog post titled \"[Title]\". Include H2 and H3 headings, bullet points for key arguments under each section, and a suggestion for a compelling introduction and conclusion.",
+                tags: ["Blogging", "Structure", "SEO"]
             },
             {
                 title: "SEO-Optimized Blog Post Writer",
