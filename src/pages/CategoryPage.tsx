@@ -1,4 +1,5 @@
 import { useParams, Link, Navigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { promptCategories } from "../data/prompts";
 import { getCategoryIcon, getFolderIcon } from "../utils/iconMap";
 import { ChevronRight } from "lucide-react";
@@ -14,8 +15,21 @@ export default function CategoryPage() {
 
     const CategoryIcon = getCategoryIcon(category.id);
 
+    // Construct SEO-friendly title and description
+    const pageTitle = `${category.name} – Free AI Prompts | PromptHub`;
+    const pageDescription = category.description || `Browse ${category.folders.length}+ ${category.name.toLowerCase()} for ChatGPT, Claude, and other AI tools. Free, no signup required.`;
+    const pageUrl = `https://promptshub.shop/category/${categoryId}`;
+
     return (
         <div>
+            <Helmet>
+                <title>{pageTitle}</title>
+                <meta name="description" content={pageDescription} />
+                <meta property="og:title" content={pageTitle} />
+                <meta property="og:description" content={pageDescription} />
+                <meta property="og:url" content={pageUrl} />
+                <link rel="canonical" href={pageUrl} />
+            </Helmet>
             {/* Breadcrumbs */}
             <nav style={{
                 marginBottom: "2rem",

@@ -1,9 +1,19 @@
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Copy, BookOpen, Search, Palette, PenTool, Code2 } from "lucide-react";
 
 export default function Home() {
     return (
         <div>
+            <Helmet>
+                <title>Free AI Prompts Library – ChatGPT, Midjourney, DALL·E & More | PromptHub</title>
+                <meta name="description" content="Browse 2,070+ free AI prompts for ChatGPT, Midjourney, DALL·E, Claude and more. Copy ready-to-use prompts for art, coding, writing, marketing and design instantly. No login required." />
+                <meta property="og:title" content="PromptHub – 2,070+ Free AI Prompts" />
+                <meta property="og:description" content="Free copy-paste AI prompts for ChatGPT, Midjourney & DALL·E. No signup. Just use." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://promptshub.shop" />
+                <link rel="canonical" href="https://promptshub.shop" />
+            </Helmet>
             <div style={{ marginBottom: "2.5rem", maxWidth: "800px" }}>
                 <h1 style={{
                     fontSize: "2.5rem",

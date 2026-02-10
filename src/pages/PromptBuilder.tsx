@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import "./PromptBuilder.css";
 
 interface Template {
@@ -108,6 +109,14 @@ export default function PromptBuilder() {
 
     return (
         <div className="prompt-builder">
+            <Helmet>
+                <title>AI Prompt Builder – Create Custom Prompts | PromptHub</title>
+                <meta name="description" content="Build custom AI prompts with our interactive prompt builder. Create tailored prompts for ChatGPT, Midjourney, DALL·E with dynamic templates for image generation, video, writing, and coding." />
+                <meta property="og:title" content="AI Prompt Builder – Create Custom Prompts" />
+                <meta property="og:description" content="Interactive tool to build custom AI prompts for any use case. Free, no signup required." />
+                <meta property="og:url" content="https://promptshub.shop/builder" />
+                <link rel="canonical" content="https://promptshub.shop/builder" />
+            </Helmet>
             <div className="builder-header">
                 <h1>Prompt Builder</h1>
                 <p>Build custom AI prompts with dynamic templates</p>
