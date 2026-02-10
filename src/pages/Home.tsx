@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Copy, BookOpen, Search, Palette, PenTool, Code2 } from "lucide-react";
+import { Copy, BookOpen, Search, Palette, PenTool, Code2, Sparkles, ChevronRight } from "lucide-react";
+import { seoPages } from "../data/seo-pages";
 
 export default function Home() {
     return (
@@ -77,6 +78,80 @@ export default function Home() {
                         </span>
                     </li>
                 </ul>
+            </div>
+
+            <div style={{ marginBottom: "3rem" }}>
+                <h2 style={{
+                    fontSize: "1.5rem",
+                    fontWeight: 600,
+                    marginBottom: "1.5rem",
+                    color: "var(--text-primary)",
+                    letterSpacing: "-0.01em",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem"
+                }}>
+                    <Sparkles size={24} style={{ color: "var(--accent-color)" }} />
+                    Featured Guides
+                </h2>
+                <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                    gap: "1rem"
+                }}>
+                    {seoPages.map((page) => (
+                        <Link key={page.slug} to={`/${page.slug}`} style={{ textDecoration: "none" }}>
+                            <div style={{
+                                padding: "1.5rem",
+                                border: "1px solid var(--border-color)",
+                                borderRadius: "8px",
+                                backgroundColor: "var(--bg-secondary)",
+                                transition: "all 0.2s ease",
+                                height: "100%",
+                                cursor: "pointer",
+                                display: "flex",
+                                flexDirection: "column"
+                            }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.borderColor = "var(--accent-color)";
+                                    e.currentTarget.style.transform = "translateY(-2px)";
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.borderColor = "var(--border-color)";
+                                    e.currentTarget.style.transform = "translateY(0)";
+                                }}
+                            >
+                                <div style={{
+                                    fontWeight: 600,
+                                    color: "var(--text-primary)",
+                                    marginBottom: "0.5rem",
+                                    fontSize: "1.125rem"
+                                }}>
+                                    {page.title}
+                                </div>
+                                <div style={{
+                                    fontSize: "0.875rem",
+                                    color: "var(--text-secondary)",
+                                    lineHeight: "1.6",
+                                    flex: 1
+                                }}>
+                                    {page.metaDescription}
+                                </div>
+                                <div style={{
+                                    marginTop: "1rem",
+                                    fontSize: "0.875rem",
+                                    color: "var(--accent-color)",
+                                    fontWeight: 500,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.25rem"
+                                }}>
+                                    Read Guide <ChevronRight size={14} />
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
             </div>
 
             <div>

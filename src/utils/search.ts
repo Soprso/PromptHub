@@ -1,11 +1,14 @@
 import { promptCategories } from "../data/prompts";
-import type { Prompt, PromptFolder, PromptCategory } from "../types/prompt";
+import { seoPages } from "../data/seo-pages";
+import type { PromptFolder, PromptCategory } from "../types/prompt";
 
 export interface SearchResult {
-    prompt: Prompt;
-    category: PromptCategory;
-    folder: PromptFolder;
+    type: 'prompt' | 'guide' | 'guide-prompt';
+    prompt: { title: string; content?: string; id?: string };
+    category?: PromptCategory;
+    folder?: PromptFolder;
     path: string;
+    slug?: string; // For guides
 }
 
 export function searchPrompts(query: string): SearchResult[] {
@@ -15,43 +18,64 @@ export function searchPrompts(query: string): SearchResult[] {
         const lowerQuery = query.toLowerCase();
         const results: SearchResult[] = [];
 
-        if (!promptCategories || !Array.isArray(promptCategories)) {
-            console.error("promptCategories is not available or not an array");
-            return [];
+        // 1. Search existing categories
+        if (promptCategories && Array.isArray(promptCategories)) {
+            promptCategories.forEach((category) => {
+                if (!category?.folders) return;
+
+                category.folders.forEach((folder) => {
+                    if (!folder?.prompts) return;
+
+                    folder.prompts.forEach((prompt) => {
+                        try {
+                            const titleMatch = prompt.title.toLowerCase().includes(lowerQuery);
+                            const contentMatch = prompt.content.toLowerCase().includes(lowerQuery);
+
+                            if (titleMatch || contentMatch) {
+                                results.push({
+                                    type: 'prompt',
+                                    prompt,
+                                    category,
+                                    folder,
+                                    path: `${category.name} → ${folder.name}`,
+                                });
+                            }
+                        } catch (err) {
+                            console.error("Error processing prompt:", err);
+                        }
+                    });
+                });
+            });
         }
 
-        promptCategories.forEach((category) => {
-            if (!category || !category.folders || !Array.isArray(category.folders)) {
-                return;
+        // 2. Search SEO Pages (Guides)
+        seoPages.forEach((page) => {
+            // Check title and intro
+            const titleMatch = page.title.toLowerCase().includes(lowerQuery);
+            const introMatch = page.intro.toLowerCase().includes(lowerQuery);
+
+            if (titleMatch || introMatch) {
+                results.push({
+                    type: 'guide',
+                    prompt: { title: page.title, content: page.intro },
+                    path: 'Guide',
+                    slug: page.slug
+                });
             }
 
-            category.folders.forEach((folder) => {
-                if (!folder || !folder.prompts || !Array.isArray(folder.prompts)) {
-                    return;
+            // Check individual prompts inside guides
+            page.prompts.forEach((prompt) => {
+                const pTitleMatch = prompt.title.toLowerCase().includes(lowerQuery);
+                const pContentMatch = prompt.content.toLowerCase().includes(lowerQuery);
+
+                if (pTitleMatch || pContentMatch) {
+                    results.push({
+                        type: 'guide-prompt',
+                        prompt: { title: prompt.title, content: prompt.content },
+                        path: `Guide: ${page.title}`,
+                        slug: page.slug
+                    });
                 }
-
-                folder.prompts.forEach((prompt) => {
-                    if (!prompt || !prompt.title || !prompt.content) {
-                        return;
-                    }
-
-                    try {
-                        // Search in title and content
-                        const titleMatch = prompt.title.toLowerCase().includes(lowerQuery);
-                        const contentMatch = prompt.content.toLowerCase().includes(lowerQuery);
-
-                        if (titleMatch || contentMatch) {
-                            results.push({
-                                prompt,
-                                category,
-                                folder,
-                                path: `${category.name} → ${folder.name}`,
-                            });
-                        }
-                    } catch (err) {
-                        console.error("Error processing prompt:", err);
-                    }
-                });
             });
         });
 

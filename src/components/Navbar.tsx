@@ -37,7 +37,11 @@ export default function Navbar() {
     }, []);
 
     const handleResultClick = (result: SearchResult) => {
-        navigate(`/category/${result.category.id}/${result.folder.id}`);
+        if ((result.type === 'guide' || result.type === 'guide-prompt') && result.slug) {
+            navigate(`/${result.slug}`);
+        } else if (result.category && result.folder) {
+            navigate(`/category/${result.category.id}/${result.folder.id}`);
+        }
         setSearchQuery("");
         setShowResults(false);
     };
