@@ -1,17 +1,42 @@
 import { promptCategories } from "../data/prompts";
 import { seoPages } from "../data/seo-pages";
+import { communityApi, type SharedPrompt } from "../lib/communityApi";
 import type { PromptFolder, PromptCategory } from "../types/prompt";
 
 export interface SearchResult {
-    type: 'prompt' | 'guide' | 'guide-prompt';
+    type: 'prompt' | 'guide' | 'guide-prompt' | 'community';
     prompt: { title: string; content?: string; id?: string };
     category?: PromptCategory;
     folder?: PromptFolder;
     path: string;
     slug?: string; // For guides
+    communityPrompt?: SharedPrompt; // For community prompts
 }
 
-export function searchPrompts(query: string): SearchResult[] {
+// Cache for community prompts to avoid refetching on every keystroke
+let communityPromptsCache: SharedPrompt[] = [];
+let lastCacheFetch = 0;
+const CACHE_DURATION = 60000; // 1 minute
+
+async function getCommunityPrompts(): Promise<SharedPrompt[]> {
+    const now = Date.now();
+    if (now - lastCacheFetch < CACHE_DURATION && communityPromptsCache.length > 0) {
+        return communityPromptsCache;
+    }
+
+    try {
+        // Fetch up to 100 recent community prompts for search
+        const response = await communityApi.getPrompts(1, 100);
+        communityPromptsCache = response.prompts;
+        lastCacheFetch = now;
+        return communityPromptsCache;
+    } catch (error) {
+        console.error('Error fetching community prompts for search:', error);
+        return [];
+    }
+}
+
+export async function searchPrompts(query: string): Promise<SearchResult[]> {
     if (!query.trim()) return [];
 
     try {
@@ -77,6 +102,23 @@ export function searchPrompts(query: string): SearchResult[] {
                     });
                 }
             });
+        });
+
+        // 3. Search Community Prompts
+        const communityPrompts = await getCommunityPrompts();
+        communityPrompts.forEach((prompt) => {
+            const titleMatch = prompt.title.toLowerCase().includes(lowerQuery);
+            const contentMatch = prompt.content.toLowerCase().includes(lowerQuery);
+            const tagsMatch = prompt.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
+
+            if (titleMatch || contentMatch || tagsMatch) {
+                results.push({
+                    type: 'community',
+                    prompt: { title: prompt.title, content: prompt.content, id: prompt.id },
+                    path: 'Community',
+                    communityPrompt: prompt
+                });
+            }
         });
 
         return results;

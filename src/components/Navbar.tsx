@@ -12,16 +12,19 @@ export default function Navbar() {
     const searchRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
-    // Handle search
+    // Handle search - make it async to support community prompts
     useEffect(() => {
-        if (searchQuery.trim()) {
-            const results = searchPrompts(searchQuery);
-            setSearchResults(results);
-            setShowResults(true);
-        } else {
-            setSearchResults([]);
-            setShowResults(false);
+        async function performSearch() {
+            if (searchQuery.trim()) {
+                const results = await searchPrompts(searchQuery);
+                setSearchResults(results);
+                setShowResults(true);
+            } else {
+                setSearchResults([]);
+                setShowResults(false);
+            }
         }
+        performSearch();
     }, [searchQuery]);
 
     // Close search results when clicking outside
@@ -37,7 +40,10 @@ export default function Navbar() {
     }, []);
 
     const handleResultClick = (result: SearchResult) => {
-        if ((result.type === 'guide' || result.type === 'guide-prompt') && result.slug) {
+        if (result.type === 'community') {
+            // Navigate to community page with search query
+            navigate(`/community?search=${encodeURIComponent(searchQuery)}`);
+        } else if ((result.type === 'guide' || result.type === 'guide-prompt') && result.slug) {
             navigate(`/${result.slug}`);
         } else if (result.category && result.folder) {
             navigate(`/category/${result.category.id}/${result.folder.id}`);
@@ -111,6 +117,30 @@ export default function Navbar() {
                         </div>
                     )}
                 </div>
+
+                {/* Community Link */}
+                <Link to="/community" className="builder-link" style={{ marginRight: '10px' }}>
+                    <button className="builder-button" aria-label="Community Feed">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span className="builder-text">Community</span>
+                    </button>
+                </Link>
+
+                {/* Share Link */}
+                <Link to="/share" className="builder-link" style={{ marginRight: '10px' }}>
+                    <button className="builder-button" aria-label="Share Prompt">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                        <span className="builder-text">Share Prompt</span>
+                    </button>
+                </Link>
 
                 {/* Prompt Builder Button */}
                 <Link to="/builder" className="builder-link">

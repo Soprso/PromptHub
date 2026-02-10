@@ -15,6 +15,9 @@ import { HelmetProvider } from "react-helmet-async";
 const PromptBuilder = lazy(() => import("./pages/PromptBuilder"));
 const SeoPage = lazy(() => import("./pages/SeoPage"));
 
+const SharePromptPage = lazy(() => import("./pages/SharePromptPage"));
+const CommunityPage = lazy(() => import("./pages/CommunityPage"));
+
 function App() {
   return (
     <ThemeProvider>
@@ -28,6 +31,8 @@ function App() {
                 <Route path="/builder" element={<PromptBuilder />} />
                 <Route path="/category/:categoryId" element={<CategoryPage />} />
                 <Route path="/category/:categoryId/:folderId" element={<FolderPage />} />
+                <Route path="/share" element={<SharePromptPage />} />
+                <Route path="/community" element={<CommunityPage />} />
                 {/* SEO Pages - catch-all for top-level slugs */}
                 <Route path="/:slug" element={<SeoPage />} />
               </Routes>
