@@ -3,6 +3,7 @@ import { promptCategories } from "../data/prompts";
 import { useState } from "react";
 import { getFolderIcon } from "../utils/iconMap";
 import { Copy, Check, ChevronRight } from "lucide-react";
+import { LikeButton } from "../components/LikeButton";
 
 export default function FolderPage() {
     const { categoryId, folderId } = useParams<{ categoryId: string; folderId: string }>();
@@ -108,45 +109,48 @@ export default function FolderPage() {
                             }}>
                                 {prompt.title}
                             </h2>
-                            <button
-                                onClick={() => handleCopy(prompt.id, prompt.content)}
-                                aria-label="Copy prompt"
-                                style={{
-                                    padding: "0.5rem",
-                                    backgroundColor: copiedId === prompt.id ? "var(--success-color)" : "transparent",
-                                    color: copiedId === prompt.id ? "#fff" : "var(--text-muted)",
-                                    border: `1px solid ${copiedId === prompt.id ? "transparent" : "var(--border-color)"}`,
-                                    borderRadius: "6px",
-                                    cursor: "pointer",
-                                    fontSize: "0.875rem",
-                                    fontWeight: 500,
-                                    transition: "all 0.2s ease",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.5rem",
-                                }}
-                                onMouseEnter={(e) => {
-                                    if (copiedId !== prompt.id) {
-                                        e.currentTarget.style.color = "var(--text-primary)";
-                                        e.currentTarget.style.borderColor = "var(--text-secondary)";
-                                    }
-                                }}
-                                onMouseLeave={(e) => {
-                                    if (copiedId !== prompt.id) {
-                                        e.currentTarget.style.color = "var(--text-muted)";
-                                        e.currentTarget.style.borderColor = "var(--border-color)";
-                                    }
-                                }}
-                            >
-                                {copiedId === prompt.id ? (
-                                    <>
-                                        <Check size={16} />
-                                        <span style={{ fontSize: "0.75rem" }}>Copied</span>
-                                    </>
-                                ) : (
-                                    <Copy size={16} />
-                                )}
-                            </button>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                                <LikeButton promptSlug={prompt.id} />
+                                <button
+                                    onClick={() => handleCopy(prompt.id, prompt.content)}
+                                    aria-label="Copy prompt"
+                                    style={{
+                                        padding: "0.5rem",
+                                        backgroundColor: copiedId === prompt.id ? "var(--success-color)" : "transparent",
+                                        color: copiedId === prompt.id ? "#fff" : "var(--text-muted)",
+                                        border: `1px solid ${copiedId === prompt.id ? "transparent" : "var(--border-color)"}`,
+                                        borderRadius: "6px",
+                                        cursor: "pointer",
+                                        fontSize: "0.875rem",
+                                        fontWeight: 500,
+                                        transition: "all 0.2s ease",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        if (copiedId !== prompt.id) {
+                                            e.currentTarget.style.color = "var(--text-primary)";
+                                            e.currentTarget.style.borderColor = "var(--text-secondary)";
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        if (copiedId !== prompt.id) {
+                                            e.currentTarget.style.color = "var(--text-muted)";
+                                            e.currentTarget.style.borderColor = "var(--border-color)";
+                                        }
+                                    }}
+                                >
+                                    {copiedId === prompt.id ? (
+                                        <>
+                                            <Check size={16} />
+                                            <span style={{ fontSize: "0.75rem" }}>Copied</span>
+                                        </>
+                                    ) : (
+                                        <Copy size={16} />
+                                    )}
+                                </button>
+                            </div>
                         </div>
 
                         <div style={{
