@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { communityApi } from '../lib/communityApi';
 import { containsProfanity, containsURL, checkSubmissionLimits, recordSubmission } from '../utils/validation';
 
