@@ -876,12 +876,47 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/business-strategy-prompts</loc>
+    <loc>https://promptshub.shop/category/strategy-finance-ops</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promptshub.shop/category/business-strategy-prompts/pricing-strategy-models</loc>
+    <loc>https://promptshub.shop/category/strategy-finance-ops/business-planning</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/strategy-finance-ops/financial-management</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/strategy-finance-ops/pricing-strategy-models</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/strategy-finance-ops/operations-optimization</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/strategy-finance-ops/legal-compliance</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/sales-leadership</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/sales-leadership/sales-success</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://promptshub.shop/category/sales-leadership/leadership-management</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
