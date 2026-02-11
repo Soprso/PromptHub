@@ -1,34 +1,38 @@
+import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 
 export default function Footer() {
     return (
         <footer style={{
-            marginTop: "4rem",
-            paddingTop: "2rem",
+            marginTop: "auto",
+            paddingTop: "3rem",
+            paddingBottom: "2rem",
             borderTop: "1px solid var(--border-color)",
             color: "var(--text-muted)",
-            fontSize: "0.875rem"
+            fontSize: "0.875rem",
+            backgroundColor: "var(--bg-primary)"
         }}>
-            <div style={{
-                maxWidth: "100%", /* Matches doc-layout max-width context if inside it, but footer is inside layout now? */
-                /* Actually Footer is inside DocumentationLayout .doc-content or outside? */
-                /* Let's check App.tsx structure */
-                /* In Step 116 summary: App.tsx wraps Routes with DocumentationLayout. */
-                /* DocumentationLayout contains {children} and then <Footer> ? No, let's check DocumentationLayout.tsx */
-                /* I'll assume Footer is inside content area or at bottom. */
-                /* Just fixing the icon for now. */
+            <div className="footer-container" style={{
+                maxWidth: "1280px",
                 margin: "0 auto",
-                padding: "0"
+                padding: "0 1.5rem",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+                gap: "1.5rem"
             }}>
-                {/* Main footer content */}
+                {/* Brand & Tagline */}
                 <div style={{
-                    marginBottom: "1.5rem"
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "0.75rem"
                 }}>
                     <div style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "0.5rem",
-                        marginBottom: "0.5rem"
+                        gap: "0.5rem"
                     }}>
                         <span style={{ color: "var(--accent-color)" }}><Sparkles size={20} /></span>
                         <span style={{
@@ -48,13 +52,29 @@ export default function Footer() {
                     </p>
                 </div>
 
-                {/* Bottom row */}
+                {/* Links */}
                 <div style={{
-                    paddingTop: "1.5rem",
-                    borderTop: "1px solid var(--border-color)",
-                    textAlign: "center",
+                    display: "flex",
+                    gap: "1.5rem",
+                    flexWrap: "wrap",
+                    justifyContent: "center"
+                }}>
+                    <Link to="/privacy-policy" style={{ color: "var(--text-muted)", textDecoration: "none" }} className="hover:text-primary transition-colors">
+                        Privacy Policy
+                    </Link>
+                    <Link to="/about" style={{ color: "var(--text-muted)", textDecoration: "none" }} className="hover:text-primary transition-colors">
+                        About
+                    </Link>
+                    <Link to="/contact" style={{ color: "var(--text-muted)", textDecoration: "none" }} className="hover:text-primary transition-colors">
+                        Contact
+                    </Link>
+                </div>
+
+                {/* Copyright */}
+                <div style={{
                     fontSize: "0.8125rem",
-                    color: "var(--text-muted)"
+                    color: "var(--text-muted)",
+                    opacity: 0.8
                 }}>
                     © {new Date().getFullYear()} PromptHub. All rights reserved.
                 </div>

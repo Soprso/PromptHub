@@ -17,6 +17,9 @@ const SeoPage = lazy(() => import("./pages/SeoPage"));
 
 const SharePromptPage = lazy(() => import("./pages/SharePromptPage"));
 const CommunityPage = lazy(() => import("./pages/CommunityPage"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
 
 function App() {
   return (
@@ -33,6 +36,12 @@ function App() {
                 <Route path="/category/:categoryId/:folderId" element={<FolderPage />} />
                 <Route path="/share" element={<SharePromptPage />} />
                 <Route path="/community" element={<CommunityPage />} />
+
+                {/* Legal & Info Pages */}
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+
                 {/* SEO Pages - catch-all for top-level slugs */}
                 <Route path="/:slug" element={<SeoPage />} />
               </Routes>
