@@ -1,17 +1,65 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { type SharedPrompt, communityApi } from '../lib/communityApi';
-import { Heart, Copy, Check } from 'lucide-react';
+import { ThumbsUp, Copy, Check } from 'lucide-react';
+
+const LIKED_PROMPTS_KEY = 'prompthub_liked_prompts';
+
+// Helper to get liked prompts from localStorage
+const getLikedPrompts = (): Set<string> => {
+    try {
+        const stored = localStorage.getItem(LIKED_PROMPTS_KEY);
+        return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch {
+        return new Set();
+    }
+};
+
+// Helper to save liked prompts to localStorage
+const saveLikedPrompts = (likedSet: Set<string>) => {
+    try {
+        localStorage.setItem(LIKED_PROMPTS_KEY, JSON.stringify([...likedSet]));
+    } catch (error) {
+        console.error('Failed to save liked prompts:', error);
+    }
+};
 
 export default function CommunityPromptCard({ prompt }: { prompt: SharedPrompt }) {
     const [likes, setLikes] = useState(prompt.like_count);
     const [hasLiked, setHasLiked] = useState(false);
     const [copied, setCopied] = useState(false);
 
+    // Check if user has already liked this prompt on component mount
+    useEffect(() => {
+        const likedPrompts = getLikedPrompts();
+        setHasLiked(likedPrompts.has(prompt.id));
+    }, [prompt.id]);
+
     const handleLike = async () => {
         if (hasLiked) return;
-        setHasLiked(true);
-        setLikes(prev => prev + 1);
-        await communityApi.incrementLike(prompt.id);
+
+        try {
+            setHasLiked(true);
+            setLikes(prev => prev + 1);
+
+            // Save to localStorage
+            const likedPrompts = getLikedPrompts();
+            likedPrompts.add(prompt.id);
+            saveLikedPrompts(likedPrompts);
+
+            await communityApi.incrementLike(prompt.id);
+        } catch (error) {
+            console.error('Failed to increment like:', error);
+            // Revert optimistic update on error
+            setHasLiked(false);
+            setLikes(prev => prev - 1);
+
+            // Remove from localStorage
+            const likedPrompts = getLikedPrompts();
+            likedPrompts.delete(prompt.id);
+            saveLikedPrompts(likedPrompts);
+
+            alert('Failed to like prompt. Please try again.');
+        }
     };
 
     const handleCopy = () => {
@@ -128,7 +176,7 @@ export default function CommunityPromptCard({ prompt }: { prompt: SharedPrompt }
                             }
                         }}
                     >
-                        <Heart size={16} fill={hasLiked ? "currentColor" : "none"} />
+                        <ThumbsUp size={16} fill={hasLiked ? "currentColor" : "none"} />
                         <span style={{ fontSize: "0.75rem" }}>{likes}</span>
                     </button>
 

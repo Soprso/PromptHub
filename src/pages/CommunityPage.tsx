@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
 import CommunityPromptCard from '../components/CommunityPromptCard';
+import CommunityFilters from '../components/CommunityFilters';
 import { communityApi, type SharedPrompt } from '../lib/communityApi';
 import { ChevronRight, Users, Sparkles, ChevronLeft, ChevronsLeft, ChevronsRight } from 'lucide-react';
 
@@ -12,6 +13,8 @@ export default function CommunityPage() {
     const [prompts, setPrompts] = useState<SharedPrompt[]>([]);
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
+    const [sortOrder, setSortOrder] = useState<'newest' | 'most-liked'>('newest');
+    const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
     const currentPage = parseInt(searchParams.get('page') || '1', 10);
     const searchQuery = searchParams.get('search') || '';
@@ -26,6 +29,49 @@ export default function CommunityPage() {
         }
         loadPrompts();
     }, [currentPage, searchQuery]);
+
+    // Extract unique tags from current prompts
+    const availableTags = useMemo(() => {
+        const tagSet = new Set<string>();
+        prompts.forEach(prompt => {
+            if (prompt.tags && Array.isArray(prompt.tags)) {
+                prompt.tags.forEach(tag => tagSet.add(tag));
+            }
+        });
+        return Array.from(tagSet).sort();
+    }, [prompts]);
+
+    // Apply client-side filtering and sorting
+    const filteredAndSortedPrompts = useMemo(() => {
+        let result = [...prompts];
+
+        // Filter by selected tags (OR logic - show prompts that have ANY of the selected tags)
+        if (selectedTags.length > 0) {
+            result = result.filter(prompt =>
+                prompt.tags &&
+                Array.isArray(prompt.tags) &&
+                prompt.tags.some(tag => selectedTags.includes(tag))
+            );
+        }
+
+        // Sort
+        if (sortOrder === 'most-liked') {
+            result.sort((a, b) => b.like_count - a.like_count);
+        } else {
+            // newest - already sorted by created_at from API, but ensure consistency
+            result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        }
+
+        return result;
+    }, [prompts, selectedTags, sortOrder]);
+
+    const handleTagToggle = (tag: string) => {
+        setSelectedTags(prev =>
+            prev.includes(tag)
+                ? prev.filter(t => t !== tag)
+                : [...prev, tag]
+        );
+    };
 
     const totalPages = Math.ceil(total / PROMPTS_PER_PAGE);
 
@@ -211,6 +257,17 @@ export default function CommunityPage() {
                 </div>
             </div>
 
+            {/* Filters and Sorting */}
+            {!loading && prompts.length > 0 && (
+                <CommunityFilters
+                    sortOrder={sortOrder}
+                    onSortChange={setSortOrder}
+                    availableTags={availableTags}
+                    selectedTags={selectedTags}
+                    onTagToggle={handleTagToggle}
+                />
+            )}
+
             {loading ? (
                 <div style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>
                     Loading prompts...
@@ -259,10 +316,41 @@ export default function CommunityPage() {
                         </Link>
                     )}
                 </div>
+            ) : filteredAndSortedPrompts.length === 0 ? (
+                <div style={{
+                    textAlign: "center",
+                    padding: "4rem 2rem",
+                    backgroundColor: "var(--bg-secondary)",
+                    borderRadius: "8px",
+                    border: "1px solid var(--border-color)"
+                }}>
+                    <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🔍</div>
+                    <h3 style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "0.5rem", color: "var(--text-primary)" }}>
+                        No prompts found
+                    </h3>
+                    <p style={{ color: "var(--text-secondary)", marginBottom: "1.5rem" }}>
+                        Try another filter or clear your selections
+                    </p>
+                    <button
+                        onClick={() => setSelectedTags([])}
+                        style={{
+                            color: "var(--accent-color)",
+                            textDecoration: "none",
+                            fontWeight: 500,
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: "inherit",
+                            fontFamily: "inherit"
+                        }}
+                    >
+                        Clear filters →
+                    </button>
+                </div>
             ) : (
                 <>
                     <div className="prompt-list">
-                        {prompts.map(prompt => (
+                        {filteredAndSortedPrompts.map(prompt => (
                             <CommunityPromptCard key={prompt.id} prompt={prompt} />
                         ))}
                     </div>

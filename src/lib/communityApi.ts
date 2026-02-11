@@ -66,23 +66,48 @@ export const communityApi = {
     },
 
     async incrementLike(id: string) {
-        if (!supabase) return;
+        if (!supabase) {
+            console.error('Supabase client not initialized');
+            throw new Error('Database connection not available');
+        }
+
+        console.log('Attempting to increment like for prompt:', id);
 
         // Use RPC if available, otherwise fallback to simple update (less safe but functional for MVPs)
         // We will try RPC first as it is in the schema guide.
-        const { error } = await supabase.rpc('increment_shared_prompt_like', { row_id: id });
+        const { error: rpcError } = await supabase.rpc('increment_shared_prompt_like', { row_id: id });
 
-        if (error) {
-            console.error('RPC Error, falling back to simple update:', error);
+        if (rpcError) {
+            console.warn('RPC Error, falling back to simple update:', rpcError);
             // Fallback: Get current -> Increment -> Update
             // Note: This has race conditions, but fine for MVP if RPC fails/doesn't exist yet
-            const { data } = await supabase.from('prompts_shared').select('like_count').eq('id', id).single();
-            if (data) {
-                await supabase
-                    .from('prompts_shared')
-                    .update({ like_count: (data.like_count || 0) + 1 })
-                    .eq('id', id);
+            const { data, error: fetchError } = await supabase
+                .from('prompts_shared')
+                .select('like_count')
+                .eq('id', id)
+                .single();
+
+            if (fetchError) {
+                console.error('Error fetching prompt for like update:', fetchError);
+                throw fetchError;
             }
+
+            if (data) {
+                const newLikeCount = (data.like_count || 0) + 1;
+                const { error: updateError } = await supabase
+                    .from('prompts_shared')
+                    .update({ like_count: newLikeCount })
+                    .eq('id', id);
+
+                if (updateError) {
+                    console.error('Error updating like count:', updateError);
+                    throw updateError;
+                }
+
+                console.log('Successfully updated like count to:', newLikeCount);
+            }
+        } else {
+            console.log('Successfully incremented like via RPC');
         }
     }
 };

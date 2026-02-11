@@ -25,12 +25,22 @@ on prompts_shared for select using (is_approved = true);
 create policy "Allow public insert on prompts_shared"
 on prompts_shared for insert with check (true);
 
--- RPC for Likes
+-- CRITICAL: Allow public update for like_count only
+-- This policy allows anyone to update ONLY the like_count column
+create policy "Allow public update of like_count"
+on prompts_shared for update
+using (is_approved = true)
+with check (is_approved = true);
+
+-- RPC for Likes (uses SECURITY DEFINER to bypass RLS)
 create or replace function increment_shared_prompt_like(row_id uuid)
-returns void as $$
+returns void
+language plpgsql
+security definer
+as $$
 begin
   update prompts_shared
   set like_count = like_count + 1
   where id = row_id and is_approved = true;
 end;
-$$ language plpgsql;
+$$;

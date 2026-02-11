@@ -1,9 +1,34 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Copy, BookOpen, Search, Palette, PenTool, Code2, Sparkles, ChevronRight } from "lucide-react";
+import { Copy, BookOpen, Search, Palette, PenTool, Code2, Sparkles, ChevronRight, Check, ThumbsUp } from "lucide-react";
 import { seoPages } from "../data/seo-pages";
+import { communityApi, type SharedPrompt } from "../lib/communityApi";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+    const [communityPicks, setCommunityPicks] = useState<SharedPrompt[]>([]);
+    const [copiedId, setCopiedId] = useState<string | null>(null);
+
+    useEffect(() => {
+        async function loadCommunityPicks() {
+            try {
+                const response = await communityApi.getPrompts(1, 5);
+                // Sort by like_count descending to get top 5
+                const sorted = response.prompts.sort((a, b) => b.like_count - a.like_count);
+                setCommunityPicks(sorted.slice(0, 5));
+            } catch (error) {
+                console.error('Failed to load community picks:', error);
+            }
+        }
+        loadCommunityPicks();
+    }, []);
+
+    const handleCopy = (prompt: SharedPrompt) => {
+        navigator.clipboard.writeText(prompt.content);
+        setCopiedId(prompt.id);
+        setTimeout(() => setCopiedId(null), 2000);
+    };
+
     return (
         <div>
             <Helmet>
@@ -153,6 +178,143 @@ export default function Home() {
                     ))}
                 </div>
             </div>
+
+            {/* Community Picks Section */}
+            {communityPicks.length > 0 && (
+                <div style={{ marginBottom: "3rem" }}>
+                    <h2 style={{
+                        fontSize: "1.5rem",
+                        fontWeight: 600,
+                        marginBottom: "1.5rem",
+                        color: "var(--text-primary)",
+                        letterSpacing: "-0.01em",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem"
+                    }}>
+                        🔥 Community Picks
+                    </h2>
+                    <div style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                        gap: "1rem"
+                    }}>
+                        {communityPicks.map((prompt) => (
+                            <div key={prompt.id} style={{
+                                padding: "1.5rem",
+                                border: "1px solid var(--border-color)",
+                                borderRadius: "8px",
+                                backgroundColor: "var(--bg-secondary)",
+                                transition: "all 0.2s ease",
+                                height: "100%",
+                                display: "flex",
+                                flexDirection: "column"
+                            }}>
+                                <div style={{
+                                    fontWeight: 600,
+                                    color: "var(--text-primary)",
+                                    marginBottom: "0.5rem",
+                                    fontSize: "1.125rem"
+                                }}>
+                                    {prompt.title}
+                                </div>
+                                <div style={{
+                                    fontSize: "0.875rem",
+                                    color: "var(--text-secondary)",
+                                    lineHeight: "1.6",
+                                    flex: 1,
+                                    marginBottom: "1rem",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    display: "-webkit-box",
+                                    WebkitLineClamp: 3,
+                                    WebkitBoxOrient: "vertical"
+                                }}>
+                                    {prompt.content}
+                                </div>
+                                <div style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    gap: "0.5rem"
+                                }}>
+                                    <div style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.375rem",
+                                        fontSize: "0.75rem",
+                                        color: "var(--text-muted)"
+                                    }}>
+                                        <ThumbsUp size={14} fill="var(--text-muted)" />
+                                        <span>{prompt.like_count}</span>
+                                    </div>
+                                    <button
+                                        onClick={() => handleCopy(prompt)}
+                                        style={{
+                                            padding: "0.375rem 0.75rem",
+                                            backgroundColor: copiedId === prompt.id ? "var(--success-color)" : "transparent",
+                                            color: copiedId === prompt.id ? "#fff" : "var(--text-muted)",
+                                            border: `1px solid ${copiedId === prompt.id ? "transparent" : "var(--border-color)"}`,
+                                            borderRadius: "4px",
+                                            cursor: "pointer",
+                                            fontSize: "0.75rem",
+                                            fontWeight: 500,
+                                            transition: "all 0.2s ease",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "0.375rem",
+                                            fontFamily: "inherit"
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (copiedId !== prompt.id) {
+                                                e.currentTarget.style.color = "var(--text-primary)";
+                                                e.currentTarget.style.borderColor = "var(--text-secondary)";
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (copiedId !== prompt.id) {
+                                                e.currentTarget.style.color = "var(--text-muted)";
+                                                e.currentTarget.style.borderColor = "var(--border-color)";
+                                            }
+                                        }}
+                                    >
+                                        {copiedId === prompt.id ? (
+                                            <>
+                                                <Check size={12} />
+                                                <span>Copied</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Copy size={12} />
+                                                <span>Copy</span>
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div style={{
+                        marginTop: "1.5rem",
+                        textAlign: "center"
+                    }}>
+                        <Link
+                            to="/community"
+                            style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                color: "var(--accent-color)",
+                                textDecoration: "none",
+                                fontWeight: 500,
+                                fontSize: "0.875rem"
+                            }}
+                        >
+                            View All Community Prompts <ChevronRight size={14} />
+                        </Link>
+                    </div>
+                </div>
+            )}
 
             <div>
                 <h2 style={{
