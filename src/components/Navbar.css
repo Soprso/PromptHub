@@ -258,13 +258,50 @@
     transform: scale(0.95);
 }
 
+/* Navbar Actions Group */
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
 /* Mobile adjustments */
 @media (max-width: 768px) {
     .navbar-container {
         padding: 0.75rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .navbar-logo {
+        margin-left: 3rem;
+        /* Space for the fixed hamburger menu */
+        margin-right: auto;
+        order: 1;
+    }
+
+    .navbar-actions {
+        order: 2;
+        gap: 0.5rem;
+    }
+
+    .builder-button {
+        padding: 0.4rem 0.6rem;
+        /* Slightly smaller buttons on mobile */
     }
 
     .navbar-search {
+        order: 3;
+        width: 100%;
         max-width: none;
+        margin-top: 0.5rem;
+        flex: 0 0 100%;
+        /* Force full width */
+    }
+
+    /* Ensure search input text is readable */
+    .search-input {
+        font-size: 16px;
+        /* Prevent IOS zoom on focus */
     }
 }

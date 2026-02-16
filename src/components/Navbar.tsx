@@ -118,65 +118,67 @@ export default function Navbar() {
                     )}
                 </div>
 
-                {/* Community Link */}
-                <Link to="/community" className="builder-link" style={{ marginRight: '10px' }}>
-                    <button className="builder-button" aria-label="Community Feed">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <span className="builder-text">Community</span>
-                    </button>
-                </Link>
+                <div className="navbar-actions">
+                    {/* Community Link */}
+                    <Link to="/community" className="builder-link">
+                        <button className="builder-button" aria-label="Community Feed">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            <span className="builder-text">Community</span>
+                        </button>
+                    </Link>
 
-                {/* Share Link */}
-                <Link to="/share" className="builder-link" style={{ marginRight: '10px' }}>
-                    <button className="builder-button" aria-label="Share Prompt">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="22" y1="2" x2="11" y2="13"></line>
-                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                        </svg>
-                        <span className="builder-text">Share Prompt</span>
-                    </button>
-                </Link>
+                    {/* Share Link */}
+                    <Link to="/share" className="builder-link">
+                        <button className="builder-button" aria-label="Share Prompt">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                            <span className="builder-text">Share Prompt</span>
+                        </button>
+                    </Link>
 
-                {/* Prompt Builder Button */}
-                <Link to="/builder" className="builder-link">
-                    <button className="builder-button" aria-label="Prompt Builder">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M12 20h9"></path>
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                        </svg>
-                        <span className="builder-text">Builder</span>
-                    </button>
-                </Link>
+                    {/* Prompt Builder Button */}
+                    <Link to="/builder" className="builder-link">
+                        <button className="builder-button" aria-label="Prompt Builder">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M12 20h9"></path>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                            </svg>
+                            <span className="builder-text">Builder</span>
+                        </button>
+                    </Link>
 
-                {/* Theme Toggle */}
-                <button
-                    onClick={toggleTheme}
-                    className="theme-toggle"
-                    aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-                >
-                    {theme === "light" ? (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    ) : (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                    )}
-                </button>
+                    {/* Theme Toggle */}
+                    <button
+                        onClick={toggleTheme}
+                        className="theme-toggle"
+                        aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+                    >
+                        {theme === "light" ? (
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                        ) : (
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+                        )}
+                    </button>
+                </div>
             </div>
         </nav>
     );
