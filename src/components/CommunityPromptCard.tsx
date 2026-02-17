@@ -234,10 +234,45 @@ export default function CommunityPromptCard({ prompt }: { prompt: SharedPrompt }
                 color: "var(--text-primary)",
                 whiteSpace: "pre-wrap",
                 wordBreak: "break-word",
-                fontFamily: "inherit"
+                fontFamily: "inherit",
+                position: "relative"
             }}>
-                {prompt.content}
+                <CollapsibleText content={prompt.content} />
             </div>
         </article>
+    );
+}
+
+function CollapsibleText({ content, maxLength = 150 }: { content: string, maxLength?: number }) {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const shouldCollapse = content.length > maxLength;
+
+    const displayContent = shouldCollapse && !isExpanded
+        ? content.slice(0, maxLength) + '...'
+        : content;
+
+    return (
+        <div>
+            {displayContent}
+            {shouldCollapse && (
+                <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    style={{
+                        display: "block",
+                        marginTop: "0.5rem",
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        color: "var(--accent-color)",
+                        cursor: "pointer",
+                        fontSize: "0.875rem",
+                        fontWeight: 500,
+                        fontFamily: "inherit"
+                    }}
+                >
+                    {isExpanded ? "Show Less" : "Show More"}
+                </button>
+            )}
+        </div>
     );
 }
