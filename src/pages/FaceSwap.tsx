@@ -43,12 +43,13 @@ export default function FaceSwap() {
 
         try {
             const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
+            console.log("DEBUG: HF Token check", hfToken ? "Present (starts with " + hfToken.substring(0, 3) + ")" : "Missing");
+
+            const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
 
             // --- STAGE 1: FACE SWAP ---
             setStatusMessage("Stage 1/2: Swapping faces...");
-            const swapClient = await Client.connect("tonyassi/face-swap", {
-                token: hfToken as `hf_${string}`
-            });
+            const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
             const swapResult = await swapClient.predict("/swap_faces", {
                 src_img: originalFileRef.current,
                 dest_img: targetFileRef.current,
@@ -74,9 +75,7 @@ export default function FaceSwap() {
             const imageBlob = await imageRes.blob();
             const intermediateFile = new File([imageBlob], "swapped_face.jpg", { type: "image/jpeg" });
 
-            const enhanceClient = await Client.connect("sczhou/CodeFormer", {
-                token: hfToken as `hf_${string}`
-            });
+            const enhanceClient = await Client.connect("sczhou/CodeFormer", clientOptions);
             const enhanceResult = await enhanceClient.predict("/inference", {
                 image: intermediateFile,
                 face_align: true,
