@@ -42,9 +42,13 @@ export default function FaceSwap() {
         setStatusMessage("Connecting to face swap server...");
 
         try {
+            const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
+
             // --- STAGE 1: FACE SWAP ---
             setStatusMessage("Stage 1/2: Swapping faces...");
-            const swapClient = await Client.connect("tonyassi/face-swap");
+            const swapClient = await Client.connect("tonyassi/face-swap", {
+                token: hfToken as `hf_${string}`
+            });
             const swapResult = await swapClient.predict("/swap_faces", {
                 src_img: originalFileRef.current,
                 dest_img: targetFileRef.current,
@@ -70,7 +74,9 @@ export default function FaceSwap() {
             const imageBlob = await imageRes.blob();
             const intermediateFile = new File([imageBlob], "swapped_face.jpg", { type: "image/jpeg" });
 
-            const enhanceClient = await Client.connect("sczhou/CodeFormer");
+            const enhanceClient = await Client.connect("sczhou/CodeFormer", {
+                token: hfToken as `hf_${string}`
+            });
             const enhanceResult = await enhanceClient.predict("/inference", {
                 image: intermediateFile,
                 face_align: true,
