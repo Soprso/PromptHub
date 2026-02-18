@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@gradio/client": "^2.0.4",
     "@supabase/supabase-js": "^2.95.3",
     "@types/uuid": "^10.0.0",
     "lucide-react": "^0.563.0",

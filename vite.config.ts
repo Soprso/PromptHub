@@ -11,4 +11,14 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    proxy: {
+      '/hf-api': {
+        target: 'https://router.huggingface.co/hf-inference',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/hf-api/, ''),
+        secure: false,
+      },
+    },
+  },
 })
