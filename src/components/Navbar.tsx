@@ -27,6 +27,8 @@ export default function Navbar() {
         performSearch();
     }, [searchQuery]);
 
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
     // Close search results when clicking outside
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -52,11 +54,14 @@ export default function Navbar() {
         setShowResults(false);
     };
 
+    const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
+    const closeDrawer = () => setIsDrawerOpen(false);
+
     return (
         <nav className="navbar">
             <div className="navbar-container">
                 {/* Logo */}
-                <Link to="/" className="navbar-logo" onClick={() => setSearchQuery("")}>
+                <Link to="/" className="navbar-logo" onClick={() => { setSearchQuery(""); closeDrawer(); }}>
                     <img src={phubIcon} alt="PromptHub Logo" className="logo-icon" style={{ height: "2.2rem", width: "auto", display: "block" }} />
                     <span className="logo-text">PromptHub</span>
                 </Link>
@@ -119,40 +124,56 @@ export default function Navbar() {
                 </div>
 
                 <div className="navbar-actions">
-                    {/* Community Link */}
-                    <Link to="/community" className="builder-link">
-                        <button className="builder-button" aria-label="Community Feed">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                            <span className="builder-text">Community</span>
-                        </button>
-                    </Link>
+                    <div className="desktop-actions">
+                        {/* Community Link */}
+                        <Link to="/community" className="builder-link">
+                            <button className="builder-button" aria-label="Community Feed">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                                <span className="builder-text">Community</span>
+                            </button>
+                        </Link>
 
-                    {/* Share Link */}
-                    <Link to="/share" className="builder-link">
-                        <button className="builder-button" aria-label="Share Prompt">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <line x1="22" y1="2" x2="11" y2="13"></line>
-                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                            </svg>
-                            <span className="builder-text">Share Prompt</span>
-                        </button>
-                    </Link>
+                        {/* Share Link */}
+                        <Link to="/share" className="builder-link">
+                            <button className="builder-button" aria-label="Share Prompt">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
+                                <span className="builder-text">Share Prompt</span>
+                            </button>
+                        </Link>
 
-                    {/* Prompt Builder Button */}
-                    <Link to="/builder" className="builder-link">
-                        <button className="builder-button" aria-label="Prompt Builder">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M12 20h9"></path>
-                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                            </svg>
-                            <span className="builder-text">Builder</span>
-                        </button>
-                    </Link>
+                        {/* Prompt Builder Button */}
+                        <Link to="/builder" className="builder-link">
+                            <button className="builder-button" aria-label="Prompt Builder">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                </svg>
+                                <span className="builder-text">Builder</span>
+                            </button>
+                        </Link>
+                    </div>
+
+                    {/* Tools Toggle Button (Mobile) */}
+                    <button
+                        className="tools-toggle builder-button"
+                        onClick={toggleDrawer}
+                        aria-label="Open Tools Menu"
+                    >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                        <span className="tools-text">Tools</span>
+                    </button>
 
                     {/* Theme Toggle */}
                     <button
@@ -178,6 +199,45 @@ export default function Navbar() {
                             </svg>
                         )}
                     </button>
+                </div>
+            </div>
+
+            {/* Tools Drawer */}
+            <div className={`tools-drawer-overlay ${isDrawerOpen ? 'open' : ''}`} onClick={closeDrawer} />
+            <div className={`tools-drawer ${isDrawerOpen ? 'open' : ''}`}>
+                <div className="drawer-header">
+                    <h3>Tools</h3>
+                    <button className="drawer-close" onClick={closeDrawer} aria-label="Close Menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div className="drawer-content">
+                    <Link to="/community" className="drawer-item" onClick={closeDrawer}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>Community</span>
+                    </Link>
+                    <Link to="/share" className="drawer-item" onClick={closeDrawer}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                        <span>Share Prompt</span>
+                    </Link>
+                    <Link to="/builder" className="drawer-item" onClick={closeDrawer}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                        <span>Prompt Builder</span>
+                    </Link>
                 </div>
             </div>
         </nav>
