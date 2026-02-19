@@ -148,7 +148,56 @@ function pasteWithFeather(
     fullCtx.restore();
 }
 
-// ─── Main Pro Pipeline: CodeFormer → GFPGAN → ColorMatch → Feather ──────────
+// ─── Eye Preservation Blend: restores original eye geometry after enhancement ─
+// Blends original swap eye region (40% opacity, feathered) onto enhanced crop
+// to prevent source-identity eyes from overwriting target eye structure.
+function applyEyePreservation(
+    refinedCtx: CanvasRenderingContext2D,
+    originalCropCanvas: HTMLCanvasElement,
+    cropW: number,
+    cropH: number
+): void {
+    // Both-eye band spanning the eye region of the crop
+    const eyeX = Math.round(cropW * 0.2);
+    const eyeY = Math.round(cropH * 0.15);
+    const eyeW = Math.round(cropW * 0.6);
+    const eyeH = Math.round(cropH * 0.25);
+
+    // Feathered mask: fully opaque center, transparent edges
+    const maskCanvas = document.createElement("canvas");
+    maskCanvas.width = eyeW;
+    maskCanvas.height = eyeH;
+    const maskCtx = maskCanvas.getContext("2d")!;
+    const mx = eyeW / 2, my = eyeH / 2;
+    const grad = maskCtx.createRadialGradient(
+        mx, my, Math.min(mx, my) * 0.3,  // inner (opaque)
+        mx, my, Math.max(mx, my)          // outer (transparent)
+    );
+    grad.addColorStop(0, "rgba(0,0,0,1)");
+    grad.addColorStop(0.7, "rgba(0,0,0,0.6)");
+    grad.addColorStop(1, "rgba(0,0,0,0)");
+    maskCtx.fillStyle = grad;
+    maskCtx.fillRect(0, 0, eyeW, eyeH);
+
+    // Extract original swap eye region onto temp canvas
+    const eyeCanvas = document.createElement("canvas");
+    eyeCanvas.width = eyeW;
+    eyeCanvas.height = eyeH;
+    const eyeCtx = eyeCanvas.getContext("2d")!;
+    eyeCtx.drawImage(originalCropCanvas, eyeX, eyeY, eyeW, eyeH, 0, 0, eyeW, eyeH);
+    // Apply feathered mask to eye extract
+    eyeCtx.globalCompositeOperation = "destination-in";
+    eyeCtx.drawImage(maskCanvas, 0, 0);
+
+    // Blend back onto enhanced face at 40% opacity
+    refinedCtx.save();
+    refinedCtx.globalAlpha = 0.4;
+    refinedCtx.globalCompositeOperation = "source-over";
+    refinedCtx.drawImage(eyeCanvas, eyeX, eyeY);
+    refinedCtx.restore();
+}
+
+// ─── Main Pro Pipeline: CodeFormer → GFPGAN → EyePreserve → ColorMatch → Feather
 async function runProPipeline(
     swappedUrl: string,
     clientOptions: any,
@@ -262,6 +311,11 @@ async function runProPipeline(
     refinedCanvas.height = cropH;
     const refinedCtx = refinedCanvas.getContext("2d")!;
     refinedCtx.drawImage(refinedBmp, 0, 0, cropW, cropH);
+
+    // ── Stage 3c: Eye Preservation Blend ─────────────────────────────────────
+    // Blends original swap eye region back at 40% opacity to retain target eye geometry
+    onProgress(89, "Refining eye realism...");
+    applyEyePreservation(refinedCtx, cropCanvas, cropW, cropH);
 
     // Only apply color match if we got reference pixels successfully
     if (refImageData) {
