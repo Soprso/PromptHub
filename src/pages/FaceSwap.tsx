@@ -14,70 +14,6 @@ import {
 } from "lucide-react";
 import "./FaceSwap.css";
 
-// Client-side color matching: transfer color tone from target to swapped result
-async function applyColorMatch(swappedDataUrl: string, referenceDataUrl: string): Promise<string> {
-    return new Promise((resolve) => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        if (!ctx) { resolve(swappedDataUrl); return; }
-
-        const swappedImg = new Image();
-        swappedImg.crossOrigin = "anonymous";
-        swappedImg.onload = () => {
-            canvas.width = swappedImg.width;
-            canvas.height = swappedImg.height;
-            ctx.drawImage(swappedImg, 0, 0);
-
-            const refImg = new Image();
-            refImg.crossOrigin = "anonymous";
-            refImg.onload = () => {
-                // Get mean color stats from reference target image
-                const refCanvas = document.createElement("canvas");
-                const refCtx = refCanvas.getContext("2d");
-                if (!refCtx) { resolve(swappedDataUrl); return; }
-                refCanvas.width = refImg.width;
-                refCanvas.height = refImg.height;
-                refCtx.drawImage(refImg, 0, 0);
-
-                const refData = refCtx.getImageData(0, 0, refCanvas.width, refCanvas.height).data;
-                const swappedData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const pixels = swappedData.data;
-
-                let [rRef, gRef, bRef, rSwap, gSwap, bSwap, count] = [0, 0, 0, 0, 0, 0, 0];
-                for (let i = 0; i < refData.length; i += 4) {
-                    rRef += refData[i]; gRef += refData[i + 1]; bRef += refData[i + 2];
-                    count++;
-                }
-                for (let i = 0; i < pixels.length; i += 4) {
-                    rSwap += pixels[i]; gSwap += pixels[i + 1]; bSwap += pixels[i + 2];
-                }
-                const n = count;
-                const m = pixels.length / 4;
-                const [rMeanRef, gMeanRef, bMeanRef] = [rRef / n, gRef / n, bRef / n];
-                const [rMeanSwap, gMeanSwap, bMeanSwap] = [rSwap / m, gSwap / m, bSwap / m];
-
-                // Subtle shift: blend 20% toward target color tone
-                const blend = 0.2;
-                const rShift = (rMeanRef - rMeanSwap) * blend;
-                const gShift = (gMeanRef - gMeanSwap) * blend;
-                const bShift = (bMeanRef - bMeanSwap) * blend;
-
-                for (let i = 0; i < pixels.length; i += 4) {
-                    pixels[i] = Math.min(255, Math.max(0, pixels[i] + rShift));
-                    pixels[i + 1] = Math.min(255, Math.max(0, pixels[i + 1] + gShift));
-                    pixels[i + 2] = Math.min(255, Math.max(0, pixels[i + 2] + bShift));
-                }
-                ctx.putImageData(swappedData, 0, 0);
-                resolve(canvas.toDataURL("image/jpeg", 0.95));
-            };
-            refImg.onerror = () => resolve(swappedDataUrl);
-            refImg.src = referenceDataUrl;
-        };
-        swappedImg.onerror = () => resolve(swappedDataUrl);
-        swappedImg.src = swappedDataUrl;
-    });
-}
-
 export default function FaceSwap() {
     const [swapMode, setSwapMode] = useState<'face' | 'head'>('face');
     const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -117,69 +53,39 @@ export default function FaceSwap() {
         setIsGenerating(true);
         setError(null);
         setResultImage(null);
-        setProgress(0);
-        setStatusMessage("Connecting...");
-
-        const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
-        const clientOptions = hfToken ? { token: hfToken as `hf_${string}`, events: ["data", "status"] as ("data" | "status")[] } : { events: ["data", "status"] as ("data" | "status")[] };
+        setProgress(10);
+        setStatusMessage("Initializing...");
 
         try {
+            const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
+            const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
+
             if (swapMode === 'face') {
-                // Stage 1: Face Swap + Enhance in one call (SS86910/Faceswaper uses FaceFusion + CodeFormer internally)
                 setStatusMessage("Swapping faces...");
-                setProgress(10);
-                const swapClient = await Client.connect("SS86910/Faceswaper", clientOptions);
-                const job = swapClient.submit("/predict", {
-                    source_image_path: originalFileRef.current,
-                    target_image_path: targetFileRef.current,
-                    enhance_face: true,
+                setProgress(20);
+                const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
+                const swapResult = await swapClient.predict("/swap_faces", {
+                    src_img: originalFileRef.current,
+                    dest_img: targetFileRef.current,
                 });
 
-                let swappedUrl: string | null = null;
-                for await (const msg of job) {
-                    if (msg.type === "status") {
-                        const s = msg as any;
-                        if (s.queue_size > 0) {
-                            setStatusMessage(`Queue: ${s.position}/${s.queue_size}...`);
-                            const queueProgress = Math.max(10, 50 - (s.position / s.queue_size) * 40);
-                            setProgress(queueProgress);
-                        } else {
-                            setStatusMessage("Swapping faces...");
-                            setProgress(60);
-                        }
-                    } else if (msg.type === "data") {
-                        const data = (msg as any).data as any[];
-                        const out = data[0];
-                        swappedUrl = out?.url ?? out?.path ?? null;
-                        if (swappedUrl && !swappedUrl.startsWith("http")) {
-                            swappedUrl = `https://ss86910-faceswaper.hf.space/gradio_api/file=${swappedUrl}`;
-                        }
-                    }
-                }
+                setProgress(60);
+                const data = swapResult.data as any[];
+                const swappedOutput = data[0];
+                const swappedUrl = swappedOutput?.url ?? swappedOutput?.path ?? null;
+                if (!swappedUrl) throw new Error("Stage 1 failed: No image output.");
 
-                if (!swappedUrl) throw new Error("No output from swap model.");
+                const absoluteSwappedUrl = swappedUrl.startsWith("http")
+                    ? swappedUrl
+                    : `https://tonyassi-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
 
-                // Stage 2: Color Match (client-side, fast)
-                setStatusMessage("Matching colors...");
-                setProgress(80);
-                const swappedRes = await fetch(swappedUrl);
-                const swappedBlob = await swappedRes.blob();
-                const swappedDataUrl = await new Promise<string>((res) => {
-                    const r = new FileReader();
-                    r.onloadend = () => res(r.result as string);
-                    r.readAsDataURL(swappedBlob);
-                });
-
-                const colorMatched = await applyColorMatch(swappedDataUrl, targetImage!);
-                setProgress(100);
-                setStatusMessage("Done!");
-                setResultImage(colorMatched);
-
+                await performEnhancement(absoluteSwappedUrl, clientOptions);
             } else {
-                // Head Swap mode
-                setStatusMessage("Swapping head...");
-                setProgress(10);
+                setStatusMessage("Swapping head context...");
+                setProgress(20);
                 const swapClient = await Client.connect("linoyts/Flux2-Klein-Face-Swap", clientOptions);
+
+                // Use submit for progress events on head swap
                 const job = swapClient.submit("/face_swap", {
                     reference_face: originalFileRef.current,
                     target_image: targetFileRef.current,
@@ -193,12 +99,11 @@ export default function FaceSwap() {
                     if (msg.type === "status") {
                         const s = msg as any;
                         if (s.queue_size > 0) {
-                            setStatusMessage(`Queue: ${s.position}/${s.queue_size}...`);
-                            const queueProgress = Math.max(10, 50 - (s.position / s.queue_size) * 40);
-                            setProgress(queueProgress);
+                            setStatusMessage(`Queue: ${s.position ?? 1}/${s.queue_size}...`);
+                            setProgress(Math.max(20, 50 - (((s.position ?? 1) / s.queue_size) * 30)));
                         } else {
-                            setStatusMessage("Generating...");
-                            setProgress(60);
+                            setStatusMessage("Generating head swap...");
+                            setProgress(55);
                         }
                     } else if (msg.type === "data") {
                         const data = (msg as any).data as any[];
@@ -210,48 +115,59 @@ export default function FaceSwap() {
                     }
                 }
 
-                if (!swappedUrl) throw new Error("No output from head swap model.");
-
-                // Polishing step with CodeFormer
-                setStatusMessage("Polishing & sharpening...");
-                setProgress(75);
-                const imageRes = await fetch(swappedUrl);
-                const imageBlob = await imageRes.blob();
-                const intermediateFile = new File([imageBlob], "swapped.jpg", { type: "image/jpeg" });
-
-                const enhanceClient = await Client.connect("sczhou/CodeFormer", { events: ["data", "status"] as ("data" | "status")[], ...(hfToken ? { token: hfToken as `hf_${string}` } : {}) });
-                const enhanceJob = enhanceClient.submit("/inference", {
-                    image: intermediateFile,
-                    face_align: true,
-                    background_enhance: true,
-                    face_upsample: true,
-                    upscale: 1,
-                    codeformer_fidelity: 0.5,
-                });
-
-                let finalUrl: string | null = null;
-                for await (const msg of enhanceJob) {
-                    if (msg.type === "status") {
-                        setProgress(85);
-                    } else if (msg.type === "data") {
-                        const data = (msg as any).data as any[];
-                        const out = data[0];
-                        finalUrl = out?.url ?? out?.path ?? null;
-                    }
-                }
-
-                setProgress(100);
-                setResultImage(finalUrl);
+                if (!swappedUrl) throw new Error("Result extraction failed.");
+                setProgress(60);
+                await performEnhancement(swappedUrl, clientOptions);
             }
 
         } catch (err: any) {
             console.error("Swap Error:", err);
-            setError("Generation failed. Try different images or try again later.");
+            setError("Generation failed. Please try again with different images.");
         } finally {
             setIsGenerating(false);
             setStatusMessage("");
             setProgress(0);
         }
+    };
+
+    const performEnhancement = async (swappedUrl: string, options: any) => {
+        setStatusMessage("Polishing & sharpening...");
+        setProgress(70);
+        const imageRes = await fetch(swappedUrl);
+        const imageBlob = await imageRes.blob();
+        const intermediateFile = new File([imageBlob], "swapped.jpg", { type: "image/jpeg" });
+
+        const enhanceClient = await Client.connect("sczhou/CodeFormer", options);
+
+        // Use submit for progress on enhancement
+        const job = enhanceClient.submit("/inference", {
+            image: intermediateFile,
+            face_align: true,
+            background_enhance: true,
+            face_upsample: true,
+            upscale: 1,
+            codeformer_fidelity: 0.5,
+        });
+
+        let finalOutput: any = null;
+        for await (const msg of job) {
+            if (msg.type === "status") {
+                const s = msg as any;
+                if (s.queue_size > 0) {
+                    setStatusMessage(`Enhancing (queue: ${s.position ?? 1}/${s.queue_size})...`);
+                    setProgress(Math.max(70, 85 - (((s.position ?? 1) / s.queue_size) * 15)));
+                } else {
+                    setStatusMessage("Enhancing face...");
+                    setProgress(88);
+                }
+            } else if (msg.type === "data") {
+                const data = (msg as any).data as any[];
+                finalOutput = data[0];
+            }
+        }
+
+        setProgress(100);
+        setResultImage(finalOutput?.url ?? finalOutput?.path ?? null);
     };
 
     const handleDownload = async () => {
