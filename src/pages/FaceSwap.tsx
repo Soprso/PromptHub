@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Client } from "@gradio/client";
 import {
@@ -13,6 +13,112 @@ import {
     AlertCircle
 } from "lucide-react";
 import "./FaceSwap.css";
+
+const MAX_DIMENSION = 1024; // Max pixels before sending to HF
+
+// ─── Utility: Resize image to max dimension (canvas-based) ───────────────────
+async function resizeImage(file: File, maxDimension = MAX_DIMENSION): Promise<File> {
+    return new Promise((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => {
+            URL.revokeObjectURL(url);
+            const { width, height } = img;
+            if (width <= maxDimension && height <= maxDimension) {
+                resolve(file); // already small enough
+                return;
+            }
+            const scale = Math.min(maxDimension / width, maxDimension / height);
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.round(width * scale);
+            canvas.height = Math.round(height * scale);
+            const ctx = canvas.getContext("2d")!;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob((blob) => {
+                resolve(new File([blob!], file.name, { type: "image/jpeg" }));
+            }, "image/jpeg", 0.92);
+        };
+        img.src = url;
+    });
+}
+
+// ─── Utility: Simple face-region crop using brightness heuristic ─────────────
+// Crops the center-upper portion of the image (a rough face region),
+// enhances it with CodeFormer, then pastes it back.
+async function cropFaceAndEnhance(
+    swappedUrl: string,
+    clientOptions: any,
+    timeoutMs = 30000
+): Promise<string> {
+    // Download swapped image to canvas
+    const res = await fetch(swappedUrl);
+    const blob = await res.blob();
+    const bmp = await createImageBitmap(blob);
+
+    const fullW = bmp.width;
+    const fullH = bmp.height;
+
+    // Face region estimate: top 60% of image, centered horizontally
+    // (covers most portrait/half-body shots)
+    const cropX = Math.round(fullW * 0.1);
+    const cropY = 0;
+    const cropW = Math.round(fullW * 0.8);
+    const cropH = Math.round(fullH * 0.6);
+
+    // Draw face crop to a canvas
+    const cropCanvas = document.createElement("canvas");
+    cropCanvas.width = cropW;
+    cropCanvas.height = cropH;
+    const cropCtx = cropCanvas.getContext("2d")!;
+    cropCtx.drawImage(bmp, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+
+    const cropBlob = await new Promise<Blob>((r) => cropCanvas.toBlob((b) => r(b!), "image/jpeg", 0.92));
+    const cropFile = new File([cropBlob], "face_crop.jpg", { type: "image/jpeg" });
+
+    // Run CodeFormer on crop only
+    const enhanceClient = await Client.connect("sczhou/CodeFormer", clientOptions);
+    const enhanceResult = await Promise.race([
+        enhanceClient.predict("/inference", {
+            image: cropFile,
+            face_align: true,
+            background_enhance: false,
+            face_upsample: true,
+            upscale: 1,
+            codeformer_fidelity: 0.5, // slightly higher since crop is smaller = still fast
+        }),
+        new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("CodeFormer timeout")), timeoutMs)
+        ),
+    ]);
+
+    const enhData = (enhanceResult as any).data as any[];
+    const enhancedOutput = enhData[0];
+    const enhancedUrl: string = enhancedOutput?.url ?? enhancedOutput?.path ?? null;
+    if (!enhancedUrl) throw new Error("No enhanced output");
+
+    // Download enhanced crop
+    const enhRes = await fetch(enhancedUrl.startsWith("http")
+        ? enhancedUrl
+        : `https://sczhou-codeformer.hf.space/gradio_api/file=${enhancedUrl}`
+    );
+    const enhBlob = await enhRes.blob();
+    const enhBmp = await createImageBitmap(enhBlob);
+
+    // Paste enhanced crop back onto full image
+    const fullCanvas = document.createElement("canvas");
+    fullCanvas.width = fullW;
+    fullCanvas.height = fullH;
+    const fullCtx = fullCanvas.getContext("2d")!;
+    fullCtx.drawImage(bmp, 0, 0); // draw original full image
+    fullCtx.drawImage(enhBmp, cropX, cropY, cropW, cropH); // paste enhanced crop back
+
+    return new Promise((resolve) => {
+        fullCanvas.toBlob((b) => {
+            const finalUrl = URL.createObjectURL(b!);
+            resolve(finalUrl);
+        }, "image/jpeg", 0.95);
+    });
+}
 
 export default function FaceSwap() {
     const [swapMode, setSwapMode] = useState<'face' | 'head'>('face');
@@ -29,6 +135,13 @@ export default function FaceSwap() {
     const targetInputRef = useRef<HTMLInputElement>(null);
     const originalFileRef = useRef<File | null>(null);
     const targetFileRef = useRef<File | null>(null);
+
+    // ── Fix 1: Pre-warm HF Spaces on page load ──
+    useEffect(() => {
+        // Silently ping both spaces to wake their GPU before user clicks Generate
+        fetch("https://tonyassi-face-swap.hf.space").catch(() => { });
+        fetch("https://sczhou-codeformer.hf.space").catch(() => { });
+    }, []);
 
     const handleImageUpload = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -54,20 +167,27 @@ export default function FaceSwap() {
         setError(null);
         setResultImage(null);
         setProgress(10);
-        setStatusMessage("Initializing...");
+        setStatusMessage("Preparing images...");
 
         try {
             const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
             const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
 
+            // ── Fix 2: Pre-resize both images to max 1024px ──
+            const [resizedSrc, resizedTarget] = await Promise.all([
+                resizeImage(originalFileRef.current),
+                resizeImage(targetFileRef.current),
+            ]);
+            setProgress(20);
+
             if (swapMode === 'face') {
-                // Stage 1: Face Swap (InsightFace via tonyassi/face-swap)
+                // Stage 1: InsightFace swap
                 setStatusMessage("Swapping faces...");
                 setProgress(30);
                 const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
                 const swapResult = await swapClient.predict("/swap_faces", {
-                    src_img: originalFileRef.current,
-                    dest_img: targetFileRef.current,
+                    src_img: resizedSrc,
+                    dest_img: resizedTarget,
                 });
 
                 setProgress(60);
@@ -80,38 +200,15 @@ export default function FaceSwap() {
                     ? swappedUrl
                     : `https://tonyassi-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
 
-                // Stage 2: CodeFormer enhancement — 30s timeout, falls back to raw swap
+                // Stage 2: Fix 3 — CodeFormer on face crop only, 30s timeout, fallback
                 setStatusMessage("Enhancing face...");
                 setProgress(75);
                 try {
-                    const imageRes = await fetch(absoluteSwappedUrl);
-                    const imageBlob = await imageRes.blob();
-                    const intermediateFile = new File([imageBlob], "swapped.jpg", { type: "image/jpeg" });
-
-                    const enhanceClient = await Client.connect("sczhou/CodeFormer", clientOptions);
-
-                    // Race: CodeFormer vs 30-second timeout
-                    const enhanceResult = await Promise.race([
-                        enhanceClient.predict("/inference", {
-                            image: intermediateFile,
-                            face_align: true,
-                            background_enhance: false, // skip for speed
-                            face_upsample: true,
-                            upscale: 1,
-                            codeformer_fidelity: 0.3,  // lower = faster, minimal quality loss
-                        }),
-                        new Promise<never>((_, reject) =>
-                            setTimeout(() => reject(new Error("CodeFormer timeout")), 30000)
-                        ),
-                    ]);
-
+                    const enhanced = await cropFaceAndEnhance(absoluteSwappedUrl, clientOptions, 30000);
                     setProgress(100);
-                    const enhData = (enhanceResult as any).data as any[];
-                    const finalOutput = enhData[0];
-                    setResultImage(finalOutput?.url ?? finalOutput?.path ?? absoluteSwappedUrl);
+                    setResultImage(enhanced);
                 } catch (enhErr: any) {
-                    // CodeFormer timed out or failed — gracefully use raw swap result
-                    console.warn("Enhancement skipped (timeout/error):", enhErr?.message);
+                    console.warn("Enhancement skipped:", enhErr?.message);
                     setProgress(100);
                     setResultImage(absoluteSwappedUrl);
                 }
@@ -119,12 +216,12 @@ export default function FaceSwap() {
             } else {
                 // Head Swap mode
                 setStatusMessage("Swapping head context...");
-                setProgress(20);
+                setProgress(25);
                 const swapClient = await Client.connect("linoyts/Flux2-Klein-Face-Swap", clientOptions);
 
                 const job = swapClient.submit("/face_swap", {
-                    reference_face: originalFileRef.current,
-                    target_image: targetFileRef.current,
+                    reference_face: resizedSrc,
+                    target_image: resizedTarget,
                     seed: 0,
                     randomize_seed: true,
                     num_inference_steps: 4,
@@ -136,7 +233,7 @@ export default function FaceSwap() {
                         const s = msg as any;
                         if (s.queue_size > 0) {
                             setStatusMessage(`Queue: ${s.position ?? 1}/${s.queue_size}...`);
-                            setProgress(Math.max(20, 50 - (((s.position ?? 1) / s.queue_size) * 30)));
+                            setProgress(Math.max(25, 55 - (((s.position ?? 1) / s.queue_size) * 30)));
                         } else {
                             setStatusMessage("Generating head swap...");
                             setProgress(70);
