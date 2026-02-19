@@ -164,8 +164,9 @@ export default function FaceSwap() {
                         className={`mode-btn ${swapMode === 'face' ? 'active' : ''}`}
                         onClick={() => setSwapMode('face')}
                     >
-                        <UserCircle size={18} />
+                        <RefreshCcw size={18} />
                         <span>Face Swap</span>
+                        <span className="pro-badge">PRO</span>
                     </button>
                     <button
                         className={`mode-btn ${swapMode === 'head' ? 'active' : ''}`}
@@ -173,6 +174,7 @@ export default function FaceSwap() {
                     >
                         <User size={18} />
                         <span>Head Swap</span>
+                        <span className="beta-badge">BETA</span>
                     </button>
                 </div>
             </div>
