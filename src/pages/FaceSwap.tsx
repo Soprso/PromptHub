@@ -295,31 +295,8 @@ async function runProPipeline(
         console.warn("CodeFormer skipped:", e?.message);
     }
 
-    // ── Stage 3b: GFPGAN Eye & Feature Refinement ───────────────────────────
-    onProgress(85, "Refining eyes and facial features...");
-    let refinedFile = cfFile; // fallback if GFPGAN fails
-    try {
-        const gfClient = await Client.connect("TencentARC/GFPGAN", clientOptions);
-        const gfResult = await Promise.race([
-            gfClient.predict("/restore", {
-                img: cfFile,
-                version: "v1.4",
-                scale: 2,
-            }),
-            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("GFPGAN timeout")), 45000)),
-        ]);
-        const gfData = (gfResult as any).data as any[];
-        // GFPGAN returns [output_image, ...] — output_image may be in index 0 or 1
-        const gfOut = gfData[1] ?? gfData[0];
-        let gfUrl: string = gfOut?.url ?? gfOut?.path ?? (typeof gfOut === "string" ? gfOut : "");
-        if (gfUrl && !gfUrl.startsWith("http")) gfUrl = `https://tencentarc-gfpgan.hf.space/gradio_api/file=${gfUrl}`;
-        if (gfUrl) {
-            const gfBlob = await (await fetch(gfUrl)).blob();
-            refinedFile = new File([gfBlob], "gf_refined.jpg", { type: "image/jpeg" });
-        }
-    } catch (e: any) {
-        console.warn("GFPGAN skipped:", e?.message);
-    }
+    // Stage 3b: GFPGAN removed — space is 404 (tencentarc-gfpgan.hf.space gone)
+    const refinedFile = cfFile;
 
     // ── Stage 4: Skin Tone Color Matching + Eye Preserve ──────────────────────
     onProgress(92, "Final blending and color matching...");
@@ -370,11 +347,11 @@ export default function FaceSwap() {
     const originalFileRef = useRef<File | null>(null);
     const targetFileRef = useRef<File | null>(null);
 
-    // Pre-warm HF Spaces on page load to eliminate cold starts
+    // Pre-warm HF Spaces on page load to reduce cold starts
     useEffect(() => {
         fetch("https://tonyassi-face-swap.hf.space").catch(() => { });
         fetch("https://sczhou-codeformer.hf.space").catch(() => { });
-        fetch("https://tencentarc-gfpgan.hf.space").catch(() => { });
+        fetch("https://airi-institute-hairfastgan.hf.space").catch(() => { });
     }, []);
 
     const handleImageUpload = (
@@ -493,23 +470,40 @@ export default function FaceSwap() {
                 setProgress(60);
                 let finalUrl: string = hsFaceUrl; // fallback: use face-only result
                 try {
+                    // HairFastGAN face detection works best at ≤512px
+                    const hsResize512 = async (f: File): Promise<File> => {
+                        const du = await blobToDataURL(f);
+                        const im = await loadImageFromDataURL(du);
+                        if (im.width <= 512 && im.height <= 512) return f;
+                        const sc = Math.min(512 / im.width, 512 / im.height);
+                        const cv = document.createElement("canvas");
+                        cv.width = Math.round(im.width * sc);
+                        cv.height = Math.round(im.height * sc);
+                        cv.getContext("2d")!.drawImage(im, 0, 0, cv.width, cv.height);
+                        return new Promise<File>((r) =>
+                            cv.toBlob((b) => r(new File([b!], f.name, { type: "image/jpeg" })), "image/jpeg", 0.92)
+                        );
+                    };
+                    const hairFaceFile = await hsResize512(hsFaceFile);
+                    const hairShapeFile = await hsResize512(resizedSrc);
+
                     const hairClient = await Client.connect("AIRI-Institute/HairFastGAN", clientOptions);
                     const hairResult = await Promise.race([
                         hairClient.predict("/swap_hair", {
-                            face: hsFaceFile,      // face-swapped image (gets the new hair)
-                            shape: resizedSrc,     // source image provides the hair shape
-                            color: resizedSrc,     // source image for hair color too
-                            blending: "Article",   // 'Article' or 'Poisson'
+                            face: hairFaceFile,
+                            shape: hairShapeFile,
+                            color: hairShapeFile,
+                            blending: "Article",
                             poisson_iters: 0,
-                            poisson_erosion: 1,    // correct default per API docs
+                            poisson_erosion: 1,
                         }),
                         new Promise<never>((_, reject) =>
-                            setTimeout(() => reject(new Error("HairFastGAN timeout")), 90000)
+                            setTimeout(() => reject(new Error("HairFastGAN timeout after 90s")), 90000)
                         ),
                     ]);
 
                     const hairData = (hairResult as any).data as any[];
-                    const hairOut = hairData[0]; // index 0 = result image, index 1 = error string
+                    const hairOut = hairData[0];
                     const hairRawUrl: string = hairOut?.url ?? hairOut?.path ?? "";
                     if (hairRawUrl) {
                         finalUrl = hairRawUrl.startsWith("http")
@@ -517,7 +511,8 @@ export default function FaceSwap() {
                             : `https://airi-institute-hairfastgan.hf.space/gradio_api/file=${hairRawUrl}`;
                     }
                 } catch (hairErr: any) {
-                    console.warn("HairFastGAN skipped, using face-only result:", hairErr?.message);
+                    // Log full error object for debugging
+                    console.warn("HairFastGAN skipped, using face-only result:", hairErr?.message, hairErr);
                 }
 
                 setProgress(100);
