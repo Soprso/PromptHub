@@ -62,30 +62,29 @@ export default function FaceSwap() {
 
             if (swapMode === 'face') {
                 setStatusMessage("Swapping faces...");
-                setProgress(20);
+                setProgress(30);
                 const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
                 const swapResult = await swapClient.predict("/swap_faces", {
                     src_img: originalFileRef.current,
                     dest_img: targetFileRef.current,
                 });
 
-                setProgress(60);
+                setProgress(100);
                 const data = swapResult.data as any[];
                 const swappedOutput = data[0];
                 const swappedUrl = swappedOutput?.url ?? swappedOutput?.path ?? null;
-                if (!swappedUrl) throw new Error("Stage 1 failed: No image output.");
+                if (!swappedUrl) throw new Error("No image output from swap model.");
 
                 const absoluteSwappedUrl = swappedUrl.startsWith("http")
                     ? swappedUrl
                     : `https://tonyassi-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
 
-                await performEnhancement(absoluteSwappedUrl, clientOptions);
+                setResultImage(absoluteSwappedUrl);
             } else {
                 setStatusMessage("Swapping head context...");
                 setProgress(20);
                 const swapClient = await Client.connect("linoyts/Flux2-Klein-Face-Swap", clientOptions);
 
-                // Use submit for progress events on head swap
                 const job = swapClient.submit("/face_swap", {
                     reference_face: originalFileRef.current,
                     target_image: targetFileRef.current,
@@ -103,7 +102,7 @@ export default function FaceSwap() {
                             setProgress(Math.max(20, 50 - (((s.position ?? 1) / s.queue_size) * 30)));
                         } else {
                             setStatusMessage("Generating head swap...");
-                            setProgress(55);
+                            setProgress(70);
                         }
                     } else if (msg.type === "data") {
                         const data = (msg as any).data as any[];
@@ -116,8 +115,8 @@ export default function FaceSwap() {
                 }
 
                 if (!swappedUrl) throw new Error("Result extraction failed.");
-                setProgress(60);
-                await performEnhancement(swappedUrl, clientOptions);
+                setProgress(100);
+                setResultImage(swappedUrl);
             }
 
         } catch (err: any) {
@@ -130,45 +129,6 @@ export default function FaceSwap() {
         }
     };
 
-    const performEnhancement = async (swappedUrl: string, options: any) => {
-        setStatusMessage("Polishing & sharpening...");
-        setProgress(70);
-        const imageRes = await fetch(swappedUrl);
-        const imageBlob = await imageRes.blob();
-        const intermediateFile = new File([imageBlob], "swapped.jpg", { type: "image/jpeg" });
-
-        const enhanceClient = await Client.connect("sczhou/CodeFormer", options);
-
-        // Use submit for progress on enhancement
-        const job = enhanceClient.submit("/inference", {
-            image: intermediateFile,
-            face_align: true,
-            background_enhance: true,
-            face_upsample: true,
-            upscale: 1,
-            codeformer_fidelity: 0.5,
-        });
-
-        let finalOutput: any = null;
-        for await (const msg of job) {
-            if (msg.type === "status") {
-                const s = msg as any;
-                if (s.queue_size > 0) {
-                    setStatusMessage(`Enhancing (queue: ${s.position ?? 1}/${s.queue_size})...`);
-                    setProgress(Math.max(70, 85 - (((s.position ?? 1) / s.queue_size) * 15)));
-                } else {
-                    setStatusMessage("Enhancing face...");
-                    setProgress(88);
-                }
-            } else if (msg.type === "data") {
-                const data = (msg as any).data as any[];
-                finalOutput = data[0];
-            }
-        }
-
-        setProgress(100);
-        setResultImage(finalOutput?.url ?? finalOutput?.path ?? null);
-    };
 
     const handleDownload = async () => {
         if (!resultImage) return;
