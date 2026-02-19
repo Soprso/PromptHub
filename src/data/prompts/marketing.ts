@@ -329,39 +329,5 @@ export const marketingPrompts: PromptCategory[] = [
                 ]
             }
         ]
-    },
-    {
-        id: "ecommerce-product-prompts",
-        name: "E-commerce & Product Management",
-        icon: "🛍️",
-        description: "Product descriptions, personalization, and website optimization",
-        folders: [
-            {
-                id: "product-descriptions-copy",
-                name: "Product Descriptions & Copywriting",
-                icon: "🏷️",
-                prompts: [
-                    { id: "product-description", title: "SEO Product Description", content: "Write a persuasive, SEO-friendly product description for [product name]. Highlight key features (Material, Size, Tech specs) and translate them into benefits (Why it matters). Use sensory words to help the customer visualize using it. Include a bulleted list for readability and target keywords: [list keywords].", tags: ["E-commerce & Product Management", "Product Descriptions & Copywriting"] },
-                    { id: "product-categorization", title: "Catalog Categorization", content: "Propose a logical category taxonomy for an e-commerce store selling [niche]. Structure high-level categories (L1), sub-categories (L2), and filters (L3 attributes like size, color, brand). Ensure the structure is intuitive for user navigation and SEO-friendly.", tags: ["E-commerce & Product Management", "Product Descriptions & Copywriting"] }
-                ]
-            },
-            {
-                id: "customer-personalization",
-                name: "Customer Personalization Strategies",
-                icon: "🎯",
-                prompts: [
-                    { id: "recommendation-logic", title: "Recommendation Engine Logic", content: "Design the logic for product recommendations on a [fashion/electronics] e-commerce site. Define rules for: 'Frequently Bought Together' (cross-sell), 'You May Also Like' (upsell/alternative), and 'Recently Viewed'. base logic on user behavior, purchase history, and product attributes.", tags: ["E-commerce & Product Management", "Customer Personalization Strategies"] },
-                    { id: "personalized-offers", title: "Personalized Offer Strategy", content: "Create a strategy for dynamic personalized offers. Example: 'If user abandons cart > send 10% off email'; 'If user buys running shoes > show ad for running socks'. Map out 5 key user triggers and the corresponding personalized incentive to maximize conversion.", tags: ["E-commerce & Product Management", "Customer Personalization Strategies"] }
-                ]
-            },
-            {
-                id: "conversion-rate-optimization",
-                name: "Conversion Rate Optimization (CRO)",
-                icon: "⚡",
-                prompts: [
-                    { id: "landing-page-audit", title: "Landing Page CRO Audit", content: "Critique the provided landing page [link/description] for Conversion Rate Optimization. Analyze: Headline clarity, Hero image relevance, Trust signals, Form friction, and Call-to-Action visibility. Propose 3 specific A/B tests to improve the conversion rate.", tags: ["E-commerce & Product Management", "Conversion Rate Optimization (CRO)"] },
-                    { id: "checkout-flow", title: "Checkout Flow Optimization", content: "Map out an ideal friction-free checkout process for mobile users. Address: Guest checkout, auto-fill address, payment options (Apple Pay/PayPal), progress indicators, and trust badges. Identify common drop-off points and how to fix them.", tags: ["E-commerce & Product Management", "Conversion Rate Optimization (CRO)"] }
-                ]
-            }
-        ]
     }];
+

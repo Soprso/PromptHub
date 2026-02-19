@@ -291,8 +291,31 @@ async function runProPipeline(
             const cfBlob = await (await fetch(cfUrl)).blob();
             cfFile = new File([cfBlob], "cf_enhanced.jpg", { type: "image/jpeg" });
         }
-    } catch (e: any) {
-        console.warn("CodeFormer skipped:", e?.message);
+    } catch (cfErr: any) {
+        console.warn("CodeFormer unavailable, trying GFPGANv1.4 fallback:", cfErr?.message);
+        // ── CodeFormer fallback: GFPGANv1.4 via MayankTamakuwala space ───────────
+        try {
+            const gf2Client = await Client.connect(
+                "MayankTamakuwala/Image-Upscaler-and-Restoring-GFPGAN-Algorithm",
+                clientOptions
+            );
+            const gf2Result = await Promise.race([
+                // positional: [image, version, rescale_factor]
+                gf2Client.predict("/predict", [cropFile, "GFPGANv1.4", 2]),
+                new Promise<never>((_, reject) =>
+                    setTimeout(() => reject(new Error("GFPGANv1.4 fallback timeout")), 60000)
+                ),
+            ]);
+            const gf2Data = (gf2Result as any).data as any[];
+            const gf2Out = gf2Data[0];
+            const gf2Url: string = gf2Out?.url ?? gf2Out?.path ?? "";
+            if (gf2Url && gf2Url.startsWith("http")) {
+                const gf2Blob = await (await fetch(gf2Url)).blob();
+                cfFile = new File([gf2Blob], "gfpgan_enhanced.jpg", { type: "image/jpeg" });
+            }
+        } catch (gf2Err: any) {
+            console.warn("GFPGANv1.4 fallback also skipped, using raw swap:", gf2Err?.message);
+        }
     }
 
     // ── Stage 3b: GFPGAN Eye & Feature Refinement ───────────────────────────
@@ -370,11 +393,12 @@ export default function FaceSwap() {
     const originalFileRef = useRef<File | null>(null);
     const targetFileRef = useRef<File | null>(null);
 
-    // Pre-warm HF Spaces on page load to eliminate cold starts
+    // Pre-warm live HF Spaces on page load to reduce cold starts
     useEffect(() => {
         fetch("https://tonyassi-face-swap.hf.space").catch(() => { });
         fetch("https://sczhou-codeformer.hf.space").catch(() => { });
-        fetch("https://tencentarc-gfpgan.hf.space").catch(() => { });
+        // GFPGANv1.4 fallback for when CodeFormer is busy
+        fetch("https://mayanktamakuwala-image-upscaler-and-restoring-gf-5c51069.hf.space").catch(() => { });
     }, []);
 
     const handleImageUpload = (
