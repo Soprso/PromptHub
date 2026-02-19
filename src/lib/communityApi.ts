@@ -21,7 +21,7 @@ export const communityApi = {
 
         const { error } = await supabase
             .from('prompts_shared')
-            .insert([prompt]);
+            .insert([{ ...prompt, is_approved: true }]);
 
         if (error) throw error;
     },
@@ -35,6 +35,7 @@ export const communityApi = {
         let query = supabase
             .from('prompts_shared')
             .select('*', { count: 'exact' })
+            .eq('is_approved', true)
             .order('created_at', { ascending: false });
 
         // Apply search filter if provided
