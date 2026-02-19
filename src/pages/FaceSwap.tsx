@@ -13,6 +13,7 @@ import {
     AlertCircle
 } from "lucide-react";
 import "./FaceSwap.css";
+import { runHeadSwapPipeline } from "./headSwapPipeline";
 
 // Mobile detection
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -393,12 +394,13 @@ export default function FaceSwap() {
     const originalFileRef = useRef<File | null>(null);
     const targetFileRef = useRef<File | null>(null);
 
-    // Pre-warm live HF Spaces on page load to reduce cold starts
+    // Pre-warm HF Spaces on page load to eliminate cold starts
     useEffect(() => {
         fetch("https://tonyassi-face-swap.hf.space").catch(() => { });
         fetch("https://sczhou-codeformer.hf.space").catch(() => { });
-        // GFPGANv1.4 fallback for when CodeFormer is busy
-        fetch("https://mayanktamakuwala-image-upscaler-and-restoring-gf-5c51069.hf.space").catch(() => { });
+        fetch("https://tencentarc-gfpgan.hf.space").catch(() => { });
+        fetch("https://airi-institute-hairfastgan.hf.space").catch(() => { }); // head swap
+        fetch("https://mayanktamakuwala-image-upscaler-and-restoring-gf-5c51069.hf.space").catch(() => { }); // fallback
     }, []);
 
     const handleImageUpload = (
@@ -482,43 +484,18 @@ export default function FaceSwap() {
                 }
 
             } else {
-                // Head Swap mode (unchanged)
-                setStatusMessage("Swapping head context...");
-                setProgress(25);
-                const swapClient = await Client.connect("linoyts/Flux2-Klein-Face-Swap", clientOptions);
-
-                const job = swapClient.submit("/face_swap", {
-                    reference_face: resizedSrc,
-                    target_image: resizedTarget,
-                    seed: 0,
-                    randomize_seed: true,
-                    num_inference_steps: 4,
-                });
-
-                let swappedUrl: string | null = null;
-                for await (const msg of job) {
-                    if (msg.type === "status") {
-                        const s = msg as any;
-                        if (s.queue_size > 0) {
-                            setStatusMessage(`Queue: ${s.position ?? 1}/${s.queue_size}...`);
-                            setProgress(Math.max(25, 55 - (((s.position ?? 1) / s.queue_size) * 30)));
-                        } else {
-                            setStatusMessage("Generating head swap...");
-                            setProgress(70);
-                        }
-                    } else if (msg.type === "data") {
-                        const msgData = (msg as any).data as any[];
-                        const out = Array.isArray(msgData[0]) ? msgData[0][1] : msgData[0];
-                        swappedUrl = out?.url ?? out?.path ?? null;
-                        if (swappedUrl && !swappedUrl.startsWith("http")) {
-                            swappedUrl = `https://linoyts-flux2-klein-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
-                        }
-                    }
-                }
-
-                if (!swappedUrl) throw new Error("Result extraction failed.");
+                // ── Head Swap: InsightFace + HairFastGAN + CodeFormer pipeline ──
+                // All logic lives in headSwapPipeline.ts (separate file)
+                const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
+                const headClientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
+                const finalImage = await runHeadSwapPipeline(
+                    resizedSrc,
+                    resizedTarget,
+                    headClientOptions,
+                    (pct, msg) => { setProgress(pct); setStatusMessage(msg); }
+                );
                 setProgress(100);
-                setResultImage(swappedUrl);
+                setResultImage(finalImage);
             }
 
         } catch (err: any) {
