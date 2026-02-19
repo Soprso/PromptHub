@@ -61,6 +61,7 @@ export default function FaceSwap() {
             const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
 
             if (swapMode === 'face') {
+                // Stage 1: Face Swap (InsightFace via tonyassi/face-swap)
                 setStatusMessage("Swapping faces...");
                 setProgress(30);
                 const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
@@ -69,7 +70,7 @@ export default function FaceSwap() {
                     dest_img: targetFileRef.current,
                 });
 
-                setProgress(100);
+                setProgress(60);
                 const data = swapResult.data as any[];
                 const swappedOutput = data[0];
                 const swappedUrl = swappedOutput?.url ?? swappedOutput?.path ?? null;
@@ -79,8 +80,44 @@ export default function FaceSwap() {
                     ? swappedUrl
                     : `https://tonyassi-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
 
-                setResultImage(absoluteSwappedUrl);
+                // Stage 2: CodeFormer enhancement — 30s timeout, falls back to raw swap
+                setStatusMessage("Enhancing face...");
+                setProgress(75);
+                try {
+                    const imageRes = await fetch(absoluteSwappedUrl);
+                    const imageBlob = await imageRes.blob();
+                    const intermediateFile = new File([imageBlob], "swapped.jpg", { type: "image/jpeg" });
+
+                    const enhanceClient = await Client.connect("sczhou/CodeFormer", clientOptions);
+
+                    // Race: CodeFormer vs 30-second timeout
+                    const enhanceResult = await Promise.race([
+                        enhanceClient.predict("/inference", {
+                            image: intermediateFile,
+                            face_align: true,
+                            background_enhance: false, // skip for speed
+                            face_upsample: true,
+                            upscale: 1,
+                            codeformer_fidelity: 0.3,  // lower = faster, minimal quality loss
+                        }),
+                        new Promise<never>((_, reject) =>
+                            setTimeout(() => reject(new Error("CodeFormer timeout")), 30000)
+                        ),
+                    ]);
+
+                    setProgress(100);
+                    const enhData = (enhanceResult as any).data as any[];
+                    const finalOutput = enhData[0];
+                    setResultImage(finalOutput?.url ?? finalOutput?.path ?? absoluteSwappedUrl);
+                } catch (enhErr: any) {
+                    // CodeFormer timed out or failed — gracefully use raw swap result
+                    console.warn("Enhancement skipped (timeout/error):", enhErr?.message);
+                    setProgress(100);
+                    setResultImage(absoluteSwappedUrl);
+                }
+
             } else {
+                // Head Swap mode
                 setStatusMessage("Swapping head context...");
                 setProgress(20);
                 const swapClient = await Client.connect("linoyts/Flux2-Klein-Face-Swap", clientOptions);
@@ -105,8 +142,8 @@ export default function FaceSwap() {
                             setProgress(70);
                         }
                     } else if (msg.type === "data") {
-                        const data = (msg as any).data as any[];
-                        const out = Array.isArray(data[0]) ? data[0][1] : data[0];
+                        const msgData = (msg as any).data as any[];
+                        const out = Array.isArray(msgData[0]) ? msgData[0][1] : msgData[0];
                         swappedUrl = out?.url ?? out?.path ?? null;
                         if (swappedUrl && !swappedUrl.startsWith("http")) {
                             swappedUrl = `https://linoyts-flux2-klein-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
@@ -128,7 +165,6 @@ export default function FaceSwap() {
             setProgress(0);
         }
     };
-
 
     const handleDownload = async () => {
         if (!resultImage) return;
@@ -171,9 +207,7 @@ export default function FaceSwap() {
                     <button
                         className={`mode-btn ${swapMode === 'head' ? 'active' : ''}`}
                         onClick={() => {
-                            if (swapMode !== 'head') {
-                                setShowBetaModal(true);
-                            }
+                            if (swapMode !== 'head') setShowBetaModal(true);
                             setSwapMode('head');
                         }}
                     >
