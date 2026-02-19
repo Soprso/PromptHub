@@ -14,9 +14,9 @@ import {
 } from "lucide-react";
 import "./FaceSwap.css";
 
-const MAX_DIMENSION = 1024; // Max pixels before sending to HF
+const MAX_DIMENSION = 1024;
 
-// ─── Utility: Resize image to max dimension (canvas-based) ───────────────────
+// ─── Stage 0: Resize image to max dimension ───────────────────────────────────
 async function resizeImage(file: File, maxDimension = MAX_DIMENSION): Promise<File> {
     return new Promise((resolve) => {
         const img = new Image();
@@ -24,100 +24,224 @@ async function resizeImage(file: File, maxDimension = MAX_DIMENSION): Promise<Fi
         img.onload = () => {
             URL.revokeObjectURL(url);
             const { width, height } = img;
-            if (width <= maxDimension && height <= maxDimension) {
-                resolve(file); // already small enough
-                return;
-            }
+            if (width <= maxDimension && height <= maxDimension) { resolve(file); return; }
             const scale = Math.min(maxDimension / width, maxDimension / height);
             const canvas = document.createElement("canvas");
             canvas.width = Math.round(width * scale);
             canvas.height = Math.round(height * scale);
-            const ctx = canvas.getContext("2d")!;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            canvas.toBlob((blob) => {
-                resolve(new File([blob!], file.name, { type: "image/jpeg" }));
-            }, "image/jpeg", 0.92);
+            canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob((blob) => resolve(new File([blob!], file.name, { type: "image/jpeg" })), "image/jpeg", 0.92);
         };
         img.src = url;
     });
 }
 
-// ─── Utility: Simple face-region crop using brightness heuristic ─────────────
-// Crops the center-upper portion of the image (a rough face region),
-// enhances it with CodeFormer, then pastes it back.
-async function cropFaceAndEnhance(
+// ─── Stage 4: Canvas-based skin tone color matching ─────────────────────────
+// Adjusts refined crop RGB to match the original swap face region's color
+function applyColorMatch(
+    refinedCtx: CanvasRenderingContext2D,
+    refinedW: number,
+    refinedH: number,
+    refImageData: ImageData // original swap region pixels for reference
+): void {
+    const refined = refinedCtx.getImageData(0, 0, refinedW, refinedH);
+    const refPx = refImageData.data;
+    const rPx = refined.data;
+
+    // Compute average RGB for reference (original swap crop)
+    let rRef = 0, gRef = 0, bRef = 0;
+    const refLen = refPx.length / 4;
+    for (let i = 0; i < refPx.length; i += 4) {
+        rRef += refPx[i]; gRef += refPx[i + 1]; bRef += refPx[i + 2];
+    }
+    rRef /= refLen; gRef /= refLen; bRef /= refLen;
+
+    // Compute average RGB for refined crop
+    let rRfn = 0, gRfn = 0, bRfn = 0;
+    const rfnLen = rPx.length / 4;
+    for (let i = 0; i < rPx.length; i += 4) {
+        rRfn += rPx[i]; gRfn += rPx[i + 1]; bRfn += rPx[i + 2];
+    }
+    rRfn /= rfnLen; gRfn /= rfnLen; bRfn /= rfnLen;
+
+    // Per-channel adjustment factor (clamp to prevent wild shifts)
+    const rAdj = Math.min(Math.max(rRef / (rRfn || 1), 0.7), 1.4);
+    const gAdj = Math.min(Math.max(gRef / (gRfn || 1), 0.7), 1.4);
+    const bAdj = Math.min(Math.max(bRef / (bRfn || 1), 0.7), 1.4);
+
+    // Apply adjustment
+    for (let i = 0; i < rPx.length; i += 4) {
+        rPx[i] = Math.min(255, Math.max(0, rPx[i] * rAdj));
+        rPx[i + 1] = Math.min(255, Math.max(0, rPx[i + 1] * gAdj));
+        rPx[i + 2] = Math.min(255, Math.max(0, rPx[i + 2] * bAdj));
+    }
+    refinedCtx.putImageData(refined, 0, 0);
+}
+
+// ─── Stage 5: Feathered edge blending ────────────────────────────────────────
+// Draws refined crop onto fullCtx with a radial gradient alpha mask for seamless edges
+function pasteWithFeather(
+    fullCtx: CanvasRenderingContext2D,
+    refinedCanvas: HTMLCanvasElement,
+    cropX: number,
+    cropY: number,
+    cropW: number,
+    cropH: number
+): void {
+    fullCtx.save();
+
+    // Create feather mask: opaque center → transparent edges
+    const maskCanvas = document.createElement("canvas");
+    maskCanvas.width = cropW;
+    maskCanvas.height = cropH;
+    const maskCtx = maskCanvas.getContext("2d")!;
+
+    const cx = cropW / 2;
+    const cy = cropH / 2;
+    const rx = cropW / 2;
+    const ry = cropH / 2;
+    // Feather starts at 75% of radius so center face is fully opaque
+    const grad = maskCtx.createRadialGradient(cx, cy, Math.min(rx, ry) * 0.75, cx, cy, Math.max(rx, ry));
+    grad.addColorStop(0, "rgba(0,0,0,1)");   // fully opaque at center
+    grad.addColorStop(1, "rgba(0,0,0,0)");   // fully transparent at edge
+
+    maskCtx.fillStyle = grad;
+    maskCtx.fillRect(0, 0, cropW, cropH);
+
+    // Draw refined crop onto a temp canvas, masked by the gradient
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = cropW;
+    tempCanvas.height = cropH;
+    const tempCtx = tempCanvas.getContext("2d")!;
+    tempCtx.drawImage(refinedCanvas, 0, 0, cropW, cropH);
+    tempCtx.globalCompositeOperation = "destination-in";
+    tempCtx.drawImage(maskCanvas, 0, 0);
+
+    // Composite blended crop onto full image
+    fullCtx.globalCompositeOperation = "source-over";
+    fullCtx.drawImage(tempCanvas, cropX, cropY, cropW, cropH);
+
+    fullCtx.restore();
+}
+
+// ─── Main Pro Pipeline: CodeFormer → GFPGAN → ColorMatch → Feather ──────────
+async function runProPipeline(
     swappedUrl: string,
     clientOptions: any,
-    timeoutMs = 30000
+    onProgress: (pct: number, msg: string) => void
 ): Promise<string> {
-    // Download swapped image to canvas
-    const res = await fetch(swappedUrl);
-    const blob = await res.blob();
-    const bmp = await createImageBitmap(blob);
+    // Download swapped image
+    const swapRes = await fetch(swappedUrl);
+    const swapBlob = await swapRes.blob();
+    const bmp = await createImageBitmap(swapBlob);
 
     const fullW = bmp.width;
     const fullH = bmp.height;
 
-    // Face region: wider + taller crop for full facial context
+    // Full image canvas (we'll composite onto this at the end)
+    const fullCanvas = document.createElement("canvas");
+    fullCanvas.width = fullW;
+    fullCanvas.height = fullH;
+    const fullCtx = fullCanvas.getContext("2d")!;
+    fullCtx.drawImage(bmp, 0, 0);
+
+    // Face crop region (wider + taller for full facial context)
     const cropX = Math.round(fullW * 0.05);
     const cropY = 0;
     const cropW = Math.round(fullW * 0.90);
     const cropH = Math.round(fullH * 0.70);
 
-    // Draw face crop to a canvas
+    // Extract reference pixels from original swap (before enhancement) for color matching
+    const refImageData = fullCtx.getImageData(cropX, cropY, cropW, cropH);
+
+    // Draw crop to canvas
     const cropCanvas = document.createElement("canvas");
     cropCanvas.width = cropW;
     cropCanvas.height = cropH;
     const cropCtx = cropCanvas.getContext("2d")!;
     cropCtx.drawImage(bmp, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
-    const cropBlob = await new Promise<Blob>((r) => cropCanvas.toBlob((b) => r(b!), "image/jpeg", 0.92));
+    const cropBlob = await new Promise<Blob>((r) => cropCanvas.toBlob((b) => r(b!), "image/jpeg", 0.95));
     const cropFile = new File([cropBlob], "face_crop.jpg", { type: "image/jpeg" });
 
-    // Run CodeFormer on crop only
-    const enhanceClient = await Client.connect("sczhou/CodeFormer", clientOptions);
-    const enhanceResult = await Promise.race([
-        enhanceClient.predict("/inference", {
-            image: cropFile,
-            face_align: true,
-            background_enhance: false,
-            face_upsample: true,
-            upscale: 2,               // 2× upscale for sharper output
-            codeformer_fidelity: 0.7, // high fidelity = maximum quality
-        }),
-        new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("CodeFormer timeout")), timeoutMs)
-        ),
-    ]);
+    // ── Stage 3a: CodeFormer Enhancement ────────────────────────────────────
+    onProgress(75, "Enhancing face details...");
+    let cfFile = cropFile; // fallback if CodeFormer fails
+    try {
+        const cfClient = await Client.connect("sczhou/CodeFormer", clientOptions);
+        const cfResult = await Promise.race([
+            cfClient.predict("/inference", {
+                image: cropFile,
+                face_align: true,
+                background_enhance: false,
+                face_upsample: true,
+                upscale: 2,
+                codeformer_fidelity: 0.7,
+            }),
+            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("CodeFormer timeout")), 60000)),
+        ]);
+        const cfData = (cfResult as any).data as any[];
+        const cfOut = cfData[0];
+        let cfUrl: string = cfOut?.url ?? cfOut?.path ?? "";
+        if (cfUrl && !cfUrl.startsWith("http")) cfUrl = `https://sczhou-codeformer.hf.space/gradio_api/file=${cfUrl}`;
+        if (cfUrl) {
+            const cfBlob = await (await fetch(cfUrl)).blob();
+            cfFile = new File([cfBlob], "cf_enhanced.jpg", { type: "image/jpeg" });
+        }
+    } catch (e: any) {
+        console.warn("CodeFormer skipped:", e?.message);
+    }
 
-    const enhData = (enhanceResult as any).data as any[];
-    const enhancedOutput = enhData[0];
-    const enhancedUrl: string = enhancedOutput?.url ?? enhancedOutput?.path ?? null;
-    if (!enhancedUrl) throw new Error("No enhanced output");
+    // ── Stage 3b: GFPGAN Eye & Feature Refinement ───────────────────────────
+    onProgress(85, "Refining eyes and facial features...");
+    let refinedFile = cfFile; // fallback if GFPGAN fails
+    try {
+        const gfClient = await Client.connect("TencentARC/GFPGAN", clientOptions);
+        const gfResult = await Promise.race([
+            gfClient.predict("/restore", {
+                img: cfFile,
+                version: "v1.4",
+                scale: 2,
+            }),
+            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("GFPGAN timeout")), 45000)),
+        ]);
+        const gfData = (gfResult as any).data as any[];
+        // GFPGAN returns [output_image, ...] — output_image may be in index 0 or 1
+        const gfOut = gfData[1] ?? gfData[0];
+        let gfUrl: string = gfOut?.url ?? gfOut?.path ?? (typeof gfOut === "string" ? gfOut : "");
+        if (gfUrl && !gfUrl.startsWith("http")) gfUrl = `https://tencentarc-gfpgan.hf.space/gradio_api/file=${gfUrl}`;
+        if (gfUrl) {
+            const gfBlob = await (await fetch(gfUrl)).blob();
+            refinedFile = new File([gfBlob], "gf_refined.jpg", { type: "image/jpeg" });
+        }
+    } catch (e: any) {
+        console.warn("GFPGAN skipped:", e?.message);
+    }
 
-    // Download enhanced crop
-    const enhRes = await fetch(enhancedUrl.startsWith("http")
-        ? enhancedUrl
-        : `https://sczhou-codeformer.hf.space/gradio_api/file=${enhancedUrl}`
-    );
-    const enhBlob = await enhRes.blob();
-    const enhBmp = await createImageBitmap(enhBlob);
+    // ── Stage 4: Client-side Skin Tone Color Matching ────────────────────────
+    onProgress(92, "Final blending and color matching...");
+    const refinedBmp = await createImageBitmap(refinedFile);
 
-    // Paste enhanced crop back onto full image
-    const fullCanvas = document.createElement("canvas");
-    fullCanvas.width = fullW;
-    fullCanvas.height = fullH;
-    const fullCtx = fullCanvas.getContext("2d")!;
-    fullCtx.drawImage(bmp, 0, 0); // draw original full image
-    fullCtx.drawImage(enhBmp, cropX, cropY, cropW, cropH); // paste enhanced crop back
+    // Draw refined result to a canvas at crop size for pixel manipulation
+    const refinedCanvas = document.createElement("canvas");
+    refinedCanvas.width = cropW;
+    refinedCanvas.height = cropH;
+    const refinedCtx = refinedCanvas.getContext("2d")!;
+    refinedCtx.drawImage(refinedBmp, 0, 0, cropW, cropH);
 
+    // Apply color match (refined → match original swap region's skin tone)
+    applyColorMatch(refinedCtx, cropW, cropH, refImageData);
+
+    // ── Stage 5: Feathered Edge Blending ─────────────────────────────────────
+    pasteWithFeather(fullCtx, refinedCanvas, cropX, cropY, cropW, cropH);
+
+    // ── Export: JPEG quality 0.98 ─────────────────────────────────────────────
     return new Promise((resolve) => {
-        fullCanvas.toBlob((b) => {
-            const finalUrl = URL.createObjectURL(b!);
-            resolve(finalUrl);
-        }, "image/jpeg", 0.98); // maximum quality, minimal compression
+        fullCanvas.toBlob((b) => resolve(URL.createObjectURL(b!)), "image/jpeg", 0.98);
     });
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function FaceSwap() {
     const [swapMode, setSwapMode] = useState<'face' | 'head'>('face');
@@ -135,11 +259,11 @@ export default function FaceSwap() {
     const originalFileRef = useRef<File | null>(null);
     const targetFileRef = useRef<File | null>(null);
 
-    // ── Fix 1: Pre-warm HF Spaces on page load ──
+    // Pre-warm HF Spaces on page load to eliminate cold starts
     useEffect(() => {
-        // Silently ping both spaces to wake their GPU before user clicks Generate
         fetch("https://tonyassi-face-swap.hf.space").catch(() => { });
         fetch("https://sczhou-codeformer.hf.space").catch(() => { });
+        fetch("https://tencentarc-gfpgan.hf.space").catch(() => { });
     }, []);
 
     const handleImageUpload = (
@@ -172,7 +296,7 @@ export default function FaceSwap() {
             const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
             const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
 
-            // ── Fix 2: Pre-resize both images to max 1024px ──
+            // Stage 0: Resize both images to max 1024px (parallel)
             const [resizedSrc, resizedTarget] = await Promise.all([
                 resizeImage(originalFileRef.current),
                 resizeImage(targetFileRef.current),
@@ -182,7 +306,7 @@ export default function FaceSwap() {
             if (swapMode === 'face') {
                 // Stage 1: InsightFace swap
                 setStatusMessage("Swapping faces...");
-                setProgress(30);
+                setProgress(35);
                 const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
                 const swapResult = await swapClient.predict("/swap_faces", {
                     src_img: resizedSrc,
@@ -192,28 +316,30 @@ export default function FaceSwap() {
                 setProgress(60);
                 const data = swapResult.data as any[];
                 const swappedOutput = data[0];
-                const swappedUrl = swappedOutput?.url ?? swappedOutput?.path ?? null;
-                if (!swappedUrl) throw new Error("No image output from swap model.");
+                const rawUrl = swappedOutput?.url ?? swappedOutput?.path ?? null;
+                if (!rawUrl) throw new Error("No image output from swap model.");
 
-                const absoluteSwappedUrl = swappedUrl.startsWith("http")
-                    ? swappedUrl
-                    : `https://tonyassi-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
+                const swappedUrl = rawUrl.startsWith("http")
+                    ? rawUrl
+                    : `https://tonyassi-face-swap.hf.space/gradio_api/file=${rawUrl}`;
 
-                // Stage 2: CodeFormer on face crop only, 60s timeout, fallback to raw
-                setStatusMessage("Enhancing face quality...");
-                setProgress(72);
+                // Stages 2–5: Pro pipeline (CodeFormer → GFPGAN → ColorMatch → Feather)
                 try {
-                    const enhanced = await cropFaceAndEnhance(absoluteSwappedUrl, clientOptions, 60000);
+                    const finalImage = await runProPipeline(
+                        swappedUrl,
+                        clientOptions,
+                        (pct, msg) => { setProgress(pct); setStatusMessage(msg); }
+                    );
                     setProgress(100);
-                    setResultImage(enhanced);
-                } catch (enhErr: any) {
-                    console.warn("Enhancement skipped:", enhErr?.message);
+                    setResultImage(finalImage);
+                } catch (pipelineErr: any) {
+                    console.warn("Pro pipeline error, using raw swap:", pipelineErr?.message);
                     setProgress(100);
-                    setResultImage(absoluteSwappedUrl);
+                    setResultImage(swappedUrl);
                 }
 
             } else {
-                // Head Swap mode
+                // Head Swap mode (unchanged)
                 setStatusMessage("Swapping head context...");
                 setProgress(25);
                 const swapClient = await Client.connect("linoyts/Flux2-Klein-Face-Swap", clientOptions);
@@ -327,21 +453,15 @@ export default function FaceSwap() {
                                     <img src={originalImage} alt="Original" />
                                 ) : (
                                     <div className="upload-placeholder">
-                                        <div className="icon-circle">
-                                            <UserCircle size={32} />
-                                        </div>
+                                        <div className="icon-circle"><UserCircle size={32} /></div>
                                         <span>Pick Source Face</span>
                                         <p className="sub-text">The face you want to use</p>
                                     </div>
                                 )}
                             </div>
-                            <input
-                                type="file"
-                                ref={originalInputRef}
+                            <input type="file" ref={originalInputRef}
                                 onChange={(e) => handleImageUpload(e, setOriginalImage, originalFileRef)}
-                                accept="image/*"
-                                hidden
-                            />
+                                accept="image/*" hidden />
                         </div>
 
                         <div className="upload-box" onClick={() => targetInputRef.current?.click()}>
@@ -354,21 +474,15 @@ export default function FaceSwap() {
                                     <img src={targetImage} alt="Target" />
                                 ) : (
                                     <div className="upload-placeholder">
-                                        <div className="icon-circle">
-                                            <ImageIcon size={32} />
-                                        </div>
+                                        <div className="icon-circle"><ImageIcon size={32} /></div>
                                         <span>Pick Target Image</span>
                                         <p className="sub-text">Where the face will go</p>
                                     </div>
                                 )}
                             </div>
-                            <input
-                                type="file"
-                                ref={targetInputRef}
+                            <input type="file" ref={targetInputRef}
                                 onChange={(e) => handleImageUpload(e, setTargetImage, targetFileRef)}
-                                accept="image/*"
-                                hidden
-                            />
+                                accept="image/*" hidden />
                         </div>
                     </div>
                 </div>
@@ -395,11 +509,9 @@ export default function FaceSwap() {
                     {(originalImage || targetImage) && (
                         <button
                             onClick={() => {
-                                setOriginalImage(null);
-                                setTargetImage(null);
+                                setOriginalImage(null); setTargetImage(null);
                                 setResultImage(null);
-                                originalFileRef.current = null;
-                                targetFileRef.current = null;
+                                originalFileRef.current = null; targetFileRef.current = null;
                             }}
                             className="builder-button-secondary premium-reset"
                             title="Reset all images"
@@ -432,7 +544,6 @@ export default function FaceSwap() {
                 )}
             </div>
 
-            {/* BETA Modal */}
             {showBetaModal && (
                 <div className="modal-overlay" onClick={() => setShowBetaModal(false)}>
                     <div className="modal-container premium-card" onClick={(e) => e.stopPropagation()}>
@@ -448,9 +559,7 @@ export default function FaceSwap() {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button className="modal-btn" onClick={() => setShowBetaModal(false)}>
-                                Got it
-                            </button>
+                            <button className="modal-btn" onClick={() => setShowBetaModal(false)}>Got it</button>
                         </div>
                     </div>
                 </div>
