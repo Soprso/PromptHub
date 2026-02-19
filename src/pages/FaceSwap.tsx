@@ -58,12 +58,11 @@ async function cropFaceAndEnhance(
     const fullW = bmp.width;
     const fullH = bmp.height;
 
-    // Face region estimate: top 60% of image, centered horizontally
-    // (covers most portrait/half-body shots)
-    const cropX = Math.round(fullW * 0.1);
+    // Face region: wider + taller crop for full facial context
+    const cropX = Math.round(fullW * 0.05);
     const cropY = 0;
-    const cropW = Math.round(fullW * 0.8);
-    const cropH = Math.round(fullH * 0.6);
+    const cropW = Math.round(fullW * 0.90);
+    const cropH = Math.round(fullH * 0.70);
 
     // Draw face crop to a canvas
     const cropCanvas = document.createElement("canvas");
@@ -83,8 +82,8 @@ async function cropFaceAndEnhance(
             face_align: true,
             background_enhance: false,
             face_upsample: true,
-            upscale: 1,
-            codeformer_fidelity: 0.5, // slightly higher since crop is smaller = still fast
+            upscale: 2,               // 2× upscale for sharper output
+            codeformer_fidelity: 0.7, // high fidelity = maximum quality
         }),
         new Promise<never>((_, reject) =>
             setTimeout(() => reject(new Error("CodeFormer timeout")), timeoutMs)
@@ -116,7 +115,7 @@ async function cropFaceAndEnhance(
         fullCanvas.toBlob((b) => {
             const finalUrl = URL.createObjectURL(b!);
             resolve(finalUrl);
-        }, "image/jpeg", 0.95);
+        }, "image/jpeg", 0.98); // maximum quality, minimal compression
     });
 }
 
@@ -200,11 +199,11 @@ export default function FaceSwap() {
                     ? swappedUrl
                     : `https://tonyassi-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
 
-                // Stage 2: Fix 3 — CodeFormer on face crop only, 30s timeout, fallback
-                setStatusMessage("Enhancing face...");
-                setProgress(75);
+                // Stage 2: CodeFormer on face crop only, 60s timeout, fallback to raw
+                setStatusMessage("Enhancing face quality...");
+                setProgress(72);
                 try {
-                    const enhanced = await cropFaceAndEnhance(absoluteSwappedUrl, clientOptions, 30000);
+                    const enhanced = await cropFaceAndEnhance(absoluteSwappedUrl, clientOptions, 60000);
                     setProgress(100);
                     setResultImage(enhanced);
                 } catch (enhErr: any) {
