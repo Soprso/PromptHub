@@ -497,8 +497,8 @@ export default function FaceSwap() {
                     const hairResult = await Promise.race([
                         hairClient.predict("/swap_hair", {
                             face: hsFaceFile,      // face-swapped image (gets the new hair)
-                            shape: resizedSrc,     // source image provides hair shape
-                            color: null,           // skip separate color reference
+                            shape: resizedSrc,     // source image provides the hair shape
+                            color: resizedSrc,     // also use source for hair color (avoids null rejection)
                             blending: "Article",   // best quality blending mode
                             poisson_iters: 0,
                             poisson_erosion: 15,
