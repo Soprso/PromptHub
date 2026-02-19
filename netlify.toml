@@ -11,6 +11,11 @@
   # Node version
   [build.environment]
     NODE_VERSION = "20"
+    # NOTE: Set actual values in Netlify Dashboard → Site Settings → Environment Variables
+    # These keys tell Netlify which VITE_ env vars are needed at build time
+    VITE_SUPABASE_URL = ""
+    VITE_SUPABASE_ANON_KEY = ""
+    VITE_HUGGINGFACE_TOKEN = ""
 
 # SPA routing - redirect all routes to index.html
 [[redirects]]

@@ -14,6 +14,70 @@ import {
 } from "lucide-react";
 import "./FaceSwap.css";
 
+// Client-side color matching: transfer color tone from target to swapped result
+async function applyColorMatch(swappedDataUrl: string, referenceDataUrl: string): Promise<string> {
+    return new Promise((resolve) => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { resolve(swappedDataUrl); return; }
+
+        const swappedImg = new Image();
+        swappedImg.crossOrigin = "anonymous";
+        swappedImg.onload = () => {
+            canvas.width = swappedImg.width;
+            canvas.height = swappedImg.height;
+            ctx.drawImage(swappedImg, 0, 0);
+
+            const refImg = new Image();
+            refImg.crossOrigin = "anonymous";
+            refImg.onload = () => {
+                // Get mean color stats from reference target image
+                const refCanvas = document.createElement("canvas");
+                const refCtx = refCanvas.getContext("2d");
+                if (!refCtx) { resolve(swappedDataUrl); return; }
+                refCanvas.width = refImg.width;
+                refCanvas.height = refImg.height;
+                refCtx.drawImage(refImg, 0, 0);
+
+                const refData = refCtx.getImageData(0, 0, refCanvas.width, refCanvas.height).data;
+                const swappedData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const pixels = swappedData.data;
+
+                let [rRef, gRef, bRef, rSwap, gSwap, bSwap, count] = [0, 0, 0, 0, 0, 0, 0];
+                for (let i = 0; i < refData.length; i += 4) {
+                    rRef += refData[i]; gRef += refData[i + 1]; bRef += refData[i + 2];
+                    count++;
+                }
+                for (let i = 0; i < pixels.length; i += 4) {
+                    rSwap += pixels[i]; gSwap += pixels[i + 1]; bSwap += pixels[i + 2];
+                }
+                const n = count;
+                const m = pixels.length / 4;
+                const [rMeanRef, gMeanRef, bMeanRef] = [rRef / n, gRef / n, bRef / n];
+                const [rMeanSwap, gMeanSwap, bMeanSwap] = [rSwap / m, gSwap / m, bSwap / m];
+
+                // Subtle shift: blend 20% toward target color tone
+                const blend = 0.2;
+                const rShift = (rMeanRef - rMeanSwap) * blend;
+                const gShift = (gMeanRef - gMeanSwap) * blend;
+                const bShift = (bMeanRef - bMeanSwap) * blend;
+
+                for (let i = 0; i < pixels.length; i += 4) {
+                    pixels[i] = Math.min(255, Math.max(0, pixels[i] + rShift));
+                    pixels[i + 1] = Math.min(255, Math.max(0, pixels[i + 1] + gShift));
+                    pixels[i + 2] = Math.min(255, Math.max(0, pixels[i + 2] + bShift));
+                }
+                ctx.putImageData(swappedData, 0, 0);
+                resolve(canvas.toDataURL("image/jpeg", 0.95));
+            };
+            refImg.onerror = () => resolve(swappedDataUrl);
+            refImg.src = referenceDataUrl;
+        };
+        swappedImg.onerror = () => resolve(swappedDataUrl);
+        swappedImg.src = swappedDataUrl;
+    });
+}
+
 export default function FaceSwap() {
     const [swapMode, setSwapMode] = useState<'face' | 'head'>('face');
     const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -22,6 +86,8 @@ export default function FaceSwap() {
     const [resultImage, setResultImage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [statusMessage, setStatusMessage] = useState<string>("");
+    const [progress, setProgress] = useState<number>(0);
+    const [showBetaModal, setShowBetaModal] = useState(false);
 
     const originalInputRef = useRef<HTMLInputElement>(null);
     const targetInputRef = useRef<HTMLInputElement>(null);
@@ -51,35 +117,70 @@ export default function FaceSwap() {
         setIsGenerating(true);
         setError(null);
         setResultImage(null);
-        setStatusMessage("Initializing...");
+        setProgress(0);
+        setStatusMessage("Connecting...");
+
+        const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
+        const clientOptions = hfToken ? { token: hfToken as `hf_${string}`, events: ["data", "status"] as ("data" | "status")[] } : { events: ["data", "status"] as ("data" | "status")[] };
 
         try {
-            const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
-            const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
-
             if (swapMode === 'face') {
+                // Stage 1: Face Swap + Enhance in one call (SS86910/Faceswaper uses FaceFusion + CodeFormer internally)
                 setStatusMessage("Swapping faces...");
-                const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
-                const swapResult = await swapClient.predict("/swap_faces", {
-                    src_img: originalFileRef.current,
-                    dest_img: targetFileRef.current,
+                setProgress(10);
+                const swapClient = await Client.connect("SS86910/Faceswaper", clientOptions);
+                const job = swapClient.submit("/predict", {
+                    source_image_path: originalFileRef.current,
+                    target_image_path: targetFileRef.current,
+                    enhance_face: true,
                 });
 
-                const data = swapResult.data as any[];
-                const swappedOutput = data[0];
-                const swappedUrl = swappedOutput?.url ?? swappedOutput?.path ?? null;
-                if (!swappedUrl) throw new Error("Stage 1 failed: No image output.");
+                let swappedUrl: string | null = null;
+                for await (const msg of job) {
+                    if (msg.type === "status") {
+                        const s = msg as any;
+                        if (s.queue_size > 0) {
+                            setStatusMessage(`Queue: ${s.position}/${s.queue_size}...`);
+                            const queueProgress = Math.max(10, 50 - (s.position / s.queue_size) * 40);
+                            setProgress(queueProgress);
+                        } else {
+                            setStatusMessage("Swapping faces...");
+                            setProgress(60);
+                        }
+                    } else if (msg.type === "data") {
+                        const data = (msg as any).data as any[];
+                        const out = data[0];
+                        swappedUrl = out?.url ?? out?.path ?? null;
+                        if (swappedUrl && !swappedUrl.startsWith("http")) {
+                            swappedUrl = `https://ss86910-faceswaper.hf.space/gradio_api/file=${swappedUrl}`;
+                        }
+                    }
+                }
 
-                const absoluteSwappedUrl = swappedUrl.startsWith("http")
-                    ? swappedUrl
-                    : `https://tonyassi-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
+                if (!swappedUrl) throw new Error("No output from swap model.");
 
-                await performEnhancement(absoluteSwappedUrl, clientOptions);
+                // Stage 2: Color Match (client-side, fast)
+                setStatusMessage("Matching colors...");
+                setProgress(80);
+                const swappedRes = await fetch(swappedUrl);
+                const swappedBlob = await swappedRes.blob();
+                const swappedDataUrl = await new Promise<string>((res) => {
+                    const r = new FileReader();
+                    r.onloadend = () => res(r.result as string);
+                    r.readAsDataURL(swappedBlob);
+                });
+
+                const colorMatched = await applyColorMatch(swappedDataUrl, targetImage!);
+                setProgress(100);
+                setStatusMessage("Done!");
+                setResultImage(colorMatched);
+
             } else {
-                setStatusMessage("Swapping head context...");
-                // Using BFS (Best Face Swap) model which is superior for Head swaps
+                // Head Swap mode
+                setStatusMessage("Swapping head...");
+                setProgress(10);
                 const swapClient = await Client.connect("linoyts/Flux2-Klein-Face-Swap", clientOptions);
-                const swapResult = await swapClient.predict("/face_swap", {
+                const job = swapClient.submit("/face_swap", {
                     reference_face: originalFileRef.current,
                     target_image: targetFileRef.current,
                     seed: 0,
@@ -87,47 +188,70 @@ export default function FaceSwap() {
                     num_inference_steps: 4,
                 });
 
-                const data = swapResult.data as any[];
-                // For this model, data[0] is an array of [before, after]
-                const swappedOutput = Array.isArray(data[0]) ? data[0][1] : data[0];
-                const swappedUrl = swappedOutput?.url ?? swappedOutput?.path ?? null;
-                if (!swappedUrl) throw new Error("Result extraction failed.");
+                let swappedUrl: string | null = null;
+                for await (const msg of job) {
+                    if (msg.type === "status") {
+                        const s = msg as any;
+                        if (s.queue_size > 0) {
+                            setStatusMessage(`Queue: ${s.position}/${s.queue_size}...`);
+                            const queueProgress = Math.max(10, 50 - (s.position / s.queue_size) * 40);
+                            setProgress(queueProgress);
+                        } else {
+                            setStatusMessage("Generating...");
+                            setProgress(60);
+                        }
+                    } else if (msg.type === "data") {
+                        const data = (msg as any).data as any[];
+                        const out = Array.isArray(data[0]) ? data[0][1] : data[0];
+                        swappedUrl = out?.url ?? out?.path ?? null;
+                        if (swappedUrl && !swappedUrl.startsWith("http")) {
+                            swappedUrl = `https://linoyts-flux2-klein-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
+                        }
+                    }
+                }
 
-                const absoluteSwappedUrl = swappedUrl.startsWith("http")
-                    ? swappedUrl
-                    : `https://linoyts-flux2-klein-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
+                if (!swappedUrl) throw new Error("No output from head swap model.");
 
-                await performEnhancement(absoluteSwappedUrl, clientOptions);
+                // Polishing step with CodeFormer
+                setStatusMessage("Polishing & sharpening...");
+                setProgress(75);
+                const imageRes = await fetch(swappedUrl);
+                const imageBlob = await imageRes.blob();
+                const intermediateFile = new File([imageBlob], "swapped.jpg", { type: "image/jpeg" });
+
+                const enhanceClient = await Client.connect("sczhou/CodeFormer", { events: ["data", "status"] as ("data" | "status")[], ...(hfToken ? { token: hfToken as `hf_${string}` } : {}) });
+                const enhanceJob = enhanceClient.submit("/inference", {
+                    image: intermediateFile,
+                    face_align: true,
+                    background_enhance: true,
+                    face_upsample: true,
+                    upscale: 1,
+                    codeformer_fidelity: 0.5,
+                });
+
+                let finalUrl: string | null = null;
+                for await (const msg of enhanceJob) {
+                    if (msg.type === "status") {
+                        setProgress(85);
+                    } else if (msg.type === "data") {
+                        const data = (msg as any).data as any[];
+                        const out = data[0];
+                        finalUrl = out?.url ?? out?.path ?? null;
+                    }
+                }
+
+                setProgress(100);
+                setResultImage(finalUrl);
             }
 
         } catch (err: any) {
             console.error("Swap Error:", err);
-            setError("Generation failed. Please try again with different images.");
+            setError("Generation failed. Try different images or try again later.");
         } finally {
             setIsGenerating(false);
             setStatusMessage("");
+            setProgress(0);
         }
-    };
-
-    const performEnhancement = async (swappedUrl: string, options: any) => {
-        setStatusMessage("Polishing & sharpening...");
-        const imageRes = await fetch(swappedUrl);
-        const imageBlob = await imageRes.blob();
-        const intermediateFile = new File([imageBlob], "swapped.jpg", { type: "image/jpeg" });
-
-        const enhanceClient = await Client.connect("sczhou/CodeFormer", options);
-        const enhanceResult = await enhanceClient.predict("/inference", {
-            image: intermediateFile,
-            face_align: true,
-            background_enhance: true,
-            face_upsample: true,
-            upscale: 1,
-            codeformer_fidelity: 0.5,
-        });
-
-        const data = enhanceResult.data as any[];
-        const finalOutput = data[0];
-        setResultImage(finalOutput?.url ?? finalOutput?.path ?? null);
     };
 
     const handleDownload = async () => {
@@ -170,7 +294,12 @@ export default function FaceSwap() {
                     </button>
                     <button
                         className={`mode-btn ${swapMode === 'head' ? 'active' : ''}`}
-                        onClick={() => setSwapMode('head')}
+                        onClick={() => {
+                            if (swapMode !== 'head') {
+                                setShowBetaModal(true);
+                            }
+                            setSwapMode('head');
+                        }}
                     >
                         <User size={18} />
                         <span>Head Swap</span>
@@ -248,6 +377,7 @@ export default function FaceSwap() {
                             <span className="loading-content">
                                 <RefreshCcw className="spinning-icon" size={18} />
                                 <span>{statusMessage || "Processing..."}</span>
+                                {progress > 0 && <span className="progress-pct">{Math.round(progress)}%</span>}
                             </span>
                         ) : (
                             <span className="btn-content">
@@ -280,7 +410,6 @@ export default function FaceSwap() {
                     </div>
                 )}
 
-
                 {resultImage && (
                     <div className="result-section premium-result">
                         <div className="result-header">
@@ -296,6 +425,30 @@ export default function FaceSwap() {
                     </div>
                 )}
             </div>
+
+            {/* BETA Modal */}
+            {showBetaModal && (
+                <div className="modal-overlay" onClick={() => setShowBetaModal(false)}>
+                    <div className="modal-container premium-card" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <AlertCircle className="beta-icon" size={24} />
+                            <h3>Head Swap (BETA)</h3>
+                        </div>
+                        <div className="modal-body">
+                            <p>This feature is currently under active development. Generations may occasionally fail or produce unexpected results.</p>
+                            <div className="pro-tip">
+                                <Sparkles size={16} />
+                                <span><strong>Best Results:</strong> Use clear, high-resolution portrait photos with good lighting.</span>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="modal-btn" onClick={() => setShowBetaModal(false)}>
+                                Got it
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
