@@ -41,12 +41,12 @@ function loadImageFromDataURL(dataURL: string): Promise<HTMLImageElement> {
     });
 }
 
-// ─── Stage 0: Resize image to max dimension (FileReader path — full mobile compat) ───
+// ─── Stage 0a: Resize image from File (desktop path) ────────────────────────
 async function resizeImage(file: File, maxDimension = MAX_DIMENSION): Promise<File> {
-    const dataURL = await blobToDataURL(file);   // Step 1: read to dataURL
-    const img = await loadImageFromDataURL(dataURL); // Step 2: decode
+    const dataURL = await blobToDataURL(file);
+    const img = await loadImageFromDataURL(dataURL);
     const { width, height } = img;
-    if (width <= maxDimension && height <= maxDimension) return file; // already small enough
+    if (width <= maxDimension && height <= maxDimension) return file;
     const scale = Math.min(maxDimension / width, maxDimension / height);
     const canvas = document.createElement("canvas");
     canvas.width = Math.round(width * scale);
@@ -54,6 +54,31 @@ async function resizeImage(file: File, maxDimension = MAX_DIMENSION): Promise<Fi
     canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
     return new Promise<File>((resolve) =>
         canvas.toBlob((blob) => resolve(new File([blob!], file.name, { type: "image/jpeg" })), "image/jpeg", 0.92)
+    );
+}
+
+// ─── Stage 0b: Resize from already-read dataURL (mobile path) ────────────────
+// On Android Chrome, File objects become stale after the app goes to background
+// (which always happens during gallery/camera selection). This avoids re-reading
+// the File entirely by working from the dataURL we already have from handleImageUpload.
+async function resizeFromDataURL(dataURL: string, filename = "image.jpg", maxDimension = MAX_DIMENSION): Promise<File> {
+    const img = await loadImageFromDataURL(dataURL);
+    const { width, height } = img;
+    const scale = Math.min(maxDimension / width, maxDimension / height);
+    if (width <= maxDimension && height <= maxDimension) {
+        // Already small — decode dataURL bytes directly (no FileReader needed)
+        const mime = dataURL.split(";")[0].split(":")[1] || "image/jpeg";
+        const bin = atob(dataURL.split(",")[1]);
+        const arr = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        return new File([arr], filename, { type: mime });
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(width * scale);
+    canvas.height = Math.round(height * scale);
+    canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+    return new Promise<File>((resolve) =>
+        canvas.toBlob((blob) => resolve(new File([blob!], filename, { type: "image/jpeg" })), "image/jpeg", 0.92)
     );
 }
 
@@ -382,9 +407,19 @@ export default function FaceSwap() {
             const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
             const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
 
-            // Stage 0: Resize images sequentially (safer for mobile RAM)
-            const resizedSrc = await resizeImage(originalFileRef.current);
-            const resizedTarget = await resizeImage(targetFileRef.current);
+            // Stage 0: Resize — use already-read dataURL on mobile to avoid stale File handles,
+            // fall back to File-based resize on desktop
+            let resizedSrc: File;
+            let resizedTarget: File;
+            if (isMobile && originalImage && targetImage) {
+                // Mobile: use the dataURL stored at upload time (File object may be stale)
+                resizedSrc = await resizeFromDataURL(originalImage, originalFileRef.current.name);
+                resizedTarget = await resizeFromDataURL(targetImage, targetFileRef.current.name);
+            } else {
+                // Desktop: read from File as usual
+                resizedSrc = await resizeImage(originalFileRef.current);
+                resizedTarget = await resizeImage(targetFileRef.current);
+            }
             setProgress(20);
 
             if (swapMode === 'face') {
