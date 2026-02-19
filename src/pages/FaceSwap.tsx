@@ -17,7 +17,6 @@ import "./FaceSwap.css";
 // Mobile detection
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 const MAX_DIMENSION = isMobile ? 1024 : 1280;
-const MOBILE_MAX_FILE_BYTES = 8 * 1024 * 1024; // 8 MB
 
 // ─── Fix 1: Safe mobile-compatible image loader (no createImageBitmap) ────────
 function loadImageSafe(src: string | File): Promise<HTMLImageElement> {
@@ -178,8 +177,15 @@ async function runProPipeline(
     const cropW = Math.round(fullW * 0.90);
     const cropH = Math.round(fullH * 0.70);
 
-    // Extract reference pixels from original swap (before enhancement) for color matching
-    const refImageData = fullCtx.getImageData(cropX, cropY, cropW, cropH);
+    // Extract reference pixels for Stage 4 color matching
+    // Wrapped in try/catch: mobile Chrome can throw SecurityError on canvas.getImageData
+    // when the blob URL came from a cross-origin response. Failure here just skips color match.
+    let refImageData: ImageData | null = null;
+    try {
+        refImageData = fullCtx.getImageData(cropX, cropY, cropW, cropH);
+    } catch (secErr) {
+        console.warn("getImageData blocked (CORS/taint) — color matching disabled:", secErr);
+    }
 
     // Draw crop to canvas
     const cropCanvas = document.createElement("canvas");
@@ -247,20 +253,20 @@ async function runProPipeline(
 
     // ── Stage 4: Client-side Skin Tone Color Matching ────────────────────────
     onProgress(92, "Final blending and color matching...");
-    // Fix 1: load refined image safely without createImageBitmap
     const refinedObjUrl = URL.createObjectURL(refinedFile);
     const refinedBmp = await loadImageSafe(refinedObjUrl);
-    URL.revokeObjectURL(refinedObjUrl); // Fix 6: revoke after decode
+    URL.revokeObjectURL(refinedObjUrl);
 
-    // Draw refined result to a canvas at crop size for pixel manipulation
     const refinedCanvas = document.createElement("canvas");
     refinedCanvas.width = cropW;
     refinedCanvas.height = cropH;
     const refinedCtx = refinedCanvas.getContext("2d")!;
     refinedCtx.drawImage(refinedBmp, 0, 0, cropW, cropH);
 
-    // Apply color match (refined → match original swap region's skin tone)
-    applyColorMatch(refinedCtx, cropW, cropH, refImageData);
+    // Only apply color match if we got reference pixels successfully
+    if (refImageData) {
+        applyColorMatch(refinedCtx, cropW, cropH, refImageData);
+    }
 
     // ── Stage 5: Feathered Edge Blending ─────────────────────────────────────
     pasteWithFeather(fullCtx, refinedCanvas, cropX, cropY, cropW, cropH);
@@ -326,16 +332,7 @@ export default function FaceSwap() {
             const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
             const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
 
-            // Fix 6 (mobile guard): reject files over 8 MB on mobile
-            if (isMobile) {
-                if (originalFileRef.current.size > MOBILE_MAX_FILE_BYTES ||
-                    targetFileRef.current.size > MOBILE_MAX_FILE_BYTES) {
-                    throw new Error("Image too large for mobile device. Please use an image under 8 MB.");
-                }
-            }
-
-            // Stage 0: Resize images to max dimension — sequential for mobile stability
-            // Fix 3: sequential instead of Promise.all for mobile RAM safety
+            // Stage 0: Resize images sequentially (safer for mobile RAM)
             const resizedSrc = await resizeImage(originalFileRef.current);
             const resizedTarget = await resizeImage(targetFileRef.current);
             setProgress(20);
@@ -417,7 +414,8 @@ export default function FaceSwap() {
 
         } catch (err: any) {
             console.error("Swap Error:", err);
-            setError("Generation failed. Please try again with different images.");
+            // Surface the real error so mobile users can understand what went wrong
+            setError(err?.message || "Generation failed. Please try again with different images.");
         } finally {
             setIsGenerating(false);
             setStatusMessage("");
