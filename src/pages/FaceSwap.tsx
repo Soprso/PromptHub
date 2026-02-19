@@ -14,26 +14,51 @@ import {
 } from "lucide-react";
 import "./FaceSwap.css";
 
-const MAX_DIMENSION = 1024;
+// Mobile detection
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const MAX_DIMENSION = isMobile ? 1024 : 1280;
+const MOBILE_MAX_FILE_BYTES = 8 * 1024 * 1024; // 8 MB
 
-// ─── Stage 0: Resize image to max dimension ───────────────────────────────────
-async function resizeImage(file: File, maxDimension = MAX_DIMENSION): Promise<File> {
-    return new Promise((resolve) => {
+// ─── Fix 1: Safe mobile-compatible image loader (no createImageBitmap) ────────
+function loadImageSafe(src: string | File): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
         const img = new Image();
-        const url = URL.createObjectURL(file);
+        const isFile = src instanceof File;
+        const url = isFile ? URL.createObjectURL(src as File) : src as string;
+
+        const timeout = setTimeout(() => {
+            img.src = "";
+            if (isFile) URL.revokeObjectURL(url);
+            reject(new Error("Image load timeout — file may be too large for this device."));
+        }, 15000);
+
         img.onload = () => {
-            URL.revokeObjectURL(url);
-            const { width, height } = img;
-            if (width <= maxDimension && height <= maxDimension) { resolve(file); return; }
-            const scale = Math.min(maxDimension / width, maxDimension / height);
-            const canvas = document.createElement("canvas");
-            canvas.width = Math.round(width * scale);
-            canvas.height = Math.round(height * scale);
-            canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
-            canvas.toBlob((blob) => resolve(new File([blob!], file.name, { type: "image/jpeg" })), "image/jpeg", 0.92);
+            clearTimeout(timeout);
+            if (isFile) URL.revokeObjectURL(url); // Fix 6: revoke after use
+            resolve(img);
+        };
+        img.onerror = () => {
+            clearTimeout(timeout);
+            if (isFile) URL.revokeObjectURL(url);
+            reject(new Error("Failed to load image."));
         };
         img.src = url;
     });
+}
+
+// ─── Stage 0: Resize image to max dimension ───────────────────────────────────
+async function resizeImage(file: File, maxDimension = MAX_DIMENSION): Promise<File> {
+    const img = await loadImageSafe(file); // Fix 1: uses safe loader
+    const { width, height } = img;
+    if (width <= maxDimension && height <= maxDimension) return file;
+    const scale = Math.min(maxDimension / width, maxDimension / height);
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(width * scale);
+    canvas.height = Math.round(height * scale);
+    canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+    return new Promise<File>((resolve) =>
+        canvas.toBlob((blob) => resolve(new File([blob!], file.name, { type: "image/jpeg" })), "image/jpeg", 0.92)
+    );
 }
 
 // ─── Stage 4: Canvas-based skin tone color matching ─────────────────────────
@@ -130,10 +155,12 @@ async function runProPipeline(
     clientOptions: any,
     onProgress: (pct: number, msg: string) => void
 ): Promise<string> {
-    // Download swapped image
+    // Download swapped image and decode safely (Fix 1: no createImageBitmap)
     const swapRes = await fetch(swappedUrl);
     const swapBlob = await swapRes.blob();
-    const bmp = await createImageBitmap(swapBlob);
+    const swapObjUrl = URL.createObjectURL(swapBlob);
+    const bmp = await loadImageSafe(swapObjUrl);
+    URL.revokeObjectURL(swapObjUrl); // Fix 6: revoke immediately after decode
 
     const fullW = bmp.width;
     const fullH = bmp.height;
@@ -220,7 +247,10 @@ async function runProPipeline(
 
     // ── Stage 4: Client-side Skin Tone Color Matching ────────────────────────
     onProgress(92, "Final blending and color matching...");
-    const refinedBmp = await createImageBitmap(refinedFile);
+    // Fix 1: load refined image safely without createImageBitmap
+    const refinedObjUrl = URL.createObjectURL(refinedFile);
+    const refinedBmp = await loadImageSafe(refinedObjUrl);
+    URL.revokeObjectURL(refinedObjUrl); // Fix 6: revoke after decode
 
     // Draw refined result to a canvas at crop size for pixel manipulation
     const refinedCanvas = document.createElement("canvas");
@@ -296,11 +326,18 @@ export default function FaceSwap() {
             const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
             const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
 
-            // Stage 0: Resize both images to max 1024px (parallel)
-            const [resizedSrc, resizedTarget] = await Promise.all([
-                resizeImage(originalFileRef.current),
-                resizeImage(targetFileRef.current),
-            ]);
+            // Fix 6 (mobile guard): reject files over 8 MB on mobile
+            if (isMobile) {
+                if (originalFileRef.current.size > MOBILE_MAX_FILE_BYTES ||
+                    targetFileRef.current.size > MOBILE_MAX_FILE_BYTES) {
+                    throw new Error("Image too large for mobile device. Please use an image under 8 MB.");
+                }
+            }
+
+            // Stage 0: Resize images to max dimension — sequential for mobile stability
+            // Fix 3: sequential instead of Promise.all for mobile RAM safety
+            const resizedSrc = await resizeImage(originalFileRef.current);
+            const resizedTarget = await resizeImage(targetFileRef.current);
             setProgress(20);
 
             if (swapMode === 'face') {
