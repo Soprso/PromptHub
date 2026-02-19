@@ -18,6 +18,7 @@ const SeoPage = lazy(() => import("./pages/SeoPage"));
 const SharePromptPage = lazy(() => import("./pages/SharePromptPage"));
 const CommunityPage = lazy(() => import("./pages/CommunityPage"));
 const FaceSwap = lazy(() => import("./pages/FaceSwap"));
+const HeadSwap = lazy(() => import("./pages/HeadSwap"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/share" element={<SharePromptPage />} />
                 <Route path="/community" element={<CommunityPage />} />
                 <Route path="/face-swap" element={<FaceSwap />} />
+                <Route path="/head-swap" element={<HeadSwap />} />
 
                 {/* Legal & Info Pages */}
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
