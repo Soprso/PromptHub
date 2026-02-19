@@ -458,43 +458,70 @@ export default function FaceSwap() {
                 }
 
             } else {
-                // Head Swap mode (unchanged)
-                setStatusMessage("Swapping head context...");
-                setProgress(25);
-                const swapClient = await Client.connect("linoyts/Flux2-Klein-Face-Swap", clientOptions);
-
-                const job = swapClient.submit("/face_swap", {
-                    reference_face: resizedSrc,
-                    target_image: resizedTarget,
-                    seed: 0,
-                    randomize_seed: true,
-                    num_inference_steps: 4,
+                // ── Head Swap: Step 1 — Face Identity (InsightFace) ───────────────
+                setStatusMessage("Swapping face identity...");
+                setProgress(20);
+                const hsSwapClient = await Client.connect("tonyassi/face-swap", clientOptions);
+                const hsSwapResult = await hsSwapClient.predict("/swap_faces", {
+                    src_img: resizedSrc,
+                    dest_img: resizedTarget,
                 });
 
-                let swappedUrl: string | null = null;
-                for await (const msg of job) {
-                    if (msg.type === "status") {
-                        const s = msg as any;
-                        if (s.queue_size > 0) {
-                            setStatusMessage(`Queue: ${s.position ?? 1}/${s.queue_size}...`);
-                            setProgress(Math.max(25, 55 - (((s.position ?? 1) / s.queue_size) * 30)));
-                        } else {
-                            setStatusMessage("Generating head swap...");
-                            setProgress(70);
-                        }
-                    } else if (msg.type === "data") {
-                        const msgData = (msg as any).data as any[];
-                        const out = Array.isArray(msgData[0]) ? msgData[0][1] : msgData[0];
-                        swappedUrl = out?.url ?? out?.path ?? null;
-                        if (swappedUrl && !swappedUrl.startsWith("http")) {
-                            swappedUrl = `https://linoyts-flux2-klein-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
-                        }
+                setProgress(50);
+                const hsData = hsSwapResult.data as any[];
+                const hsOut = hsData[0];
+                const hsRawUrl: string = hsOut?.url ?? hsOut?.path ?? "";
+                const hsFaceUrl = hsRawUrl.startsWith("http")
+                    ? hsRawUrl
+                    : `https://tonyassi-face-swap.hf.space/gradio_api/file=${hsRawUrl}`;
+                if (!hsFaceUrl) throw new Error("Face identity swap failed — no output URL.");
+
+                // Download step-1 result as File for HairFastGAN input
+                const hsFaceBlob = await (await fetch(hsFaceUrl)).blob();
+                const hsFaceDataURL = await blobToDataURL(hsFaceBlob);
+                const hsFaceImg = await loadImageFromDataURL(hsFaceDataURL);
+                const hsFaceCanvas = document.createElement("canvas");
+                hsFaceCanvas.width = hsFaceImg.width;
+                hsFaceCanvas.height = hsFaceImg.height;
+                hsFaceCanvas.getContext("2d")!.drawImage(hsFaceImg, 0, 0);
+                const hsFaceFile = await new Promise<File>((res) =>
+                    hsFaceCanvas.toBlob((b) => res(new File([b!], "hs_face.jpg", { type: "image/jpeg" })), "image/jpeg", 0.95)
+                );
+
+                // ── Head Swap: Step 2 — Hair Transfer (HairFastGAN) ──────────────
+                setStatusMessage("Transferring hairstyle...");
+                setProgress(60);
+                let finalUrl: string = hsFaceUrl; // fallback: use face-only result
+                try {
+                    const hairClient = await Client.connect("AIRI-Institute/HairFastGAN", clientOptions);
+                    const hairResult = await Promise.race([
+                        hairClient.predict("/swap_hair", {
+                            face: hsFaceFile,      // face-swapped image (gets the new hair)
+                            shape: resizedSrc,     // source image provides hair shape
+                            color: null,           // skip separate color reference
+                            blending: "Article",   // best quality blending mode
+                            poisson_iters: 0,
+                            poisson_erosion: 15,
+                        }),
+                        new Promise<never>((_, reject) =>
+                            setTimeout(() => reject(new Error("HairFastGAN timeout")), 90000)
+                        ),
+                    ]);
+
+                    const hairData = (hairResult as any).data as any[];
+                    const hairOut = hairData[0]; // index 0 = result image, index 1 = error string
+                    const hairRawUrl: string = hairOut?.url ?? hairOut?.path ?? "";
+                    if (hairRawUrl) {
+                        finalUrl = hairRawUrl.startsWith("http")
+                            ? hairRawUrl
+                            : `https://airi-institute-hairfastgan.hf.space/gradio_api/file=${hairRawUrl}`;
                     }
+                } catch (hairErr: any) {
+                    console.warn("HairFastGAN skipped, using face-only result:", hairErr?.message);
                 }
 
-                if (!swappedUrl) throw new Error("Result extraction failed.");
                 setProgress(100);
-                setResultImage(swappedUrl);
+                setResultImage(finalUrl);
             }
 
         } catch (err: any) {
