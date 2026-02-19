@@ -498,10 +498,10 @@ export default function FaceSwap() {
                         hairClient.predict("/swap_hair", {
                             face: hsFaceFile,      // face-swapped image (gets the new hair)
                             shape: resizedSrc,     // source image provides the hair shape
-                            color: resizedSrc,     // also use source for hair color (avoids null rejection)
-                            blending: "Article",   // best quality blending mode
+                            color: resizedSrc,     // source image for hair color too
+                            blending: "Article",   // 'Article' or 'Poisson'
                             poisson_iters: 0,
-                            poisson_erosion: 15,
+                            poisson_erosion: 1,    // correct default per API docs
                         }),
                         new Promise<never>((_, reject) =>
                             setTimeout(() => reject(new Error("HairFastGAN timeout")), 90000)
