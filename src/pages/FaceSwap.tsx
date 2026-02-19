@@ -18,38 +18,35 @@ import "./FaceSwap.css";
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 const MAX_DIMENSION = isMobile ? 1024 : 1280;
 
-// ─── Fix 1: Safe mobile-compatible image loader (no createImageBitmap) ────────
-function loadImageSafe(src: string | File): Promise<HTMLImageElement> {
+// ─── blobToDataURL: FileReader-based, works on all mobile browsers ─────────────
+// Avoids blob URL CORS issues, HEIC format failures, and Safari/Chrome quirks
+function blobToDataURL(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
-        const img = new Image();
-        const isFile = src instanceof File;
-        const url = isFile ? URL.createObjectURL(src as File) : src as string;
-
-        const timeout = setTimeout(() => {
-            img.src = "";
-            if (isFile) URL.revokeObjectURL(url);
-            reject(new Error("Image load timeout — file may be too large for this device."));
-        }, 15000);
-
-        img.onload = () => {
-            clearTimeout(timeout);
-            if (isFile) URL.revokeObjectURL(url); // Fix 6: revoke after use
-            resolve(img);
-        };
-        img.onerror = () => {
-            clearTimeout(timeout);
-            if (isFile) URL.revokeObjectURL(url);
-            reject(new Error("Failed to load image."));
-        };
-        img.src = url;
+        const reader = new FileReader();
+        const timer = setTimeout(() => reject(new Error("Image read timeout — file may be too large.")), 15000);
+        reader.onload = () => { clearTimeout(timer); resolve(reader.result as string); };
+        reader.onerror = () => { clearTimeout(timer); reject(new Error("Could not read image. Try a JPG or PNG file.")); };
+        reader.readAsDataURL(blob);
     });
 }
 
-// ─── Stage 0: Resize image to max dimension ───────────────────────────────────
+// ─── loadImageFromDataURL: loads an HTMLImageElement from a dataURL ──────────
+function loadImageFromDataURL(dataURL: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const timer = setTimeout(() => { img.src = ""; reject(new Error("Image decode timeout.")); }, 15000);
+        img.onload = () => { clearTimeout(timer); resolve(img); };
+        img.onerror = () => { clearTimeout(timer); reject(new Error("Image decode failed. Try a JPG or PNG file.")); };
+        img.src = dataURL;
+    });
+}
+
+// ─── Stage 0: Resize image to max dimension (FileReader path — full mobile compat) ───
 async function resizeImage(file: File, maxDimension = MAX_DIMENSION): Promise<File> {
-    const img = await loadImageSafe(file); // Fix 1: uses safe loader
+    const dataURL = await blobToDataURL(file);   // Step 1: read to dataURL
+    const img = await loadImageFromDataURL(dataURL); // Step 2: decode
     const { width, height } = img;
-    if (width <= maxDimension && height <= maxDimension) return file;
+    if (width <= maxDimension && height <= maxDimension) return file; // already small enough
     const scale = Math.min(maxDimension / width, maxDimension / height);
     const canvas = document.createElement("canvas");
     canvas.width = Math.round(width * scale);
@@ -203,12 +200,11 @@ async function runProPipeline(
     clientOptions: any,
     onProgress: (pct: number, msg: string) => void
 ): Promise<string> {
-    // Download swapped image and decode safely (Fix 1: no createImageBitmap)
+    // Download swapped image — decode via FileReader/dataURL for full mobile compat
     const swapRes = await fetch(swappedUrl);
     const swapBlob = await swapRes.blob();
-    const swapObjUrl = URL.createObjectURL(swapBlob);
-    const bmp = await loadImageSafe(swapObjUrl);
-    URL.revokeObjectURL(swapObjUrl); // Fix 6: revoke immediately after decode
+    const swapDataURL = await blobToDataURL(swapBlob);
+    const bmp = await loadImageFromDataURL(swapDataURL);
 
     const fullW = bmp.width;
     const fullH = bmp.height;
@@ -300,11 +296,11 @@ async function runProPipeline(
         console.warn("GFPGAN skipped:", e?.message);
     }
 
-    // ── Stage 4: Client-side Skin Tone Color Matching ────────────────────────
+    // ── Stage 4: Skin Tone Color Matching + Eye Preserve ──────────────────────
     onProgress(92, "Final blending and color matching...");
-    const refinedObjUrl = URL.createObjectURL(refinedFile);
-    const refinedBmp = await loadImageSafe(refinedObjUrl);
-    URL.revokeObjectURL(refinedObjUrl);
+    // FileReader path: fully mobile-safe, no blob URL CORS issues
+    const refinedDataURL = await blobToDataURL(refinedFile);
+    const refinedBmp = await loadImageFromDataURL(refinedDataURL);
 
     const refinedCanvas = document.createElement("canvas");
     refinedCanvas.width = cropW;
