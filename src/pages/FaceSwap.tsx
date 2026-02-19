@@ -1,9 +1,21 @@
 import { useState, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Client } from "@gradio/client";
+import {
+    User,
+    UserCircle,
+    Sparkles,
+    Download,
+    RefreshCcw,
+    Image as ImageIcon,
+    CheckCircle2,
+    Target as TargetIcon,
+    AlertCircle
+} from "lucide-react";
 import "./FaceSwap.css";
 
 export default function FaceSwap() {
+    const [swapMode, setSwapMode] = useState<'face' | 'head'>('face');
     const [originalImage, setOriginalImage] = useState<string | null>(null);
     const [targetImage, setTargetImage] = useState<string | null>(null);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -39,68 +51,83 @@ export default function FaceSwap() {
         setIsGenerating(true);
         setError(null);
         setResultImage(null);
-        setStatusMessage("Connecting to face swap server...");
+        setStatusMessage("Initializing...");
 
         try {
             const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
-            console.log("DEBUG: HF Token check", hfToken ? "Present (starts with " + hfToken.substring(0, 3) + ")" : "Missing");
-
             const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
 
-            // --- STAGE 1: FACE SWAP ---
-            setStatusMessage("Stage 1/2: Swapping faces...");
-            const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
-            const swapResult = await swapClient.predict("/swap_faces", {
-                src_img: originalFileRef.current,
-                dest_img: targetFileRef.current,
-            });
+            if (swapMode === 'face') {
+                setStatusMessage("Swapping faces...");
+                const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
+                const swapResult = await swapClient.predict("/swap_faces", {
+                    src_img: originalFileRef.current,
+                    dest_img: targetFileRef.current,
+                });
 
-            console.log("Stage 1 Result:", swapResult);
-            const swappedOutput = (swapResult.data as any[])[0];
-            const swappedUrl = swappedOutput?.url ?? swappedOutput?.path ?? null;
-            if (!swappedUrl) throw new Error("Stage 1 failed: No image output from swap server.");
+                const data = swapResult.data as any[];
+                const swappedOutput = data[0];
+                const swappedUrl = swappedOutput?.url ?? swappedOutput?.path ?? null;
+                if (!swappedUrl) throw new Error("Stage 1 failed: No image output.");
 
-            // Standardize swappedUrl to absolute URL
-            const absoluteSwappedUrl = swappedUrl.startsWith("http")
-                ? swappedUrl
-                : `https://tonyassi-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
+                const absoluteSwappedUrl = swappedUrl.startsWith("http")
+                    ? swappedUrl
+                    : `https://tonyassi-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
 
-            // --- STAGE 2: ENHANCEMENT (CodeFormer) ---
-            setStatusMessage("Stage 2/2: Enhancing quality (sharpening & blending)...");
+                await performEnhancement(absoluteSwappedUrl, clientOptions);
+            } else {
+                setStatusMessage("Swapping head context...");
+                // Using BFS (Best Face Swap) model which is superior for Head swaps
+                const swapClient = await Client.connect("linoyts/Flux2-Klein-Face-Swap", clientOptions);
+                const swapResult = await swapClient.predict("/face_swap", {
+                    reference_face: originalFileRef.current,
+                    target_image: targetFileRef.current,
+                    seed: 0,
+                    randomize_seed: true,
+                    num_inference_steps: 4,
+                });
 
-            // DOWNLOAD the image from Stage 1 to pass as a clean File to Stage 2
-            // This avoids "path not found" errors in the second space
-            const imageRes = await fetch(absoluteSwappedUrl);
-            if (!imageRes.ok) throw new Error("Failed to fetch intermediate image for enhancement.");
-            const imageBlob = await imageRes.blob();
-            const intermediateFile = new File([imageBlob], "swapped_face.jpg", { type: "image/jpeg" });
+                const data = swapResult.data as any[];
+                // For this model, data[0] is an array of [before, after]
+                const swappedOutput = Array.isArray(data[0]) ? data[0][1] : data[0];
+                const swappedUrl = swappedOutput?.url ?? swappedOutput?.path ?? null;
+                if (!swappedUrl) throw new Error("Result extraction failed.");
 
-            const enhanceClient = await Client.connect("sczhou/CodeFormer", clientOptions);
-            const enhanceResult = await enhanceClient.predict("/inference", {
-                image: intermediateFile,
-                face_align: true,
-                background_enhance: true,
-                face_upsample: true,
-                upscale: 1, // Keep original size to avoid long processing times
-                codeformer_fidelity: 0.5,
-            });
+                const absoluteSwappedUrl = swappedUrl.startsWith("http")
+                    ? swappedUrl
+                    : `https://linoyts-flux2-klein-face-swap.hf.space/gradio_api/file=${swappedUrl}`;
 
-            console.log("Stage 2 Result:", enhanceResult);
-            const finalOutput = (enhanceResult.data as any[])[0];
-            const finalUrl = finalOutput?.url ?? finalOutput?.path ?? null;
-            if (!finalUrl) throw new Error("Stage 2 failed: No image output from enhancement server.");
-
-            setResultImage(finalUrl);
+                await performEnhancement(absoluteSwappedUrl, clientOptions);
+            }
 
         } catch (err: any) {
-            console.error("Swap Pipeline Error Detailed:", err);
-            // Provide a more helpful error message
-            const errMsg = err.message || "An unexpected error occurred.";
-            setError(`Pipeline Failed: ${errMsg}. This can happen if a server is overloaded or the file is too large.`);
+            console.error("Swap Error:", err);
+            setError("Generation failed. Please try again with different images.");
         } finally {
             setIsGenerating(false);
             setStatusMessage("");
         }
+    };
+
+    const performEnhancement = async (swappedUrl: string, options: any) => {
+        setStatusMessage("Polishing & sharpening...");
+        const imageRes = await fetch(swappedUrl);
+        const imageBlob = await imageRes.blob();
+        const intermediateFile = new File([imageBlob], "swapped.jpg", { type: "image/jpeg" });
+
+        const enhanceClient = await Client.connect("sczhou/CodeFormer", options);
+        const enhanceResult = await enhanceClient.predict("/inference", {
+            image: intermediateFile,
+            face_align: true,
+            background_enhance: true,
+            face_upsample: true,
+            upscale: 1,
+            codeformer_fidelity: 0.5,
+        });
+
+        const data = enhanceResult.data as any[];
+        const finalOutput = data[0];
+        setResultImage(finalOutput?.url ?? finalOutput?.path ?? null);
     };
 
     const handleDownload = async () => {
@@ -111,7 +138,7 @@ export default function FaceSwap() {
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
-            link.download = `faceswap-result-${Date.now()}.jpg`;
+            link.download = `prompthub-${swapMode}-${Date.now()}.jpg`;
             link.click();
             URL.revokeObjectURL(url);
         } catch {
@@ -122,31 +149,52 @@ export default function FaceSwap() {
     return (
         <div className="faceswap-container">
             <Helmet>
-                <title>Free Unlimited AI Face Swap | PromptHub</title>
-                <meta name="description" content="Free AI face swap powered by InsightFace. No signup required." />
+                <title>Premium AI Face & Head Swap | PromptHub</title>
+                <meta name="description" content="Professional AI face and head swapping with restoration. Free and unlimited." />
             </Helmet>
 
-            <div className="builder-header">
-                <h1>AI Face Swap (Pro Pipeline)</h1>
-                <p>High-quality face swapping with AI-powered face restoration and sharpening.</p>
+            <div className="premium-header">
+                <h1>AI Swap Studio</h1>
+                <p>High-fidelity face and head swapping with professional restoration.</p>
             </div>
 
-            <div className="faceswap-content">
+            <div className="mode-selector-container">
+                <div className="mode-selector">
+                    <button
+                        className={`mode-btn ${swapMode === 'face' ? 'active' : ''}`}
+                        onClick={() => setSwapMode('face')}
+                    >
+                        <UserCircle size={18} />
+                        <span>Face Swap</span>
+                    </button>
+                    <button
+                        className={`mode-btn ${swapMode === 'head' ? 'active' : ''}`}
+                        onClick={() => setSwapMode('head')}
+                    >
+                        <User size={18} />
+                        <span>Head Swap</span>
+                    </button>
+                </div>
+            </div>
+
+            <div className="faceswap-content premium-card">
                 <div className="builder-section">
                     <div className="upload-grid">
                         <div className="upload-box" onClick={() => originalInputRef.current?.click()}>
-                            <label className="builder-label">Source Face (the face you want)</label>
-                            <div className="image-preview">
+                            <div className="box-header">
+                                <ImageIcon size={16} />
+                                <label>Source Identity</label>
+                            </div>
+                            <div className="image-preview premium-preview">
                                 {originalImage ? (
                                     <img src={originalImage} alt="Original" />
                                 ) : (
                                     <div className="upload-placeholder">
-                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
-                                            <circle cx="9" cy="9" r="2" />
-                                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-                                        </svg>
-                                        <span>Upload Source Face</span>
+                                        <div className="icon-circle">
+                                            <UserCircle size={32} />
+                                        </div>
+                                        <span>Pick Source Face</span>
+                                        <p className="sub-text">The face you want to use</p>
                                     </div>
                                 )}
                             </div>
@@ -160,18 +208,20 @@ export default function FaceSwap() {
                         </div>
 
                         <div className="upload-box" onClick={() => targetInputRef.current?.click()}>
-                            <label className="builder-label">Target Image (where the face goes)</label>
-                            <div className="image-preview">
+                            <div className="box-header">
+                                <TargetIcon size={16} />
+                                <label>Target Scene</label>
+                            </div>
+                            <div className="image-preview premium-preview">
                                 {targetImage ? (
                                     <img src={targetImage} alt="Target" />
                                 ) : (
                                     <div className="upload-placeholder">
-                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <path d="M18 20a6 6 0 0 0-12 0" />
-                                            <circle cx="12" cy="10" r="4" />
-                                            <circle cx="12" cy="3" r="1" />
-                                        </svg>
-                                        <span>Upload Target Image</span>
+                                        <div className="icon-circle">
+                                            <ImageIcon size={32} />
+                                        </div>
+                                        <span>Pick Target Image</span>
+                                        <p className="sub-text">Where the face will go</p>
                                     </div>
                                 )}
                             </div>
@@ -186,18 +236,23 @@ export default function FaceSwap() {
                     </div>
                 </div>
 
-                <div className="builder-actions">
+                <div className="builder-actions premium-actions">
                     <button
                         onClick={handleGenerate}
-                        className="builder-button generate-button"
+                        className="builder-button premium-generate"
                         disabled={isGenerating || !originalImage || !targetImage}
                     >
                         {isGenerating ? (
                             <span className="loading-content">
-                                <div className="spinner" />
-                                {statusMessage || "Swapping Faces..."}
+                                <RefreshCcw className="spinning-icon" size={18} />
+                                <span>{statusMessage || "Processing..."}</span>
                             </span>
-                        ) : "Generate Swap"}
+                        ) : (
+                            <span className="btn-content">
+                                <Sparkles size={18} />
+                                <span>Generate {swapMode === 'face' ? 'Face' : 'Head'} Swap</span>
+                            </span>
+                        )}
                     </button>
                     {(originalImage || targetImage) && (
                         <button
@@ -208,42 +263,33 @@ export default function FaceSwap() {
                                 originalFileRef.current = null;
                                 targetFileRef.current = null;
                             }}
-                            className="builder-button builder-button-secondary"
+                            className="builder-button-secondary premium-reset"
+                            title="Reset all images"
                         >
-                            Reset
+                            <RefreshCcw size={18} />
                         </button>
                     )}
                 </div>
 
-                {error && <div className="error-message">{error}</div>}
-
-                {isGenerating && (
-                    <div className="progress-container">
-                        <div className="progress-bar">
-                            <div className="progress-fill" />
-                        </div>
-                        <p className="progress-text">{statusMessage}</p>
+                {error && (
+                    <div className="error-message premium-error">
+                        <AlertCircle size={16} />
+                        <span>{error}</span>
                     </div>
                 )}
 
+
                 {resultImage && (
-                    <div className="result-section">
-                        <h2 className="builder-label">Result</h2>
-                        <div className="result-preview">
+                    <div className="result-section premium-result">
+                        <div className="result-header">
+                            <CheckCircle2 size={24} className="success-icon" />
+                            <h2 className="builder-label">Result Generated</h2>
+                        </div>
+                        <div className="result-preview premium-shadow">
                             <img src={resultImage} alt="Swapped Result" />
-                        </div>
-                        <div className="builder-actions">
-                            <button onClick={handleDownload} className="builder-button">
-                                Download Result
+                            <button onClick={handleDownload} className="floating-download" title="Download Result">
+                                <Download size={20} />
                             </button>
-                        </div>
-                        <div className="tech-details">
-                            <h3>High-Quality Pipeline Details</h3>
-                            <ul>
-                                <li>Stage 1: <strong>InsightFace (inswapper_128)</strong> - Initial swap</li>
-                                <li>Stage 2: <strong>CodeFormer</strong> - Face restoration & blending</li>
-                                <li><strong>Cost: $0.00 (Free)</strong></li>
-                            </ul>
                         </div>
                     </div>
                 )}
