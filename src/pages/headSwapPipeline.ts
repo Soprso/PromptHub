@@ -195,11 +195,23 @@ export async function runHeadSwapPipeline(
     try {
         finalSwapUrl = await runFluxSwap("laruss5/Flux2-Klein-Face-Swap", "Primary Model");
     } catch (primaryErr: any) {
-        console.warn("Primary Flux space failed, trying fallback:", primaryErr?.message ?? primaryErr);
+        console.warn("Primary Flux space failed, triggering Instant Backup:", primaryErr?.message ?? primaryErr);
         try {
-            finalSwapUrl = await runFluxSwap("linoyts/Flux2-Klein-Face-Swap", "Backup Model");
+            // Instant Backup: Tzktz/Swap-Face-Model (ZeroGPU, 99% uptime, pure Face Swap)
+            onProgress(15, "Primary model busy, using fast backup swap...");
+            const backupClient = await Client.connect("Tzktz/Swap-Face-Model", clientOptions);
+            const backupResult = await backupClient.predict("/predict", [
+                resizedTarget, // Target Image
+                resizedSrc    // Swap Image
+            ]);
+            const data = (backupResult as any).data as any[];
+            const url = data[0]?.url || data[0]?.path;
+            if (!url) throw new Error("No image returned from backup");
+            finalSwapUrl = url.startsWith("http")
+                ? url
+                : `https://tzktz-swap-face-model.hf.space/gradio_api/file=${url}`;
         } catch (backupErr: any) {
-            console.error("Both Flux spaces failed:", backupErr);
+            console.error("Both models failed:", backupErr);
             throw new Error("Head Swap models are currently overloaded. Please try again in 1-2 minutes.");
         }
     }
@@ -236,19 +248,19 @@ export async function runHeadSwapPipeline(
     );
     const cropFile = new File([cropBlob], "head_crop.jpg", { type: "image/jpeg" });
 
-    // CodeFormer → GFPGANv1.4 fallback
+    // CodeFormer Enhancement
     let cfFile = cropFile;
     try {
         const cfClient = await Client.connect("sczhou/CodeFormer", clientOptions);
         const cfResult = await Promise.race([
-            cfClient.predict("/inference", {
-                image: cropFile,
-                face_align: true,
-                background_enhance: false,
-                face_upsample: true,
-                upscale: 2,
-                codeformer_fidelity: 0.7,
-            }),
+            cfClient.predict("/inference", [
+                cropFile, // image
+                true,     // face_align
+                false,    // background_enhance
+                true,     // face_upsample
+                2,        // upscale
+                0.6       // codeformer_fidelity
+            ]),
             new Promise<never>((_, reject) => setTimeout(() => reject(new Error("CodeFormer timeout")), 60000)),
         ]);
         const cfData = (cfResult as any).data as any[];
@@ -260,28 +272,7 @@ export async function runHeadSwapPipeline(
             cfFile = new File([cfBlob2], "cf_enhanced.jpg", { type: "image/jpeg" });
         }
     } catch (cfErr: any) {
-        console.warn("CodeFormer unavailable, trying GFPGANv1.4 fallback:", cfErr?.message);
-        try {
-            const gf2Client = await Client.connect(
-                "MayankTamakuwala/Image-Upscaler-and-Restoring-GFPGAN-Algorithm",
-                clientOptions
-            );
-            const gf2Result = await Promise.race([
-                gf2Client.predict("/predict", [cropFile, "GFPGANv1.4", 2]),
-                new Promise<never>((_, reject) =>
-                    setTimeout(() => reject(new Error("GFPGANv1.4 timeout")), 60000)
-                ),
-            ]);
-            const gf2Data = (gf2Result as any).data as any[];
-            const gf2Out = gf2Data[0];
-            const gf2Url: string = gf2Out?.url ?? gf2Out?.path ?? "";
-            if (gf2Url && gf2Url.startsWith("http")) {
-                const gf2Blob = await (await fetch(gf2Url)).blob();
-                cfFile = new File([gf2Blob], "gfpgan_enhanced.jpg", { type: "image/jpeg" });
-            }
-        } catch (gf2Err: any) {
-            console.warn("GFPGANv1.4 fallback also skipped:", gf2Err?.message);
-        }
+        console.warn("CodeFormer unavailable, using raw swap:", cfErr?.message);
     }
 
     // ── Stage 4: Eye preserve + colour match + feather composite ─────────────

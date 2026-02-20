@@ -328,9 +328,8 @@ export default function HeadSwap() {
     useEffect(() => {
         fetch("https://tonyassi-face-swap.hf.space").catch(() => { });
         fetch("https://laruss5-flux2-klein-face-swap.hf.space").catch(() => { }); // primary head swap
-        fetch("https://linoyts-flux2-klein-face-swap.hf.space").catch(() => { }); // backup head swap
-        fetch("https://sczhou-codeformer.hf.space").catch(() => { });
-        fetch("https://mayanktamakuwala-image-upscaler-and-restoring-gf-5c51069.hf.space").catch(() => { });
+        fetch("https://tzktz-swap-face-model.hf.space").catch(() => { }); // backup head swap (ZeroGPU)
+        fetch("https://sczhou-codeformer.hf.space").catch(() => { }); // enhancer
     }, []);
 
     const handleImageUpload = (
