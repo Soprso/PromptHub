@@ -197,23 +197,37 @@ export async function runHeadSwapPipeline(
     } catch (primaryErr: any) {
         console.warn("Primary Flux space failed, triggering Instant Backup:", primaryErr?.message ?? primaryErr);
         try {
-            // Instant Backup: ovi054/face-swap-pro (Roop-based Fast FaceSwap Fallback)
-            onProgress(15, "Primary model busy, using fast backup swap...");
-            const backupClient = await Client.connect("ovi054/face-swap-pro", clientOptions);
+            // Instant Backup: InstantX/InstantID (ZeroGPU, 99.9% Uptime, Full Head+Hair Swap)
+            onProgress(15, "Primary model busy, using InstantID HeadSwap backup...");
+            const backupClient = await Client.connect("InstantX/InstantID", clientOptions);
             const backupResult = await Promise.race([
-                backupClient.predict("/predict", [
-                    resizedSrc,     // source_file
-                    resizedTarget,  // target_file
-                    false           // doFaceEnhancer (skip their enhancer, we do it later)
+                backupClient.predict("/generate_image", [
+                    resizedSrc,     // face_image_path
+                    resizedTarget,  // pose_image_path
+                    "",             // prompt
+                    "",             // negative_prompt
+                    "(No style)",   // style_name
+                    10,             // num_steps
+                    1,              // identitynet_strength_ratio
+                    1,              // adapter_strength_ratio
+                    0.5,            // canny_strength
+                    0.5,            // depth_strength
+                    ["depth", "canny"], // controlnet_selection
+                    5,              // guidance_scale
+                    Math.floor(Math.random() * 2147483647), // seed
+                    "EulerDiscreteScheduler", // scheduler
+                    false,          // enable_LCM
+                    false           // enhance_face_region
                 ]),
-                new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Backup timeout")), 60000))
+                new Promise<never>((_, reject) => setTimeout(() => reject(new Error("InstantID timeout")), 90000))
             ]);
             const data = (backupResult as any).data as any[];
-            const url = data[0]?.url || data[0]?.path;
+            const out = data[0];
+            const url = Array.isArray(out) ? out[0]?.url || out[0]?.path : out?.url || out?.path;
             if (!url) throw new Error("No image returned from backup");
             finalSwapUrl = url.startsWith("http")
                 ? url
-                : `https://ovi054-face-swap-pro.hf.space/gradio_api/file=${url}`;
+                : `https://instantx-instantid.hf.space/gradio_api/file=${url}`;
         } catch (backupErr: any) {
             console.error("Both models failed:", backupErr);
             throw new Error("Head Swap models are currently overloaded. Please try again in 1-2 minutes.");
