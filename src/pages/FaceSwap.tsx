@@ -285,9 +285,7 @@ async function runProPipeline(
             new Promise<never>((_, reject) => setTimeout(() => reject(new Error("CodeFormer timeout")), 60000)),
         ]);
         const cfData = (cfResult as any).data as any[];
-        const cfOut = cfData[0];
-        let cfUrl: string = cfOut?.url ?? cfOut?.path ?? "";
-        if (cfUrl && !cfUrl.startsWith("http")) cfUrl = `https://sczhou-codeformer.hf.space/gradio_api/file=${cfUrl}`;
+        const cfUrl = resolveGradioUrl(cfData[0], "sczhou/CodeFormer");
         if (cfUrl) {
             const cfBlob = await (await fetch(cfUrl)).blob();
             cfFile = new File([cfBlob], "cf_enhanced.jpg", { type: "image/jpeg" });
@@ -308,9 +306,8 @@ async function runProPipeline(
                 ),
             ]);
             const gf2Data = (gf2Result as any).data as any[];
-            const gf2Out = gf2Data[0];
-            const gf2Url: string = gf2Out?.url ?? gf2Out?.path ?? "";
-            if (gf2Url && gf2Url.startsWith("http")) {
+            const gf2Url = resolveGradioUrl(gf2Data[0], "MayankTamakuwala/Image-Upscaler-and-Restoring-GFPGAN-Algorithm");
+            if (gf2Url) {
                 const gf2Blob = await (await fetch(gf2Url)).blob();
                 cfFile = new File([gf2Blob], "gfpgan_enhanced.jpg", { type: "image/jpeg" });
             }
@@ -352,6 +349,18 @@ async function runProPipeline(
     return new Promise((resolve) => {
         fullCanvas.toBlob((b) => resolve(URL.createObjectURL(b!)), "image/jpeg", 0.98);
     });
+}
+
+// ─── Utility: Safely resolve Gradio file URLs ────────────────────────────────
+function resolveGradioUrl(obj: any, spaceId: string): string {
+    if (!obj) return "";
+    const p = obj.path;
+    const u = obj.url;
+    // Gradio v4 sometimes returns localhost URLs. Always prefer constructing from the raw path.
+    if (p) return `https://${spaceId.replace("/", "-").toLowerCase()}.hf.space/gradio_api/file=${p}`;
+    if (u && u.startsWith("http") && !u.includes("127.0.0.1") && !u.includes("localhost")) return u;
+    if (u) return `https://${spaceId.replace("/", "-").toLowerCase()}.hf.space/gradio_api/file=${u}`;
+    return "";
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -438,13 +447,8 @@ export default function FaceSwap() {
 
                 setProgress(60);
                 const data = swapResult.data as any[];
-                const swappedOutput = data[0];
-                const rawUrl = swappedOutput?.url ?? swappedOutput?.path ?? null;
-                if (!rawUrl) throw new Error("No image output from swap model.");
-
-                const swappedUrl = rawUrl.startsWith("http")
-                    ? rawUrl
-                    : `https://tonyassi-face-swap.hf.space/gradio_api/file=${rawUrl}`;
+                let swappedUrl = resolveGradioUrl(data[0], "tonyassi/face-swap");
+                if (!swappedUrl) throw new Error("No image output from swap model.");
 
                 // Stages 2–5: Pro pipeline (CodeFormer → GFPGAN → ColorMatch → Feather)
                 try {
