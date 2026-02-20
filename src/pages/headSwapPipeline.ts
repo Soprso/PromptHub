@@ -193,39 +193,28 @@ export async function runHeadSwapPipeline(
 
     let finalSwapUrl: string;
     try {
-        // Primary Model: multimodalart/InstantID-FaceID-6M (ZeroGPU, proxied via localhost/netlify edge)
-        onProgress(15, "Generating primary Head Swap with InstantID...");
-        const primaryClient = await Client.connect(window.location.origin + "/api/hf/instantid");
+        // Primary: felixrosberg/face-swap (Browser-CORS-compatible, fast, open API)
+        onProgress(15, "Generating Head Swap...");
+        const primaryClient = await Client.connect("felixrosberg/face-swap");
         const primaryResult = await Promise.race([
-            primaryClient.predict("/generate_image", [
-                resizedSrc,     // face_image_path
-                resizedTarget,  // pose_image_path
-                "",             // prompt
-                "",             // negative_prompt
-                "(No style)",   // style_name
-                10,             // num_steps
-                1,              // identitynet_strength_ratio
-                1,              // adapter_strength_ratio
-                0.5,            // canny_strength
-                0.5,            // depth_strength
-                ["depth", "canny"], // controlnet_selection
-                5,              // guidance_scale
-                Math.floor(Math.random() * 2147483647), // seed
-                "EulerDiscreteScheduler", // scheduler
-                false,          // enable_LCM
-                false           // enhance_face_region
+            primaryClient.predict("/run_inference", [
+                resizedTarget,  // target image
+                resizedSrc,     // source image (face to transplant)
+                0,              // slider (smoothing)
+                0,              // adv_slider
+                []              // settings
             ]),
-            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("InstantID timeout")), 90000))
+            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Primary timeout")), 60000))
         ]);
-        const data = (primaryResult as any).data as any[];
-        const out = data[0];
-        const url = Array.isArray(out) ? out[0]?.url || out[0]?.path : out?.url || out?.path;
-        if (!url) throw new Error("No image returned from primary model");
-        finalSwapUrl = url.startsWith("http")
-            ? url
-            : `${window.location.origin}/api/hf/instantid/gradio_api/file=${url}`;
+        const primaryData = (primaryResult as any).data as any[];
+        const primaryOut = primaryData[0];
+        const primaryUrl = primaryOut?.url || primaryOut?.path;
+        if (!primaryUrl) throw new Error("No image returned from primary model");
+        finalSwapUrl = primaryUrl.startsWith("http")
+            ? primaryUrl
+            : `https://felixrosberg-face-swap.hf.space/gradio_api/file=${primaryUrl}`;
     } catch (primaryErr: any) {
-        console.warn("Primary InstantID space failed, triggering Flux Backup:", primaryErr?.message ?? primaryErr);
+        console.warn("Primary face-swap failed, triggering Flux Backup:", primaryErr?.message ?? primaryErr);
         try {
             onProgress(15, "Primary model busy, using Flux backup swap...");
             finalSwapUrl = await runFluxSwap("laruss5/Flux2-Klein-Face-Swap", "Backup Model");
