@@ -35,19 +35,7 @@ function loadImageFromDataURL(dataURL: string): Promise<HTMLImageElement> {
     });
 }
 
-async function resizeToMax512(file: File): Promise<File> {
-    const du = await blobToDataURL(file);
-    const im = await loadImageFromDataURL(du);
-    if (im.width <= 512 && im.height <= 512) return file;
-    const sc = Math.min(512 / im.width, 512 / im.height);
-    const cv = document.createElement("canvas");
-    cv.width = Math.round(im.width * sc);
-    cv.height = Math.round(im.height * sc);
-    cv.getContext("2d")!.drawImage(im, 0, 0, cv.width, cv.height);
-    return new Promise<File>((resolve) =>
-        cv.toBlob((b) => resolve(new File([b!], file.name, { type: "image/jpeg" })), "image/jpeg", 0.92)
-    );
-}
+// Removed resizeToMax512 as it is unused by Flux
 
 function applyColorMatch(
     ctx: CanvasRenderingContext2D,
@@ -152,67 +140,73 @@ export async function runHeadSwapPipeline(
     onProgress: (pct: number, msg: string) => void
 ): Promise<string> {
 
-    // ── Stage 1: InsightFace — face identity onto target ──────────────────────
-    onProgress(25, "Swapping face identity...");
-    const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
-    const swapResult = await swapClient.predict("/swap_faces", {
-        src_img: resizedSrc,
-        dest_img: resizedTarget,
-    });
+    // ── Stage 1: Flux Generative Head Swap (Face + Hair natively) ────────────
+    // Replaces the broken HairFastGAN+InsightFace pipeline.
+    // Uses 8 steps for better proportions. Includes automatic fallback space.
 
-    onProgress(42, "Hair transfer preparing...");
-    const swapData = swapResult.data as any[];
-    const swapOut = swapData[0];
-    const rawUrl = swapOut?.url ?? swapOut?.path ?? null;
-    if (!rawUrl) throw new Error("No output from face swap model.");
+    async function runFluxSwap(spaceId: string, label: string): Promise<string> {
+        onProgress(20, `Connecting to ${label}...`);
+        const swapClient = await Client.connect(spaceId, clientOptions);
 
-    const hsFaceUrl = rawUrl.startsWith("http")
-        ? rawUrl
-        : `https://tonyassi-face-swap.hf.space/gradio_api/file=${rawUrl}`;
+        return new Promise<string>(async (resolve, reject) => {
+            const timeout = setTimeout(() => reject(new Error(`${label} timed out`)), 120000); // 2 min max
 
-    const hsFaceBlob = await (await fetch(hsFaceUrl)).blob();
-    const hsFaceFile = new File([hsFaceBlob], "hs_face.jpg", { type: "image/jpeg" });
+            try {
+                const job = swapClient.submit("/face_swap", {
+                    reference_face: resizedSrc,
+                    target_image: resizedTarget,
+                    seed: 0,
+                    randomize_seed: true,
+                    num_inference_steps: 8, // Higher steps prevent bad proportions/placements
+                });
 
-    // ── Stage 2: HairFastGAN — transfer hair shape + colour from source ───────
-    onProgress(50, "Transferring hairstyle...");
-    let hairResultUrl = hsFaceUrl; // fallback to face-only if hair transfer fails
-
-    try {
-        const hairFaceFile = await resizeToMax512(hsFaceFile);   // target input (gets new hair)
-        const hairShapeFile = await resizeToMax512(resizedSrc);  // source input (hair shape + colour)
-
-        const hairClient = await Client.connect("AIRI-Institute/HairFastGAN", clientOptions);
-        const hairResult = await Promise.race([
-            hairClient.predict("/swap_hair", {
-                face: hairFaceFile,
-                shape: hairShapeFile,
-                color: hairShapeFile,
-                blending: "Article",
-                poisson_iters: 0,
-                poisson_erosion: 1,
-            }),
-            new Promise<never>((_, reject) =>
-                setTimeout(() => reject(new Error("HairFastGAN timeout after 90s")), 90000)
-            ),
-        ]);
-
-        const hairData = (hairResult as any).data as any[];
-        const hairOut = hairData[0];
-        const hairRaw: string = hairOut?.url ?? hairOut?.path ?? "";
-        if (hairRaw) {
-            hairResultUrl = hairRaw.startsWith("http")
-                ? hairRaw
-                : `https://airi-institute-hairfastgan.hf.space/gradio_api/file=${hairRaw}`;
-        }
-    } catch (hairErr: any) {
-        console.warn("HairFastGAN skipped, using face-only result:", hairErr?.message, hairErr);
+                for await (const msg of job) {
+                    if (msg.type === "status") {
+                        const status = msg as any;
+                        if (status.queue_size && status.queue_size > 0) {
+                            const pos = status.position ?? 1;
+                            onProgress(Math.max(20, 50 - ((pos / status.queue_size) * 30)), `Queue: ${pos}/${status.queue_size} (${label})...`);
+                        } else if (status.stage === "processing") {
+                            onProgress(55, `Generating head swap (${label})...`);
+                        }
+                    } else if (msg.type === "data") {
+                        clearTimeout(timeout);
+                        const data = (msg as any).data as any[];
+                        const swappedOutput = Array.isArray(data[0]) ? data[0][1] : data[0];
+                        const url = swappedOutput?.url ?? swappedOutput?.path ?? null;
+                        if (!url) reject(new Error("No image returned"));
+                        else resolve(url);
+                        return; // exit loop
+                    }
+                }
+            } catch (err) {
+                clearTimeout(timeout);
+                reject(err);
+            }
+        });
     }
 
-    onProgress(65, "Enhancing face details...");
+    let rawUrl: string;
+    try {
+        rawUrl = await runFluxSwap("linoyts/Flux2-Klein-Face-Swap", "Primary Model");
+    } catch (primaryErr: any) {
+        console.warn("Primary Flux space failed, trying fallback:", primaryErr?.message ?? primaryErr);
+        try {
+            rawUrl = await runFluxSwap("laruss5/Flux2-Klein-Face-Swap", "Backup Model");
+        } catch (backupErr: any) {
+            console.error("Both Flux spaces failed:", backupErr);
+            throw new Error("Head Swap models are currently overloaded. Please try again in 1-2 minutes.");
+        }
+    }
 
-    // ── Stage 3: Download hair result and run pro enhancement pipeline ────────
-    const hairBlob = await (await fetch(hairResultUrl)).blob();
-    const hairDataURL = await blobToDataURL(hairBlob);
+    const finalSwapUrl = rawUrl.startsWith("http")
+        ? rawUrl
+        : `https://linoyts-flux2-klein-face-swap.hf.space/gradio_api/file=${rawUrl}`;
+
+
+    // ── Stage 3: Enhancement pipeline on the face-swapped + hair-transferred result
+    const finalBlob = await (await fetch(finalSwapUrl)).blob();
+    const hairDataURL = await blobToDataURL(finalBlob);
     const bmp = await loadImageFromDataURL(hairDataURL);
 
     const fullW = bmp.width, fullH = bmp.height;
