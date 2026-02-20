@@ -12,6 +12,13 @@
   [build.environment]
     NODE_VERSION = "20"
 
+# HF Spaces Proxy (Bypasses CORS entirely)
+[[redirects]]
+  from = "/api/hf/instantid/*"
+  to = "https://multimodalart-instantid-faceid-6m.hf.space/:splat"
+  status = 200
+  force = true
+
 # SPA routing - redirect all routes to index.html
 [[redirects]]
   from = "/*"

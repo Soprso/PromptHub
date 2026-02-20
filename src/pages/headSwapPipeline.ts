@@ -193,9 +193,9 @@ export async function runHeadSwapPipeline(
 
     let finalSwapUrl: string;
     try {
-        // Primary Model: multimodalart/InstantID-FaceID-6M (ZeroGPU, 99.9% Uptime, Full Head+Hair Swap)
+        // Primary Model: multimodalart/InstantID-FaceID-6M (ZeroGPU, proxied via localhost/netlify edge)
         onProgress(15, "Generating primary Head Swap with InstantID...");
-        const primaryClient = await Client.connect("multimodalart/InstantID-FaceID-6M");
+        const primaryClient = await Client.connect(window.location.origin + "/api/hf/instantid");
         const primaryResult = await Promise.race([
             primaryClient.predict("/generate_image", [
                 resizedSrc,     // face_image_path
@@ -223,7 +223,7 @@ export async function runHeadSwapPipeline(
         if (!url) throw new Error("No image returned from primary model");
         finalSwapUrl = url.startsWith("http")
             ? url
-            : `https://multimodalart-instantid-faceid-6m.hf.space/gradio_api/file=${url}`;
+            : `${window.location.origin}/api/hf/instantid/gradio_api/file=${url}`;
     } catch (primaryErr: any) {
         console.warn("Primary InstantID space failed, triggering Flux Backup:", primaryErr?.message ?? primaryErr);
         try {
