@@ -212,7 +212,6 @@ export async function runHeadSwapPipeline(
 
     // ── Stage 4: Enhancement via Netlify proxy (CodeFormer, server-side) ─────
     onProgress(70, "Enhancing face detail...");
-    let enhancedDataURL = swappedDataURL; // fallback to raw swap if enhance fails
 
     const enhancedUrl = await callEnhanceProxy(swappedUrl);
     if (enhancedUrl) {
@@ -228,8 +227,6 @@ export async function runHeadSwapPipeline(
             // Recrop face region from enhanced image
             cropCtx.clearRect(0, 0, cropW, cropH);
             cropCtx.drawImage(enhBmp, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
-
-            enhancedDataURL = fullEnhDataURL;
         } catch {
             // Enhancement load failed — keep raw swap
         }
