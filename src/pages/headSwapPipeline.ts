@@ -197,19 +197,23 @@ export async function runHeadSwapPipeline(
     } catch (primaryErr: any) {
         console.warn("Primary Flux space failed, triggering Instant Backup:", primaryErr?.message ?? primaryErr);
         try {
-            // Instant Backup: Tzktz/Swap-Face-Model (ZeroGPU, 99% uptime, pure Face Swap)
+            // Instant Backup: ovi054/face-swap-pro (Roop-based Fast FaceSwap Fallback)
             onProgress(15, "Primary model busy, using fast backup swap...");
-            const backupClient = await Client.connect("Tzktz/Swap-Face-Model", clientOptions);
-            const backupResult = await backupClient.predict("/predict", [
-                resizedTarget, // Target Image
-                resizedSrc    // Swap Image
+            const backupClient = await Client.connect("ovi054/face-swap-pro", clientOptions);
+            const backupResult = await Promise.race([
+                backupClient.predict("/predict", [
+                    resizedSrc,     // source_file
+                    resizedTarget,  // target_file
+                    false           // doFaceEnhancer (skip their enhancer, we do it later)
+                ]),
+                new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Backup timeout")), 60000))
             ]);
             const data = (backupResult as any).data as any[];
             const url = data[0]?.url || data[0]?.path;
             if (!url) throw new Error("No image returned from backup");
             finalSwapUrl = url.startsWith("http")
                 ? url
-                : `https://tzktz-swap-face-model.hf.space/gradio_api/file=${url}`;
+                : `https://ovi054-face-swap-pro.hf.space/gradio_api/file=${url}`;
         } catch (backupErr: any) {
             console.error("Both models failed:", backupErr);
             throw new Error("Head Swap models are currently overloaded. Please try again in 1-2 minutes.");

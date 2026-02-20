@@ -328,7 +328,7 @@ export default function HeadSwap() {
     useEffect(() => {
         fetch("https://tonyassi-face-swap.hf.space").catch(() => { });
         fetch("https://laruss5-flux2-klein-face-swap.hf.space").catch(() => { }); // primary head swap
-        fetch("https://tzktz-swap-face-model.hf.space").catch(() => { }); // backup head swap (ZeroGPU)
+        fetch("https://ovi054-face-swap-pro.hf.space").catch(() => { }); // backup head swap (Roop-Fast)
         fetch("https://sczhou-codeformer.hf.space").catch(() => { }); // enhancer
     }, []);
 
