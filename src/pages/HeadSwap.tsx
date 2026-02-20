@@ -411,7 +411,12 @@ export default function HeadSwap() {
                                 const swappedOutput = Array.isArray(data[0]) ? data[0][1] : data[0];
                                 const url = swappedOutput?.url ?? swappedOutput?.path ?? null;
                                 if (!url) reject(new Error("No image returned"));
-                                else resolve(url);
+                                else {
+                                    const finalUrl = url.startsWith("http")
+                                        ? url
+                                        : `https://${spaceId.replace("/", "-").toLowerCase()}.hf.space/gradio_api/file=${url}`;
+                                    resolve(finalUrl);
+                                }
                                 return; // exit loop
                             }
                         }
@@ -422,22 +427,18 @@ export default function HeadSwap() {
                 });
             }
 
-            let rawUrl: string;
+            let fluxSwapUrl: string;
             try {
-                rawUrl = await runFluxSwap("linoyts/Flux2-Klein-Face-Swap", "Primary Model");
+                fluxSwapUrl = await runFluxSwap("linoyts/Flux2-Klein-Face-Swap", "Primary Model");
             } catch (primaryErr: any) {
                 console.warn("Primary Flux space failed, trying fallback:", primaryErr?.message ?? primaryErr);
                 try {
-                    rawUrl = await runFluxSwap("laruss5/Flux2-Klein-Face-Swap", "Backup Model");
+                    fluxSwapUrl = await runFluxSwap("laruss5/Flux2-Klein-Face-Swap", "Backup Model");
                 } catch (backupErr: any) {
                     console.error("Both Flux spaces failed:", backupErr);
                     throw new Error("Head Swap models are currently overloaded. Please try again in 1-2 minutes.");
                 }
             }
-
-            const fluxSwapUrl = rawUrl.startsWith("http")
-                ? rawUrl
-                : `https://linoyts-flux2-klein-face-swap.hf.space/gradio_api/file=${rawUrl}`;
 
             setProgress(65);
 
