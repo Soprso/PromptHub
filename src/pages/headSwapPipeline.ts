@@ -1,19 +1,18 @@
 /**
  * headSwapPipeline.ts
  *
- * Self-contained head swap pipeline:
- *   1. InsightFace  — copy source face identity onto target
- *   2. HairFastGAN  — transfer source hair shape + colour
- *   3. CodeFormer   — face detail enhancement (GFPGANv1.4 fallback)
- *   4. Eye blend + colour match + feather edge (client-side canvas)
+ * Rebuilt Head Swap Pipeline — uses Netlify serverless functions as proxies.
+ * All AI inference runs server-side → no CORS issues on mobile or any browser.
+ *
+ * Stages:
+ *   1. Face Swap  — POST /api/head-swap  → tonyassi/face-swap (HF Space, server-side)
+ *   2. Enhance    — POST /api/enhance    → sczhou/CodeFormer (HF Space, server-side)
+ *   3. Eye blend + colour match + feather edge (client-side canvas, kept as is)
  *
  * Imported by FaceSwap.tsx for the "Head Swap" tab.
- * No dependency on FaceSwap.tsx internals.
  */
 
-import { Client } from "@gradio/client";
-
-// ─── Helpers (duplicated so this file is fully self-contained) ────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function blobToDataURL(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -34,8 +33,6 @@ function loadImageFromDataURL(dataURL: string): Promise<HTMLImageElement> {
         img.src = dataURL;
     });
 }
-
-// Removed resizeToMax512 as it is unused by Flux
 
 function applyColorMatch(
     ctx: CanvasRenderingContext2D,
@@ -122,113 +119,75 @@ function applyEyePreservation(
     ctx.restore();
 }
 
+// ─── API helpers ──────────────────────────────────────────────────────────────
+
+async function callHeadSwapProxy(
+    srcDataURL: string,
+    targetDataURL: string
+): Promise<string> {
+    const response = await fetch("/api/head-swap", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ srcBase64: srcDataURL, targetBase64: targetDataURL })
+    });
+
+    if (!response.ok) {
+        const err = await response.json().catch(() => ({ error: `HTTP ${response.status}` }));
+        throw new Error(err.error || `Head swap server error: ${response.status}`);
+    }
+
+    const { url } = await response.json();
+    if (!url) throw new Error("No URL returned from head swap server");
+    return url;
+}
+
+async function callEnhanceProxy(imageUrl: string): Promise<string | null> {
+    try {
+        const response = await fetch("/api/enhance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ imageUrl })
+        });
+        if (!response.ok) return null; // non-critical: return null to skip
+        const { url } = await response.json();
+        return url || null;
+    } catch {
+        return null; // enhancement is optional — don't fail the whole pipeline
+    }
+}
+
 // ─── Main export ──────────────────────────────────────────────────────────────
 
 /**
  * runHeadSwapPipeline
  *
- * @param resizedSrc    Source person (face + hair to transfer FROM)
- * @param resizedTarget Target scene  (body/scene to swap INTO)
- * @param clientOptions HF token options for @gradio/client
- * @param onProgress    Progress callback (0–100, message)
- * @returns             Object URL of final composited image
+ * @param srcFile        Source person (face + hair to transfer FROM)
+ * @param targetFile     Target scene  (body/scene to swap INTO)
+ * @param _clientOptions (Unused — kept for API compatibility)
+ * @param onProgress     Progress callback (0–100, message)
+ * @returns              Object URL of final composited image
  */
 export async function runHeadSwapPipeline(
-    resizedSrc: File,
-    resizedTarget: File,
-    clientOptions: Record<string, unknown>,
+    srcFile: File,
+    targetFile: File,
+    _clientOptions: Record<string, unknown>,
     onProgress: (pct: number, msg: string) => void
 ): Promise<string> {
 
-    // ── Stage 1: Flux Generative Head Swap (Face + Hair natively) ────────────
-    // Replaces the broken HairFastGAN+InsightFace pipeline.
-    // Uses 8 steps for better proportions. Includes automatic fallback space.
+    // ── Stage 1: Convert images to base64 for server transport ───────────────
+    onProgress(5, "Preparing images...");
+    const srcDataURL = await blobToDataURL(srcFile);
+    const targetDataURL = await blobToDataURL(targetFile);
 
-    async function runFluxSwap(spaceId: string, label: string): Promise<string> {
-        onProgress(20, `Connecting to ${label}...`);
-        const swapClient = await Client.connect(spaceId, clientOptions);
+    // ── Stage 2: Face Swap via Netlify proxy (server-side, no CORS) ──────────
+    onProgress(15, "Swapping head... (server-side, mobile-safe)");
+    const swappedUrl = await callHeadSwapProxy(srcDataURL, targetDataURL);
 
-        return new Promise<string>(async (resolve, reject) => {
-            const timeout = setTimeout(() => reject(new Error(`${label} timed out`)), 120000); // 2 min max
-
-            try {
-                const job = swapClient.submit("/face_swap", {
-                    reference_face: resizedSrc,
-                    target_image: resizedTarget,
-                    seed: 0,
-                    randomize_seed: true,
-                    num_inference_steps: 8, // Higher steps prevent bad proportions/placements
-                });
-
-                for await (const msg of job) {
-                    if (msg.type === "status") {
-                        const status = msg as any;
-                        if (status.queue_size && status.queue_size > 0) {
-                            const pos = status.position ?? 1;
-                            onProgress(Math.max(20, 50 - ((pos / status.queue_size) * 30)), `Queue: ${pos}/${status.queue_size} (${label})...`);
-                        } else if (status.stage === "processing") {
-                            onProgress(55, `Generating head swap (${label})...`);
-                        }
-                    } else if (msg.type === "data") {
-                        clearTimeout(timeout);
-                        const data = (msg as any).data as any[];
-                        const swappedOutput = Array.isArray(data[0]) ? data[0][1] : data[0];
-                        const url = swappedOutput?.url ?? swappedOutput?.path ?? null;
-                        if (!url) reject(new Error("No image returned"));
-                        else {
-                            const finalUrl = url.startsWith("http")
-                                ? url
-                                : `https://${spaceId.replace("/", "-").toLowerCase()}.hf.space/gradio_api/file=${url}`;
-                            resolve(finalUrl);
-                        }
-                        return; // exit loop
-                    }
-                }
-            } catch (err) {
-                clearTimeout(timeout);
-                reject(err);
-            }
-        });
-    }
-
-    let finalSwapUrl: string;
-    try {
-        // Primary: felixrosberg/face-swap (Browser-CORS-compatible, fast, open API)
-        onProgress(15, "Generating Head Swap...");
-        const primaryClient = await Client.connect("felixrosberg/face-swap");
-        const primaryResult = await Promise.race([
-            primaryClient.predict("/run_inference", [
-                resizedTarget,  // target image
-                resizedSrc,     // source image (face to transplant)
-                0,              // slider (smoothing)
-                0,              // adv_slider
-                []              // settings
-            ]),
-            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Primary timeout")), 60000))
-        ]);
-        const primaryData = (primaryResult as any).data as any[];
-        const primaryOut = primaryData[0];
-        const primaryUrl = primaryOut?.url || primaryOut?.path;
-        if (!primaryUrl) throw new Error("No image returned from primary model");
-        finalSwapUrl = primaryUrl.startsWith("http")
-            ? primaryUrl
-            : `https://felixrosberg-face-swap.hf.space/gradio_api/file=${primaryUrl}`;
-    } catch (primaryErr: any) {
-        console.warn("Primary face-swap failed, triggering Flux Backup:", primaryErr?.message ?? primaryErr);
-        try {
-            onProgress(15, "Primary model busy, using Flux backup swap...");
-            finalSwapUrl = await runFluxSwap("laruss5/Flux2-Klein-Face-Swap", "Backup Model");
-        } catch (backupErr: any) {
-            console.error("Both models failed:", backupErr);
-            throw new Error("Head Swap models are currently overloaded. Please try again in 1-2 minutes.");
-        }
-    }
-
-
-    // ── Stage 3: Enhancement pipeline on the face-swapped + hair-transferred result
-    const finalBlob = await (await fetch(finalSwapUrl)).blob();
-    const hairDataURL = await blobToDataURL(finalBlob);
-    const bmp = await loadImageFromDataURL(hairDataURL);
+    // ── Stage 3: Load the swapped result for canvas work ─────────────────────
+    onProgress(60, "Processing result...");
+    const finalBlob = await (await fetch(swappedUrl)).blob();
+    const swappedDataURL = await blobToDataURL(finalBlob);
+    const bmp = await loadImageFromDataURL(swappedDataURL);
 
     const fullW = bmp.width, fullH = bmp.height;
     const fullCanvas = document.createElement("canvas");
@@ -236,7 +195,7 @@ export async function runHeadSwapPipeline(
     const fullCtx = fullCanvas.getContext("2d")!;
     fullCtx.drawImage(bmp, 0, 0);
 
-    // Crop region for face enhancement (top 70% of image, 90% width)
+    // Crop top 70% face region for enhancement
     const cropX = Math.round(fullW * 0.05);
     const cropY = 0;
     const cropW = Math.round(fullW * 0.90);
@@ -244,48 +203,45 @@ export async function runHeadSwapPipeline(
 
     let refImageData: ImageData | null = null;
     try { refImageData = fullCtx.getImageData(cropX, cropY, cropW, cropH); }
-    catch (e) { console.warn("getImageData blocked:", e); }
+    catch { /* CORS canvas restriction — skip color match */ }
 
     const cropCanvas = document.createElement("canvas");
     cropCanvas.width = cropW; cropCanvas.height = cropH;
     const cropCtx = cropCanvas.getContext("2d")!;
     cropCtx.drawImage(bmp, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
-    const cropBlob = await new Promise<Blob>((r) =>
-        cropCanvas.toBlob((b) => r(b!), "image/jpeg", 0.95)
-    );
-    const cropFile = new File([cropBlob], "head_crop.jpg", { type: "image/jpeg" });
+    // ── Stage 4: Enhancement via Netlify proxy (CodeFormer, server-side) ─────
+    onProgress(70, "Enhancing face detail...");
+    let enhancedDataURL = swappedDataURL; // fallback to raw swap if enhance fails
 
-    // CodeFormer Enhancement
-    let cfFile = cropFile;
-    try {
-        const cfClient = await Client.connect("sczhou/CodeFormer", clientOptions);
-        const cfResult = await Promise.race([
-            cfClient.predict("/inference", [
-                cropFile, // image
-                true,     // face_align
-                false,    // background_enhance
-                true,     // face_upsample
-                2,        // upscale
-                0.6       // codeformer_fidelity
-            ]),
-            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("CodeFormer timeout")), 60000)),
-        ]);
-        const cfData = (cfResult as any).data as any[];
-        const cfOut = cfData[0];
-        let cfUrl: string = cfOut?.url ?? cfOut?.path ?? "";
-        if (cfUrl && !cfUrl.startsWith("http")) cfUrl = `https://sczhou-codeformer.hf.space/gradio_api/file=${cfUrl}`;
-        if (cfUrl) {
-            const cfBlob2 = await (await fetch(cfUrl)).blob();
-            cfFile = new File([cfBlob2], "cf_enhanced.jpg", { type: "image/jpeg" });
+    const enhancedUrl = await callEnhanceProxy(swappedUrl);
+    if (enhancedUrl) {
+        try {
+            const enhBlob = await (await fetch(enhancedUrl)).blob();
+            const fullEnhDataURL = await blobToDataURL(enhBlob);
+            const enhBmp = await loadImageFromDataURL(fullEnhDataURL);
+
+            // Redraw enhanced result to full canvas
+            fullCtx.clearRect(0, 0, fullW, fullH);
+            fullCtx.drawImage(enhBmp, 0, 0, fullW, fullH);
+
+            // Recrop face region from enhanced image
+            cropCtx.clearRect(0, 0, cropW, cropH);
+            cropCtx.drawImage(enhBmp, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+
+            enhancedDataURL = fullEnhDataURL;
+        } catch {
+            // Enhancement load failed — keep raw swap
         }
-    } catch (cfErr: any) {
-        console.warn("CodeFormer unavailable, using raw swap:", cfErr?.message);
     }
 
-    // ── Stage 4: Eye preserve + colour match + feather composite ─────────────
-    onProgress(92, "Final blending and colour matching...");
-    const refinedDataURL = await blobToDataURL(cfFile);
+    // ── Stage 5: Eye preserve + colour match + feather composite ─────────────
+    onProgress(90, "Final blending and colour matching...");
+
+    const refinedBlob = await new Promise<Blob>((r) =>
+        cropCanvas.toBlob((b) => r(b!), "image/jpeg", 0.95)
+    );
+    const refinedDataURL = await blobToDataURL(refinedBlob);
     const refinedBmp = await loadImageFromDataURL(refinedDataURL);
 
     const refinedCanvas = document.createElement("canvas");

@@ -324,12 +324,10 @@ export default function HeadSwap() {
     const sourceFileRef = useRef<File | null>(null);
     const targetFileRef = useRef<File | null>(null);
 
-    // Pre-warm HF Spaces on mount to reduce cold start times
+    // Pre-warm the Netlify function on mount (keeps Node.js container warm)
     useEffect(() => {
-        fetch("https://tonyassi-face-swap.hf.space").catch(() => { });
-        fetch("https://felixrosberg-face-swap.hf.space").catch(() => { }); // primary head swap (CORS-open)
-        fetch("https://laruss5-flux2-klein-face-swap.hf.space").catch(() => { }); // backup head swap (Flux)
-        fetch("https://sczhou-codeformer.hf.space").catch(() => { }); // enhancer
+        fetch("/api/head-swap", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
+            .catch(() => { }); // ignore errors — this is just a warmup ping
     }, []);
 
     const handleImageUpload = (

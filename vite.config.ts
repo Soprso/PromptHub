@@ -13,17 +13,21 @@ export default defineConfig({
   ],
   server: {
     proxy: {
+      // Proxy /api/* to Netlify Dev (port 8888) during local development
+      // Run: netlify dev  (instead of npm run dev) to test Netlify functions locally
       '/hf-api': {
         target: 'https://router.huggingface.co/hf-inference',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/hf-api/, ''),
         secure: false,
       },
-      '/api/hf/instantid': {
-        target: 'https://multimodalart-instantid-faceid-6m.hf.space',
+      '/api/head-swap': {
+        target: 'http://localhost:8888',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/hf\/instantid/, ''),
-        secure: false,
+      },
+      '/api/enhance': {
+        target: 'http://localhost:8888',
+        changeOrigin: true,
       },
     },
   },
