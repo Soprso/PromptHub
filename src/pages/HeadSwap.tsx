@@ -327,7 +327,8 @@ export default function HeadSwap() {
     // Pre-warm HF Spaces on mount to reduce cold start times
     useEffect(() => {
         fetch("https://tonyassi-face-swap.hf.space").catch(() => { });
-        fetch("https://airi-institute-hairfastgan.hf.space").catch(() => { });
+        fetch("https://laruss5-flux2-klein-face-swap.hf.space").catch(() => { }); // primary head swap
+        fetch("https://linoyts-flux2-klein-face-swap.hf.space").catch(() => { }); // backup head swap
         fetch("https://sczhou-codeformer.hf.space").catch(() => { });
         fetch("https://mayanktamakuwala-image-upscaler-and-restoring-gf-5c51069.hf.space").catch(() => { });
     }, []);
@@ -429,11 +430,11 @@ export default function HeadSwap() {
 
             let fluxSwapUrl: string;
             try {
-                fluxSwapUrl = await runFluxSwap("linoyts/Flux2-Klein-Face-Swap", "Primary Model");
+                fluxSwapUrl = await runFluxSwap("laruss5/Flux2-Klein-Face-Swap", "Primary Model");
             } catch (primaryErr: any) {
                 console.warn("Primary Flux space failed, trying fallback:", primaryErr?.message ?? primaryErr);
                 try {
-                    fluxSwapUrl = await runFluxSwap("laruss5/Flux2-Klein-Face-Swap", "Backup Model");
+                    fluxSwapUrl = await runFluxSwap("linoyts/Flux2-Klein-Face-Swap", "Backup Model");
                 } catch (backupErr: any) {
                     console.error("Both Flux spaces failed:", backupErr);
                     throw new Error("Head Swap models are currently overloaded. Please try again in 1-2 minutes.");
@@ -460,7 +461,12 @@ export default function HeadSwap() {
 
         } catch (err: any) {
             console.error("Head Swap Error:", err);
-            setError(err?.message || "Generation failed. Please try again with different images.");
+            const errMsg = String(err?.message || err).toLowerCase();
+            if (errMsg.includes("failed to fetch")) {
+                setError("Network/VPN Error: Could not securely connect to the AI model. Please disable your VPN and try again.");
+            } else {
+                setError(err?.message || "Generation failed. Please try again with different images.");
+            }
         } finally {
             setIsGenerating(false);
             setStatusMessage("");

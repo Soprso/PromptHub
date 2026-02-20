@@ -193,11 +193,11 @@ export async function runHeadSwapPipeline(
 
     let finalSwapUrl: string;
     try {
-        finalSwapUrl = await runFluxSwap("linoyts/Flux2-Klein-Face-Swap", "Primary Model");
+        finalSwapUrl = await runFluxSwap("laruss5/Flux2-Klein-Face-Swap", "Primary Model");
     } catch (primaryErr: any) {
         console.warn("Primary Flux space failed, trying fallback:", primaryErr?.message ?? primaryErr);
         try {
-            finalSwapUrl = await runFluxSwap("laruss5/Flux2-Klein-Face-Swap", "Backup Model");
+            finalSwapUrl = await runFluxSwap("linoyts/Flux2-Klein-Face-Swap", "Backup Model");
         } catch (backupErr: any) {
             console.error("Both Flux spaces failed:", backupErr);
             throw new Error("Head Swap models are currently overloaded. Please try again in 1-2 minutes.");
