@@ -195,7 +195,7 @@ export async function runHeadSwapPipeline(
     try {
         // Primary Model: multimodalart/InstantID-FaceID-6M (ZeroGPU, 99.9% Uptime, Full Head+Hair Swap)
         onProgress(15, "Generating primary Head Swap with InstantID...");
-        const primaryClient = await Client.connect("multimodalart/InstantID-FaceID-6M", clientOptions);
+        const primaryClient = await Client.connect("multimodalart/InstantID-FaceID-6M");
         const primaryResult = await Promise.race([
             primaryClient.predict("/generate_image", [
                 resizedSrc,     // face_image_path
