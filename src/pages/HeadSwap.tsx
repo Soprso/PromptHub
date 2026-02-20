@@ -327,8 +327,8 @@ export default function HeadSwap() {
     // Pre-warm HF Spaces on mount to reduce cold start times
     useEffect(() => {
         fetch("https://tonyassi-face-swap.hf.space").catch(() => { });
-        fetch("https://laruss5-flux2-klein-face-swap.hf.space").catch(() => { }); // primary head swap
-        fetch("https://instantx-instantid.hf.space").catch(() => { }); // backup head swap (ZeroGPU InstantID)
+        fetch("https://multimodalart-instantid-faceid-6m.hf.space").catch(() => { }); // primary head swap (ZeroGPU InstantID)
+        fetch("https://laruss5-flux2-klein-face-swap.hf.space").catch(() => { }); // backup head swap
         fetch("https://sczhou-codeformer.hf.space").catch(() => { }); // enhancer
     }, []);
 
