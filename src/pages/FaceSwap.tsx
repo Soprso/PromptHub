@@ -319,31 +319,9 @@ async function runProPipeline(
         }
     }
 
-    // ── Stage 3b: GFPGAN Eye & Feature Refinement ───────────────────────────
-    onProgress(85, "Refining eyes and facial features...");
-    let refinedFile = cfFile; // fallback if GFPGAN fails
-    try {
-        const gfClient = await Client.connect("TencentARC/GFPGAN", clientOptions);
-        const gfResult = await Promise.race([
-            gfClient.predict("/restore", {
-                img: cfFile,
-                version: "v1.4",
-                scale: 2,
-            }),
-            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("GFPGAN timeout")), 45000)),
-        ]);
-        const gfData = (gfResult as any).data as any[];
-        // GFPGAN returns [output_image, ...] — output_image may be in index 0 or 1
-        const gfOut = gfData[1] ?? gfData[0];
-        let gfUrl: string = gfOut?.url ?? gfOut?.path ?? (typeof gfOut === "string" ? gfOut : "");
-        if (gfUrl && !gfUrl.startsWith("http")) gfUrl = `https://tencentarc-gfpgan.hf.space/gradio_api/file=${gfUrl}`;
-        if (gfUrl) {
-            const gfBlob = await (await fetch(gfUrl)).blob();
-            refinedFile = new File([gfBlob], "gf_refined.jpg", { type: "image/jpeg" });
-        }
-    } catch (e: any) {
-        console.warn("GFPGAN skipped:", e?.message);
-    }
+
+    // Stage 3b: TencentARC/GFPGAN is permanently 404 — skipped
+    const refinedFile = cfFile;
 
     // ── Stage 4: Skin Tone Color Matching + Eye Preserve ──────────────────────
     onProgress(92, "Final blending and color matching...");
