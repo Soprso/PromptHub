@@ -13,6 +13,13 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+# API proxy routing to Netlify Functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
+
 # SPA routing - redirect all routes to index.html
 [[redirects]]
   from = "/*"

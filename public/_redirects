@@ -1,3 +1,4 @@
 # Netlify SPA Redirects
 # All routes should return index.html with 200 status
+/api/*    /.netlify/functions/:splat    200!
 /*    /index.html   200
