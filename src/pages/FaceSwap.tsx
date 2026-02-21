@@ -545,7 +545,7 @@ export default function FaceSwap() {
                     >
                         <RefreshCcw size={18} />
                         <span>Face Swap</span>
-                        <span className="pro-badge">PRO</span>
+                        <span className="pro-badge">FREE</span>
                     </button>
                     <button
                         className={`mode-btn ${swapMode === 'head' ? 'active' : ''}`}
@@ -555,8 +555,8 @@ export default function FaceSwap() {
                         }}
                     >
                         <User size={18} />
-                        <span>Head Swap</span>
-                        <span className="beta-badge">BETA</span>
+                        <span>Face Swap</span>
+                        <span className="beta-badge">PAID</span>
                     </button>
                 </div>
             </div>
@@ -670,7 +670,7 @@ export default function FaceSwap() {
                     <div className="modal-container premium-card" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
                             <AlertCircle className="beta-icon" size={24} />
-                            <h3>Head Swap (BETA)</h3>
+                            <h3>Face Swap (PAID)</h3>
                         </div>
                         <div className="modal-body">
                             <p>This feature is currently under active development. Generations may occasionally fail or produce unexpected results.</p>
