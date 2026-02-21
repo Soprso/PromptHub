@@ -62,6 +62,28 @@ function resizeWithWorker(file: File, maxSize: number): Promise<Blob> {
     });
 }
 
+// ─── Utility: Progress Simulator ─────────────────────────────────────────────
+export class ProgressSimulator {
+    private interval: ReturnType<typeof setInterval> | null = null;
+    start(start: number, end: number, timeMs: number, onProg: (pct: number) => void) {
+        this.stop();
+        const startTime = Date.now();
+        this.interval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            let t = Math.min(1, Math.max(0, elapsed / timeMs));
+            t = 1 - Math.pow(1 - t, 3); // Ease-out
+            const current = start + (end - start) * t;
+            onProg(Math.min(current, end - 0.1));
+        }, 50);
+    }
+    stop() {
+        if (this.interval) {
+            clearInterval(this.interval);
+            this.interval = null;
+        }
+    }
+}
+
 // ─── Stage 4: Canvas-based skin tone color matching ─────────────────────────
 // Adjusts refined crop RGB to match the original swap face region's color
 function applyColorMatch(
@@ -203,13 +225,17 @@ function applyEyePreservation(
 async function runProPipeline(
     swappedUrl: string,
     clientOptions: any,
-    onProgress: (pct: number, msg: string) => void
+    onProgress: (pct: number, msg: string) => void,
+    sim: ProgressSimulator
 ): Promise<string> {
+
+    sim.start(45, 55, 1500, (p) => onProgress(p, "Downloading raw swap..."));
     // Download swapped image — decode via FileReader/dataURL for full mobile compat
     const swapRes = await fetch(swappedUrl);
     const swapBlob = await swapRes.blob();
     const swapDataURL = await blobToDataURL(swapBlob);
     const bmp = await loadImageFromDataURL(swapDataURL);
+    sim.stop();
 
     const fullW = bmp.width;
     const fullH = bmp.height;
@@ -248,7 +274,7 @@ async function runProPipeline(
     const cropFile = new File([cropBlob], "face_crop.jpg", { type: "image/jpeg" });
 
     // ── Stage 3a: CodeFormer Enhancement ────────────────────────────────────
-    onProgress(75, "Enhancing face details...");
+    sim.start(55, 85, 4000, (p) => onProgress(p, "Enhancing face details..."));
     let cfFile = cropFile; // fallback if CodeFormer fails
     try {
         const cfClient = await Client.connect("sczhou/CodeFormer", clientOptions);
@@ -272,11 +298,12 @@ async function runProPipeline(
     } catch (cfErr: any) {
         console.warn("CodeFormer unavailable, using raw swap:", cfErr?.message);
     }
+    sim.stop();
 
     const refinedFile = cfFile;
 
     // ── Stage 4: Skin Tone Color Matching + Eye Preserve ──────────────────────
-    onProgress(92, "Final blending and color matching...");
+    sim.start(85, 100, 1000, (p) => onProgress(p, "Refining eye realism & color..."));
     // FileReader path: fully mobile-safe, no blob URL CORS issues
     const refinedDataURL = await blobToDataURL(refinedFile);
     const refinedBmp = await loadImageFromDataURL(refinedDataURL);
@@ -289,7 +316,6 @@ async function runProPipeline(
 
     // ── Stage 3c: Eye Preservation Blend ─────────────────────────────────────
     // Blends original swap eye region back at 40% opacity to retain target eye geometry
-    onProgress(89, "Refining eye realism...");
     applyEyePreservation(refinedCtx, cropCanvas, cropW, cropH);
 
     // Only apply color match if we got reference pixels successfully
@@ -367,30 +393,35 @@ export default function FaceSwap() {
         setIsGenerating(true);
         setError(null);
         setResultImage(null);
-        setProgress(10);
+        setProgress(0);
         setStatusMessage("Preparing images...");
+
+        const sim = new ProgressSimulator();
 
         try {
             const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
             const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
 
+            sim.start(0, 10, 800, (p) => setProgress(p));
             // Resize off-thread using Web Worker
             // Uses Blob output directly, avoiding main thread decode stalls
             const resizedSrcBlob = await resizeWithWorker(originalFileRef.current, MAX_DIMENSION);
             const resizedTargetBlob = await resizeWithWorker(targetFileRef.current, MAX_DIMENSION);
-            setProgress(20);
+            sim.stop();
 
             if (swapMode === 'face') {
                 // Stage 1: InsightFace swap
-                setStatusMessage("Swapping faces...");
-                setProgress(35);
+                sim.start(10, 45, 3000, (p) => {
+                    setProgress(p);
+                    setStatusMessage("Swapping faces...");
+                });
                 const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
                 const swapResult = await swapClient.predict("/swap_faces", {
                     src_img: new File([resizedSrcBlob], "source.jpg", { type: "image/jpeg" }),
                     dest_img: new File([resizedTargetBlob], "target.jpg", { type: "image/jpeg" }),
                 });
 
-                setProgress(60);
+                sim.stop();
                 const data = swapResult.data as any[];
                 let swappedUrl = resolveGradioUrl(data[0], "tonyassi/face-swap");
                 if (!swappedUrl) throw new Error("No image output from swap model.");
@@ -400,11 +431,14 @@ export default function FaceSwap() {
                     const finalImage = await runProPipeline(
                         swappedUrl,
                         clientOptions,
-                        (pct, msg) => { setProgress(pct); setStatusMessage(msg); }
+                        (pct, msg) => { setProgress(pct); setStatusMessage(msg); },
+                        sim
                     );
+                    sim.stop();
                     setProgress(100);
                     setResultImage(finalImage);
                 } catch (pipelineErr: any) {
+                    sim.stop();
                     console.warn("Pro pipeline error, using raw swap:", pipelineErr?.message);
                     setProgress(100);
                     setResultImage(swappedUrl);
@@ -425,8 +459,8 @@ export default function FaceSwap() {
                 setProgress(100);
                 setResultImage(finalImage);
             }
-
         } catch (err: any) {
+            sim.stop();
             console.error("Swap Error:", err);
             // Surface the real error so mobile users can understand what went wrong
             const errMsg = String(err?.message || err).toLowerCase();

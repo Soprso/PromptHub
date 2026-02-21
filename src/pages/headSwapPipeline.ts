@@ -12,6 +12,8 @@
  * Imported by FaceSwap.tsx for the "Head Swap" tab.
  */
 
+import { ProgressSimulator } from "./FaceSwap";
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function blobToDataURL(blob: Blob): Promise<string> {
@@ -162,15 +164,20 @@ export async function runHeadSwapPipeline(
     onProgress: (pct: number, msg: string) => void
 ): Promise<string> {
 
+    const sim = new ProgressSimulator();
+
     // ── Stage 1: Send Blobs to unified Netlify proxy (server-side, no CORS) ──
-    onProgress(15, "Processing image on secure server...");
+    sim.start(0, 15, 1000, (p) => onProgress(p, "Preparing secure connection..."));
+    sim.start(15, 80, 7000, (p) => onProgress(p, "Processing image on secure server..."));
     const finalUrl = await callUnifiedPipeline(srcBlob, targetBlob);
+    sim.stop();
 
     // ── Stage 2: Load the final AI result for canvas work ─────────────────────
-    onProgress(60, "Processing result...");
+    sim.start(80, 90, 2000, (p) => onProgress(p, "Downloading enhanced result..."));
     const finalBlob = await (await fetch(finalUrl)).blob();
     const finalDataURL = await blobToDataURL(finalBlob);
     const bmp = await loadImageFromDataURL(finalDataURL);
+    sim.stop();
 
     const fullW = bmp.width, fullH = bmp.height;
     const fullCanvas = document.createElement("canvas");
@@ -194,7 +201,7 @@ export async function runHeadSwapPipeline(
     cropCtx.drawImage(bmp, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
     // ── Stage 3: Eye preserve + colour match + feather composite ─────────────
-    onProgress(90, "Final blending and colour matching...");
+    sim.start(90, 100, 1000, (p) => onProgress(p, "Applying final colour grading..."));
 
     // we re-export the crop to apply blends.
     const refinedBlob = await new Promise<Blob>((r) =>
@@ -211,6 +218,7 @@ export async function runHeadSwapPipeline(
     applyEyePreservation(refinedCtx, cropCanvas, cropW, cropH);
     if (refImageData) applyColorMatch(refinedCtx, cropW, cropH, refImageData);
     pasteWithFeather(fullCtx, refinedCanvas, cropX, cropY, cropW, cropH);
+    sim.stop();
 
     return new Promise((resolve) => {
         fullCanvas.toBlob((b) => resolve(URL.createObjectURL(b!)), "image/jpeg", 0.90);
