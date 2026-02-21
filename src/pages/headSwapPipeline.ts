@@ -160,9 +160,34 @@ async function callPaidPipeline(
         throw new Error(err.error || `Server error: ${response.status}`);
     }
 
-    const { url } = await response.json();
-    if (!url) throw new Error("No URL returned from paid pipeline");
-    return url;
+    const { predictionId } = await response.json();
+    if (!predictionId) throw new Error("No prediction ID returned from paid pipeline");
+
+    // ── Async Polling Loop (Prevents 30s Serverless Timeout) ──
+    while (true) {
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Poll every 2 seconds
+
+        const checkRes = await fetch("/api/check-headswap", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ predictionId })
+        });
+
+        if (!checkRes.ok) {
+            const err = await checkRes.json().catch(() => ({ error: `HTTP ${checkRes.status}` }));
+            throw new Error(err.error || `Server status check failed: ${checkRes.status}`);
+        }
+
+        const checkData = await checkRes.json();
+
+        if (checkData.status === "succeeded") {
+            if (!checkData.url) throw new Error("Success state reached but no URL returned.");
+            return checkData.url;
+        } else if (checkData.status === "failed" || checkData.status === "canceled") {
+            throw new Error(`AI generation ${checkData.status}`);
+        }
+        // Otherwise status is processing/starting, continue polling...
+    }
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────

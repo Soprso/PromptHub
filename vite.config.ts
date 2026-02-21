@@ -33,6 +33,10 @@ export default defineConfig({
         target: 'http://localhost:8888',
         changeOrigin: true,
       },
+      '/api/check-headswap': {
+        target: 'http://localhost:8888',
+        changeOrigin: true,
+      },
     },
   },
 })

@@ -65,66 +65,34 @@ export const handler = async (event: any) => {
         const sourceDataUri = `data:${sourceImage.type};base64,${sourceImage.data.toString("base64")}`;
         const targetDataUri = `data:${targetImage.type};base64,${targetImage.data.toString("base64")}`;
 
-        // 4. Run Replicate (with strict polling timeout)
+        // 4. Create Replicate Prediction (Async to prevent 30s Netlify timeout)
         const replicate = new Replicate({ auth: REPLICATE_API_KEY });
 
-        let url: string | null = null;
-
-        // Wrap replicate execution in a custom Promise to enforce a strict timeout (e.g. 120s max execution)
         try {
-            const replicatePromise = replicate.run(
-                "zsxkib/instant-id:2e4785a4d80dadf580077b2244c8d7c05d8e3faac04a04c02d8e099dd2876789",
-                {
-                    input: {
-                        image: targetDataUri,
-                        face_image: sourceDataUri,
-                        pose_image: targetDataUri,
-                        prompt: "ultra-realistic photo of the same person, preserve exact hairstyle, preserve exact hair length, preserve exact hair color, preserve exact facial features, professional photography",
-                        negative_prompt: "(lowres, low quality, worst quality:1.2), watermark, cartoon, illustration",
-                        sdxl_weights: "protovision-xl-high-fidel",
-                        guidance_scale: 5,
-                        identitynet_strength_ratio: 0.8
-                    }
+            const prediction = await replicate.predictions.create({
+                version: "2e4785a4d80dadf580077b2244c8d7c05d8e3faac04a04c02d8e099dd2876789",
+                input: {
+                    image: targetDataUri,
+                    face_image: sourceDataUri,
+                    pose_image: targetDataUri,
+                    prompt: "ultra-realistic photo of the same person, preserve exact hairstyle, preserve exact hair length, preserve exact hair color, preserve exact facial features, professional photography",
+                    negative_prompt: "(lowres, low quality, worst quality:1.2), watermark, cartoon, illustration",
+                    sdxl_weights: "protovision-xl-high-fidel",
+                    guidance_scale: 5,
+                    identitynet_strength_ratio: 0.8
                 }
-            );
-
-            // 120 seconds timeout logic
-            const timeoutPromise = new Promise<never>((_, reject) => {
-                setTimeout(() => reject(new Error("Replicate Inference Timeout (120s exceeded)")), 120000);
             });
 
-            const replicateOutput: any = await Promise.race([replicatePromise, timeoutPromise]);
+            console.log("Prediction created successfully:", prediction.id);
 
-            console.log("Replicate raw output:", replicateOutput);
-
-            if (Array.isArray(replicateOutput)) {
-                if (typeof replicateOutput[0] === "string") {
-                    url = replicateOutput[0];
-                } else if (replicateOutput[0]?.url) {
-                    url = replicateOutput[0].url;
-                } else {
-                    throw new Error("Replicate returned unexpected output format");
-                }
-            } else if (typeof replicateOutput === "string") {
-                url = replicateOutput;
-            } else if (replicateOutput && typeof replicateOutput === "object" && replicateOutput.url) {
-                url = replicateOutput.url;
-            } else {
-                throw new Error("Replicate output is not an array");
-            }
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ predictionId: prediction.id })
+            };
         } catch (apiErr: any) {
             console.error("Replicate API Error:", apiErr);
             return { statusCode: 502, body: JSON.stringify({ error: `Replicate failed: ${apiErr?.message || "Unknown error"}` }) };
         }
-
-        if (!url) {
-            return { statusCode: 500, body: JSON.stringify({ error: "Failed to get image URL from Replicate" }) };
-        }
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ url })
-        };
 
     } catch (err: any) {
         console.error("headswap-paid error:", err);
