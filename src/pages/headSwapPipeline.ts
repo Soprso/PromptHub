@@ -123,15 +123,34 @@ function applyEyePreservation(
 
 // ─── API helpers ──────────────────────────────────────────────────────────────
 
-async function callUnifiedPipeline(
+function loadRazorpayScript(): Promise<boolean> {
+    return new Promise((resolve) => {
+        if (typeof window !== "undefined" && (window as any).Razorpay) {
+            resolve(true);
+            return;
+        }
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
+    });
+}
+
+// Submits the image blobs alongside the Razorpay credentials verified by the frontend
+async function callPaidPipeline(
     srcBlob: Blob,
-    targetBlob: Blob
+    targetBlob: Blob,
+    paymentDetails: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }
 ): Promise<string> {
     const formData = new FormData();
     formData.append("source", srcBlob);
     formData.append("target", targetBlob);
+    formData.append("razorpay_payment_id", paymentDetails.razorpay_payment_id);
+    formData.append("razorpay_order_id", paymentDetails.razorpay_order_id);
+    formData.append("razorpay_signature", paymentDetails.razorpay_signature);
 
-    const response = await fetch("/api/head-swap", {
+    const response = await fetch("/api/headswap-paid", {
         method: "POST",
         body: formData
     });
@@ -142,7 +161,7 @@ async function callUnifiedPipeline(
     }
 
     const { url } = await response.json();
-    if (!url) throw new Error("No URL returned from server pipeline");
+    if (!url) throw new Error("No URL returned from paid pipeline");
     return url;
 }
 
@@ -166,10 +185,43 @@ export async function runHeadSwapPipeline(
 
     const sim = new ProgressSimulator();
 
-    // ── Stage 1: Send Blobs to unified Netlify proxy (server-side, no CORS) ──
-    sim.start(0, 15, 1000, (p) => onProgress(p, "Preparing secure connection..."));
-    sim.start(15, 80, 7000, (p) => onProgress(p, "Processing image on secure server..."));
-    const finalUrl = await callUnifiedPipeline(srcBlob, targetBlob);
+    // ── Stage 0: Create Order & Launch Razorpay ──
+    onProgress(5, "Preparing Razorpay Checkout...");
+    const isLoaded = await loadRazorpayScript();
+    if (!isLoaded) throw new Error("Could not load payment gateway. Please check your connection.");
+
+    const orderRes = await fetch("/api/create-order", { method: "POST" });
+    if (!orderRes.ok) throw new Error("Failed to initialize secure checkout session.");
+    const orderData = await orderRes.json();
+
+    const paymentDetails = await new Promise<{ razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }>((resolve, reject) => {
+        const rzp = new (window as any).Razorpay({
+            key: orderData.key_id,
+            amount: orderData.amount,
+            currency: orderData.currency,
+            name: "PromptHub",
+            description: "PRO Head Swap Generation",
+            order_id: orderData.order_id,
+            handler: function (response: any) {
+                // Payment Success Callback
+                resolve(response);
+            },
+            modal: {
+                ondismiss: function () {
+                    // Payment Cancelled Callback
+                    reject(new Error("Payment was cancelled by the user."));
+                }
+            }
+        });
+        rzp.on("payment.failed", function (response: any) {
+            reject(new Error(`Payment failed: ${response.error.description}`));
+        });
+        rzp.open();
+    });
+
+    // ── Stage 1: Send verified payment & images to Replicate proxy ──
+    sim.start(10, 80, 20000, (p) => onProgress(p, "Processing PRO Image on Replicate..."));
+    const finalUrl = await callPaidPipeline(srcBlob, targetBlob, paymentDetails);
     sim.stop();
 
     // ── Stage 2: Load the final AI result for canvas work ─────────────────────
@@ -201,7 +253,7 @@ export async function runHeadSwapPipeline(
     cropCtx.drawImage(bmp, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
     // ── Stage 3: Eye preserve + colour match + feather composite ─────────────
-    sim.start(90, 100, 1000, (p) => onProgress(p, "Applying final colour grading..."));
+    sim.start(90, 100, 1000, (p) => onProgress(p, "Finalizing..."));
 
     // we re-export the crop to apply blends.
     const refinedBlob = await new Promise<Blob>((r) =>

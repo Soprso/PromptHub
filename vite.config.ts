@@ -25,7 +25,11 @@ export default defineConfig({
         target: 'http://localhost:8888',
         changeOrigin: true,
       },
-      '/api/enhance': {
+      '/api/headswap-paid': {
+        target: 'http://localhost:8888',
+        changeOrigin: true,
+      },
+      '/api/create-order': {
         target: 'http://localhost:8888',
         changeOrigin: true,
       },
