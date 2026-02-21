@@ -17,7 +17,7 @@ import { runHeadSwapPipeline } from "./headSwapPipeline";
 
 // Mobile detection
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-const MAX_DIMENSION = isMobile ? 1024 : 1280;
+const MAX_DIMENSION = isMobile ? 768 : 1024;
 
 // ─── blobToDataURL: FileReader-based, works on all mobile browsers ─────────────
 // Avoids blob URL CORS issues, HEIC format failures, and Safari/Chrome quirks
@@ -42,45 +42,24 @@ function loadImageFromDataURL(dataURL: string): Promise<HTMLImageElement> {
     });
 }
 
-// ─── Stage 0a: Resize image from File (desktop path) ────────────────────────
-async function resizeImage(file: File, maxDimension = MAX_DIMENSION): Promise<File> {
-    const dataURL = await blobToDataURL(file);
-    const img = await loadImageFromDataURL(dataURL);
-    const { width, height } = img;
-    if (width <= maxDimension && height <= maxDimension) return file;
-    const scale = Math.min(maxDimension / width, maxDimension / height);
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.round(width * scale);
-    canvas.height = Math.round(height * scale);
-    canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
-    return new Promise<File>((resolve) =>
-        canvas.toBlob((blob) => resolve(new File([blob!], file.name, { type: "image/jpeg" })), "image/jpeg", 0.92)
-    );
-}
-
-// ─── Stage 0b: Resize from already-read dataURL (mobile path) ────────────────
-// On Android Chrome, File objects become stale after the app goes to background
-// (which always happens during gallery/camera selection). This avoids re-reading
-// the File entirely by working from the dataURL we already have from handleImageUpload.
-async function resizeFromDataURL(dataURL: string, filename = "image.jpg", maxDimension = MAX_DIMENSION): Promise<File> {
-    const img = await loadImageFromDataURL(dataURL);
-    const { width, height } = img;
-    const scale = Math.min(maxDimension / width, maxDimension / height);
-    if (width <= maxDimension && height <= maxDimension) {
-        // Already small — decode dataURL bytes directly (no FileReader needed)
-        const mime = dataURL.split(";")[0].split(":")[1] || "image/jpeg";
-        const bin = atob(dataURL.split(",")[1]);
-        const arr = new Uint8Array(bin.length);
-        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-        return new File([arr], filename, { type: mime });
-    }
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.round(width * scale);
-    canvas.height = Math.round(height * scale);
-    canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
-    return new Promise<File>((resolve) =>
-        canvas.toBlob((blob) => resolve(new File([blob!], filename, { type: "image/jpeg" })), "image/jpeg", 0.92)
-    );
+// ─── Worker-based resize utility ─────────────────────────────────────────────
+function resizeWithWorker(file: File, maxSize: number): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+        const worker = new Worker(new URL("../workers/imageWorker.ts", import.meta.url), { type: "module" });
+        worker.onmessage = (e) => {
+            worker.terminate();
+            if (e.data.success) {
+                resolve(e.data.blob);
+            } else {
+                reject(new Error(e.data.error || "Worker resize failed"));
+            }
+        };
+        worker.onerror = (err) => {
+            worker.terminate();
+            reject(err);
+        };
+        worker.postMessage({ file, maxSize });
+    });
 }
 
 // ─── Stage 4: Canvas-based skin tone color matching ─────────────────────────
@@ -141,7 +120,7 @@ function pasteWithFeather(
     const maskCanvas = document.createElement("canvas");
     maskCanvas.width = cropW;
     maskCanvas.height = cropH;
-    const maskCtx = maskCanvas.getContext("2d")!;
+    const maskCtx = maskCanvas.getContext("2d", { willReadFrequently: true })!;
 
     const cx = cropW / 2;
     const cy = cropH / 2;
@@ -159,7 +138,7 @@ function pasteWithFeather(
     const tempCanvas = document.createElement("canvas");
     tempCanvas.width = cropW;
     tempCanvas.height = cropH;
-    const tempCtx = tempCanvas.getContext("2d")!;
+    const tempCtx = tempCanvas.getContext("2d", { willReadFrequently: true })!;
     tempCtx.drawImage(refinedCanvas, 0, 0, cropW, cropH);
     tempCtx.globalCompositeOperation = "destination-in";
     tempCtx.drawImage(maskCanvas, 0, 0);
@@ -190,7 +169,7 @@ function applyEyePreservation(
     const maskCanvas = document.createElement("canvas");
     maskCanvas.width = eyeW;
     maskCanvas.height = eyeH;
-    const maskCtx = maskCanvas.getContext("2d")!;
+    const maskCtx = maskCanvas.getContext("2d", { willReadFrequently: true })!;
     const mx = eyeW / 2, my = eyeH / 2;
     const grad = maskCtx.createRadialGradient(
         mx, my, Math.min(mx, my) * 0.3,  // inner (opaque)
@@ -206,7 +185,7 @@ function applyEyePreservation(
     const eyeCanvas = document.createElement("canvas");
     eyeCanvas.width = eyeW;
     eyeCanvas.height = eyeH;
-    const eyeCtx = eyeCanvas.getContext("2d")!;
+    const eyeCtx = eyeCanvas.getContext("2d", { willReadFrequently: true })!;
     eyeCtx.drawImage(originalCropCanvas, eyeX, eyeY, eyeW, eyeH, 0, 0, eyeW, eyeH);
     // Apply feathered mask to eye extract
     eyeCtx.globalCompositeOperation = "destination-in";
@@ -239,7 +218,7 @@ async function runProPipeline(
     const fullCanvas = document.createElement("canvas");
     fullCanvas.width = fullW;
     fullCanvas.height = fullH;
-    const fullCtx = fullCanvas.getContext("2d")!;
+    const fullCtx = fullCanvas.getContext("2d", { willReadFrequently: true })!;
     fullCtx.drawImage(bmp, 0, 0);
 
     // Face crop region (wider + taller for full facial context)
@@ -262,10 +241,10 @@ async function runProPipeline(
     const cropCanvas = document.createElement("canvas");
     cropCanvas.width = cropW;
     cropCanvas.height = cropH;
-    const cropCtx = cropCanvas.getContext("2d")!;
+    const cropCtx = cropCanvas.getContext("2d", { willReadFrequently: true })!;
     cropCtx.drawImage(bmp, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
-    const cropBlob = await new Promise<Blob>((r) => cropCanvas.toBlob((b) => r(b!), "image/jpeg", 0.95));
+    const cropBlob = await new Promise<Blob>((r) => cropCanvas.toBlob((b) => r(b!), "image/jpeg", 0.90));
     const cropFile = new File([cropBlob], "face_crop.jpg", { type: "image/jpeg" });
 
     // ── Stage 3a: CodeFormer Enhancement ────────────────────────────────────
@@ -305,7 +284,7 @@ async function runProPipeline(
     const refinedCanvas = document.createElement("canvas");
     refinedCanvas.width = cropW;
     refinedCanvas.height = cropH;
-    const refinedCtx = refinedCanvas.getContext("2d")!;
+    const refinedCtx = refinedCanvas.getContext("2d", { willReadFrequently: true })!;
     refinedCtx.drawImage(refinedBmp, 0, 0, cropW, cropH);
 
     // ── Stage 3c: Eye Preservation Blend ─────────────────────────────────────
@@ -321,9 +300,9 @@ async function runProPipeline(
     // ── Stage 5: Feathered Edge Blending ─────────────────────────────────────
     pasteWithFeather(fullCtx, refinedCanvas, cropX, cropY, cropW, cropH);
 
-    // ── Export: JPEG quality 0.98 ─────────────────────────────────────────────
+    // ── Export: JPEG quality 0.90 ─────────────────────────────────────────────
     return new Promise((resolve) => {
-        fullCanvas.toBlob((b) => resolve(URL.createObjectURL(b!)), "image/jpeg", 0.98);
+        fullCanvas.toBlob((b) => resolve(URL.createObjectURL(b!)), "image/jpeg", 0.90);
     });
 }
 
@@ -395,19 +374,10 @@ export default function FaceSwap() {
             const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
             const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
 
-            // Stage 0: Resize — use already-read dataURL on mobile to avoid stale File handles,
-            // fall back to File-based resize on desktop
-            let resizedSrc: File;
-            let resizedTarget: File;
-            if (isMobile && originalImage && targetImage) {
-                // Mobile: use the dataURL stored at upload time (File object may be stale)
-                resizedSrc = await resizeFromDataURL(originalImage, originalFileRef.current.name);
-                resizedTarget = await resizeFromDataURL(targetImage, targetFileRef.current.name);
-            } else {
-                // Desktop: read from File as usual
-                resizedSrc = await resizeImage(originalFileRef.current);
-                resizedTarget = await resizeImage(targetFileRef.current);
-            }
+            // Resize off-thread using Web Worker
+            // Uses Blob output directly, avoiding main thread decode stalls
+            const resizedSrcBlob = await resizeWithWorker(originalFileRef.current, MAX_DIMENSION);
+            const resizedTargetBlob = await resizeWithWorker(targetFileRef.current, MAX_DIMENSION);
             setProgress(20);
 
             if (swapMode === 'face') {
@@ -416,8 +386,8 @@ export default function FaceSwap() {
                 setProgress(35);
                 const swapClient = await Client.connect("tonyassi/face-swap", clientOptions);
                 const swapResult = await swapClient.predict("/swap_faces", {
-                    src_img: resizedSrc,
-                    dest_img: resizedTarget,
+                    src_img: new File([resizedSrcBlob], "source.jpg", { type: "image/jpeg" }),
+                    dest_img: new File([resizedTargetBlob], "target.jpg", { type: "image/jpeg" }),
                 });
 
                 setProgress(60);
@@ -445,9 +415,10 @@ export default function FaceSwap() {
                 // All logic lives in headSwapPipeline.ts (separate file)
                 const hfToken = import.meta.env.VITE_HUGGINGFACE_TOKEN;
                 const headClientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
+
                 const finalImage = await runHeadSwapPipeline(
-                    resizedSrc,
-                    resizedTarget,
+                    resizedSrcBlob,
+                    resizedTargetBlob,
                     headClientOptions,
                     (pct, msg) => { setProgress(pct); setStatusMessage(msg); }
                 );

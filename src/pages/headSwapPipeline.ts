@@ -121,39 +121,27 @@ function applyEyePreservation(
 
 // ─── API helpers ──────────────────────────────────────────────────────────────
 
-async function callHeadSwapProxy(
-    srcDataURL: string,
-    targetDataURL: string
+async function callUnifiedPipeline(
+    srcBlob: Blob,
+    targetBlob: Blob
 ): Promise<string> {
+    const formData = new FormData();
+    formData.append("source", srcBlob);
+    formData.append("target", targetBlob);
+
     const response = await fetch("/api/head-swap", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ srcBase64: srcDataURL, targetBase64: targetDataURL })
+        body: formData
     });
 
     if (!response.ok) {
         const err = await response.json().catch(() => ({ error: `HTTP ${response.status}` }));
-        throw new Error(err.error || `Head swap server error: ${response.status}`);
+        throw new Error(err.error || `Server error: ${response.status}`);
     }
 
     const { url } = await response.json();
-    if (!url) throw new Error("No URL returned from head swap server");
+    if (!url) throw new Error("No URL returned from server pipeline");
     return url;
-}
-
-async function callEnhanceProxy(imageUrl: string): Promise<string | null> {
-    try {
-        const response = await fetch("/api/enhance", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ imageUrl })
-        });
-        if (!response.ok) return null; // non-critical: return null to skip
-        const { url } = await response.json();
-        return url || null;
-    } catch {
-        return null; // enhancement is optional — don't fail the whole pipeline
-    }
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
@@ -161,41 +149,36 @@ async function callEnhanceProxy(imageUrl: string): Promise<string | null> {
 /**
  * runHeadSwapPipeline
  *
- * @param srcFile        Source person (face + hair to transfer FROM)
- * @param targetFile     Target scene  (body/scene to swap INTO)
+ * @param srcBlob        Source person (face + hair to transfer FROM) - Expects Blob/File
+ * @param targetBlob     Target scene  (body/scene to swap INTO) - Expects Blob/File
  * @param _clientOptions (Unused — kept for API compatibility)
  * @param onProgress     Progress callback (0–100, message)
  * @returns              Object URL of final composited image
  */
 export async function runHeadSwapPipeline(
-    srcFile: File,
-    targetFile: File,
+    srcBlob: Blob,
+    targetBlob: Blob,
     _clientOptions: Record<string, unknown>,
     onProgress: (pct: number, msg: string) => void
 ): Promise<string> {
 
-    // ── Stage 1: Convert images to base64 for server transport ───────────────
-    onProgress(5, "Preparing images...");
-    const srcDataURL = await blobToDataURL(srcFile);
-    const targetDataURL = await blobToDataURL(targetFile);
+    // ── Stage 1: Send Blobs to unified Netlify proxy (server-side, no CORS) ──
+    onProgress(15, "Processing image on secure server...");
+    const finalUrl = await callUnifiedPipeline(srcBlob, targetBlob);
 
-    // ── Stage 2: Face Swap via Netlify proxy (server-side, no CORS) ──────────
-    onProgress(15, "Swapping head... (server-side, mobile-safe)");
-    const swappedUrl = await callHeadSwapProxy(srcDataURL, targetDataURL);
-
-    // ── Stage 3: Load the swapped result for canvas work ─────────────────────
+    // ── Stage 2: Load the final AI result for canvas work ─────────────────────
     onProgress(60, "Processing result...");
-    const finalBlob = await (await fetch(swappedUrl)).blob();
-    const swappedDataURL = await blobToDataURL(finalBlob);
-    const bmp = await loadImageFromDataURL(swappedDataURL);
+    const finalBlob = await (await fetch(finalUrl)).blob();
+    const finalDataURL = await blobToDataURL(finalBlob);
+    const bmp = await loadImageFromDataURL(finalDataURL);
 
     const fullW = bmp.width, fullH = bmp.height;
     const fullCanvas = document.createElement("canvas");
     fullCanvas.width = fullW; fullCanvas.height = fullH;
-    const fullCtx = fullCanvas.getContext("2d")!;
+    const fullCtx = fullCanvas.getContext("2d", { willReadFrequently: true })!;
     fullCtx.drawImage(bmp, 0, 0);
 
-    // Crop top 70% face region for enhancement
+    // Crop top 70% face region for enhancement blending
     const cropX = Math.round(fullW * 0.05);
     const cropY = 0;
     const cropW = Math.round(fullW * 0.90);
@@ -207,43 +190,22 @@ export async function runHeadSwapPipeline(
 
     const cropCanvas = document.createElement("canvas");
     cropCanvas.width = cropW; cropCanvas.height = cropH;
-    const cropCtx = cropCanvas.getContext("2d")!;
+    const cropCtx = cropCanvas.getContext("2d", { willReadFrequently: true })!;
     cropCtx.drawImage(bmp, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
-    // ── Stage 4: Enhancement via Netlify proxy (CodeFormer, server-side) ─────
-    onProgress(70, "Enhancing face detail...");
-
-    const enhancedUrl = await callEnhanceProxy(swappedUrl);
-    if (enhancedUrl) {
-        try {
-            const enhBlob = await (await fetch(enhancedUrl)).blob();
-            const fullEnhDataURL = await blobToDataURL(enhBlob);
-            const enhBmp = await loadImageFromDataURL(fullEnhDataURL);
-
-            // Redraw enhanced result to full canvas
-            fullCtx.clearRect(0, 0, fullW, fullH);
-            fullCtx.drawImage(enhBmp, 0, 0, fullW, fullH);
-
-            // Recrop face region from enhanced image
-            cropCtx.clearRect(0, 0, cropW, cropH);
-            cropCtx.drawImage(enhBmp, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
-        } catch {
-            // Enhancement load failed — keep raw swap
-        }
-    }
-
-    // ── Stage 5: Eye preserve + colour match + feather composite ─────────────
+    // ── Stage 3: Eye preserve + colour match + feather composite ─────────────
     onProgress(90, "Final blending and colour matching...");
 
+    // we re-export the crop to apply blends.
     const refinedBlob = await new Promise<Blob>((r) =>
-        cropCanvas.toBlob((b) => r(b!), "image/jpeg", 0.95)
+        cropCanvas.toBlob((b) => r(b!), "image/jpeg", 0.90)
     );
     const refinedDataURL = await blobToDataURL(refinedBlob);
     const refinedBmp = await loadImageFromDataURL(refinedDataURL);
 
     const refinedCanvas = document.createElement("canvas");
     refinedCanvas.width = cropW; refinedCanvas.height = cropH;
-    const refinedCtx = refinedCanvas.getContext("2d")!;
+    const refinedCtx = refinedCanvas.getContext("2d", { willReadFrequently: true })!;
     refinedCtx.drawImage(refinedBmp, 0, 0, cropW, cropH);
 
     applyEyePreservation(refinedCtx, cropCanvas, cropW, cropH);
@@ -251,6 +213,6 @@ export async function runHeadSwapPipeline(
     pasteWithFeather(fullCtx, refinedCanvas, cropX, cropY, cropW, cropH);
 
     return new Promise((resolve) => {
-        fullCanvas.toBlob((b) => resolve(URL.createObjectURL(b!)), "image/jpeg", 0.98);
+        fullCanvas.toBlob((b) => resolve(URL.createObjectURL(b!)), "image/jpeg", 0.90);
     });
 }
