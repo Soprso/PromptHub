@@ -79,10 +79,11 @@ export const handler = async (event: any) => {
                         image: targetDataUri,
                         face_image: sourceDataUri,
                         pose_image: targetDataUri,
-                        prompt: "photorealistic person, ultra realistic, 8k, cinematic lighting, sharp focus",
-                        negative_prompt: "(lowres, low quality, worst quality:1.2), watermark, drawing, cartoon, illustration",
+                        prompt: "ultra-realistic photo of the same person, preserve exact hairstyle, preserve exact hair length, preserve exact hair color, preserve exact facial features, professional photography",
+                        negative_prompt: "(lowres, low quality, worst quality:1.2), watermark, cartoon, illustration",
                         sdxl_weights: "protovision-xl-high-fidel",
-                        guidance_scale: 5
+                        guidance_scale: 5,
+                        identitynet_strength_ratio: 0.8
                     }
                 }
             );
