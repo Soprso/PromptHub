@@ -75,11 +75,12 @@ export const handler = async (event: any) => {
                     image: targetDataUri,
                     face_image: sourceDataUri,
                     pose_image: targetDataUri,
-                    prompt: "ultra-realistic photo of the same person, preserve exact hairstyle, preserve exact hair length, preserve exact hair color, preserve exact facial features, professional photography",
-                    negative_prompt: "(lowres, low quality, worst quality:1.2), watermark, cartoon, illustration",
+                    prompt: "ultra-realistic RAW photo, DSLR photograph, same person, preserve exact face, preserve exact hair, preserve exact beard, preserve exact identity, natural skin texture, natural lighting, professional photography, 85mm lens, shallow depth of field, sharp focus, high detail, photojournalism",
+                    negative_prompt: "cartoon, illustration, painting, anime, CGI, 3d render, unreal engine, fake, plastic skin, smooth skin, doll, artificial, low quality, blurry",
                     sdxl_weights: "protovision-xl-high-fidel",
-                    guidance_scale: 5,
-                    identitynet_strength_ratio: 0.8
+                    guidance_scale: 6,
+                    identitynet_strength_ratio: 0.9,
+                    num_outputs: 1
                 }
             });
 
