@@ -93,16 +93,24 @@ export const handler = async (event: any) => {
                 setTimeout(() => reject(new Error("Replicate Inference Timeout (120s exceeded)")), 120000);
             });
 
-            const output: any = await Promise.race([replicatePromise, timeoutPromise]);
-            // Output parsing logic supporting both array of strings and array of objects
-            if (Array.isArray(output) && output.length > 0) {
-                url = typeof output[0] === 'object' && output[0].url ? output[0].url : output[0];
-            } else if (typeof output === 'string') {
-                url = output;
-            } else if (output && typeof output === 'object' && output.url) {
-                url = output.url;
+            const replicateOutput: any = await Promise.race([replicatePromise, timeoutPromise]);
+
+            console.log("Replicate raw output:", replicateOutput);
+
+            if (Array.isArray(replicateOutput)) {
+                if (typeof replicateOutput[0] === "string") {
+                    url = replicateOutput[0];
+                } else if (replicateOutput[0]?.url) {
+                    url = replicateOutput[0].url;
+                } else {
+                    throw new Error("Replicate returned unexpected output format");
+                }
+            } else if (typeof replicateOutput === "string") {
+                url = replicateOutput;
+            } else if (replicateOutput && typeof replicateOutput === "object" && replicateOutput.url) {
+                url = replicateOutput.url;
             } else {
-                url = output as unknown as string;
+                throw new Error("Replicate output is not an array");
             }
         } catch (apiErr: any) {
             console.error("Replicate API Error:", apiErr);
