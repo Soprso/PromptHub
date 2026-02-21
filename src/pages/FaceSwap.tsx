@@ -62,6 +62,30 @@ function resizeWithWorker(file: File, maxSize: number): Promise<Blob> {
     });
 }
 
+// ─── Stage 0b: Resize from already-read dataURL (mobile path) ────────────────
+// On Android Chrome, File objects become stale after the app goes to background.
+// This avoids re-reading the File entirely by working from the dataURL we already have.
+async function resizeFromDataURL(dataURL: string, maxDimension = MAX_DIMENSION): Promise<Blob> {
+    const img = await loadImageFromDataURL(dataURL);
+    const { width, height } = img;
+    const scale = Math.min(maxDimension / width, maxDimension / height);
+    if (width <= maxDimension && height <= maxDimension) {
+        // Already small — decode dataURL bytes directly (no FileReader needed)
+        const mime = dataURL.split(";")[0].split(":")[1] || "image/jpeg";
+        const bin = atob(dataURL.split(",")[1]);
+        const arr = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        return new Blob([arr], { type: mime });
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(width * scale);
+    canvas.height = Math.round(height * scale);
+    canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+    return new Promise<Blob>((resolve) =>
+        canvas.toBlob((blob) => resolve(blob!), "image/jpeg", 0.90)
+    );
+}
+
 // ─── Utility: Progress Simulator ─────────────────────────────────────────────
 export class ProgressSimulator {
     private interval: ReturnType<typeof setInterval> | null = null;
@@ -403,10 +427,19 @@ export default function FaceSwap() {
             const clientOptions = hfToken ? { token: hfToken as `hf_${string}` } : {};
 
             sim.start(0, 10, 800, (p) => setProgress(p));
-            // Resize off-thread using Web Worker
-            // Uses Blob output directly, avoiding main thread decode stalls
-            const resizedSrcBlob = await resizeWithWorker(originalFileRef.current, MAX_DIMENSION);
-            const resizedTargetBlob = await resizeWithWorker(targetFileRef.current, MAX_DIMENSION);
+            // Stage 0: Resize
+            let resizedSrcBlob: Blob;
+            let resizedTargetBlob: Blob;
+
+            if (isMobile && originalImage && targetImage) {
+                // Mobile: use the dataURL stored at upload time (File object may be stale)
+                resizedSrcBlob = await resizeFromDataURL(originalImage, MAX_DIMENSION);
+                resizedTargetBlob = await resizeFromDataURL(targetImage, MAX_DIMENSION);
+            } else {
+                // Desktop: Resize off-thread using Web Worker
+                resizedSrcBlob = await resizeWithWorker(originalFileRef.current, MAX_DIMENSION);
+                resizedTargetBlob = await resizeWithWorker(targetFileRef.current, MAX_DIMENSION);
+            }
             sim.stop();
 
             if (swapMode === 'face') {
@@ -501,7 +534,7 @@ export default function FaceSwap() {
 
             <div className="premium-header">
                 <h1>AI Swap Studio</h1>
-                <p>High-fidelity face and head swapping with professional restoration.</p>
+                <p><strong>PRO</strong> quality face swap for <strong>FREE</strong>.</p>
             </div>
 
             <div className="mode-selector-container">
