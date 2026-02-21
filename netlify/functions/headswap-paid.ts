@@ -73,7 +73,7 @@ export const handler = async (event: any) => {
         // Wrap replicate execution in a custom Promise to enforce a strict timeout (e.g. 120s max execution)
         try {
             const replicatePromise = replicate.run(
-                "easel-ai/advanced-face-swap",
+                "codeplugtech/face-swap:a9a5a4fa77eb8749c95d852a0aebab08", // A reliable public faceswap model
                 {
                     input: {
                         swap_image: sourceDataUri,
