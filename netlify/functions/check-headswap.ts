@@ -24,41 +24,11 @@ export const handler = async (event: any) => {
         if (prediction.status === "succeeded") {
             const swapImageUrl = prediction.output.toString();
 
-            console.log("Face swap succeeded! Running Codeformer restoration...");
-
-            // Step 4: Quality optimization
-            const codeformerOutput = await replicate.run(
-                "sczhou/codeformer:cc4956dd26fa5a7185d5660cc9100fab1b8070a1d1654a8bb5eb6d443b020bb2",
-                {
-                    input: {
-                        image: swapImageUrl,
-                        fidelity: 0.8
-                    }
-                }
-            );
-
-            console.log("Restoration Complete:", codeformerOutput);
-
-            let url = "";
-            if (Array.isArray(codeformerOutput)) {
-                if (typeof codeformerOutput[0] === "string") {
-                    url = codeformerOutput[0];
-                } else if (codeformerOutput[0]?.url) {
-                    url = codeformerOutput[0].url;
-                } else {
-                    return { statusCode: 500, body: JSON.stringify({ error: "Codeformer returned unexpected format" }) };
-                }
-            } else if (typeof codeformerOutput === "string") {
-                url = codeformerOutput;
-            } else if (codeformerOutput && typeof codeformerOutput === "object" && (codeformerOutput as any).url) {
-                url = (codeformerOutput as any).url;
-            } else {
-                return { statusCode: 500, body: JSON.stringify({ error: "Codeformer output is not an array" }) };
-            }
+            console.log("Face swap succeeded! Returning directly from codeplugtech...");
 
             return {
                 statusCode: 200,
-                body: JSON.stringify({ status: "succeeded", url })
+                body: JSON.stringify({ status: "succeeded", url: swapImageUrl })
             };
         }
 
