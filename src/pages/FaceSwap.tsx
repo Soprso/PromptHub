@@ -688,7 +688,7 @@ export default function FaceSwap() {
                             <h3>Face Swap (PAID)</h3>
                         </div>
                         <div className="modal-body">
-                            <p>This feature is currently under active development. Generations may occasionally fail or produce unexpected results.</p>
+                            <p>Unlock premium-quality results for just $0.05.</p>
                             <div className="pro-tip">
                                 <Sparkles size={16} />
                                 <span><strong>Best Results:</strong> Use clear, high-resolution portrait photos with good lighting.</span>
