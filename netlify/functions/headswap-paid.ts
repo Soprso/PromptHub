@@ -73,11 +73,16 @@ export const handler = async (event: any) => {
         // Wrap replicate execution in a custom Promise to enforce a strict timeout (e.g. 120s max execution)
         try {
             const replicatePromise = replicate.run(
-                "codeplugtech/face-swap:a9a5a4fa77eb8749c95d852a0aebab08", // A reliable public faceswap model
+                "zsxkib/instant-id:2e4785a4d80dadf580077b2244c8d7c05d8e3faac04a04c02d8e099dd2876789",
                 {
                     input: {
-                        swap_image: sourceDataUri,
-                        target_image: targetDataUri
+                        image: targetDataUri,
+                        face_image: sourceDataUri,
+                        pose_image: targetDataUri,
+                        prompt: "photorealistic person, ultra realistic, 8k, cinematic lighting, sharp focus",
+                        negative_prompt: "(lowres, low quality, worst quality:1.2), watermark, drawing, cartoon, illustration",
+                        sdxl_weights: "protovision-xl-high-fidel",
+                        guidance_scale: 5
                     }
                 }
             );
@@ -88,13 +93,15 @@ export const handler = async (event: any) => {
             });
 
             const output: any = await Promise.race([replicatePromise, timeoutPromise]);
-            // Output is usually the URL string depending on the model's schema
+            // Output parsing logic supporting both array of strings and array of objects
             if (Array.isArray(output) && output.length > 0) {
-                url = output[0];
+                url = typeof output[0] === 'object' && output[0].url ? output[0].url : output[0];
             } else if (typeof output === 'string') {
                 url = output;
+            } else if (output && typeof output === 'object' && output.url) {
+                url = output.url;
             } else {
-                url = output;
+                url = output as unknown as string;
             }
         } catch (apiErr: any) {
             console.error("Replicate API Error:", apiErr);
