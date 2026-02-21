@@ -10,7 +10,8 @@ export const handler = async (event: any) => {
             return { statusCode: 500, body: JSON.stringify({ error: "Server configuration missing: REPLICATE_API_KEY" }) };
         }
 
-        const body = JSON.parse(event.body);
+        const bodyText = event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString('utf8') : event.body;
+        const body = JSON.parse(bodyText);
         const { predictionId } = body;
 
         if (!predictionId) {
