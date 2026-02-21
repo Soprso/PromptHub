@@ -28,13 +28,43 @@ export const handler = async (event: any) => {
             key_secret: RAZORPAY_SECRET,
         });
 
-        // STRICT SERVER-CONTROLLED AMOUNT
-        // 50 INR = 5000 paise
-        const amount = 5000;
+        // Dynamic Geolocation calculation
+        const countryCode = event.headers['x-country'] || 'US';
+        const baseUSD = 0.05;
+        let currency = "USD";
+
+        const countryToCurrency: Record<string, string> = {
+            'IN': 'INR', 'GB': 'GBP', 'AU': 'AUD', 'CA': 'CAD', 'JP': 'JPY', 'CN': 'CNY'
+        };
+
+        const euroCountries = ['AT', 'BE', 'CY', 'EE', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PT', 'SK', 'SI', 'ES'];
+        if (euroCountries.includes(countryCode)) currency = 'EUR';
+        else if (countryToCurrency[countryCode]) currency = countryToCurrency[countryCode];
+
+        let rate = 1;
+        try {
+            const response = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
+            if (response.ok) {
+                const data = await response.json();
+                rate = data.rates[currency] || 1;
+            }
+        } catch (e) {
+            console.error("Exchange fetch failed");
+        }
+
+        const amountInCurrency = baseUSD * rate;
+
+        // Razorpay accepts integer sub-units (cents, paise, pence) for supported currencies.
+        // E.g., USD: 100 cents = 1 USD. JPY: 1 unit = 1 JPY (no subunits usually, but razorpay accepts standard).
+        let amount = Math.round(amountInCurrency * 100);
+        if (currency === 'JPY') amount = Math.round(amountInCurrency); // JPY has no subunits in standard usage
+
+        // Prevent absolute zero charges due to rounding
+        if (amount <= 0 && currency !== 'JPY') amount = 1;
 
         const options = {
             amount,
-            currency: "INR",
+            currency,
             receipt: `receipt_${Date.now()}`
         };
 

@@ -37,6 +37,10 @@ export default defineConfig({
         target: 'http://localhost:8888',
         changeOrigin: true,
       },
+      '/api/get-price': {
+        target: 'http://localhost:8888',
+        changeOrigin: true,
+      },
     },
   },
 })

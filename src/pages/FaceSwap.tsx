@@ -380,6 +380,7 @@ export default function FaceSwap() {
     const [statusMessage, setStatusMessage] = useState<string>("");
     const [progress, setProgress] = useState<number>(0);
     const [showBetaModal, setShowBetaModal] = useState(false);
+    const [priceInfo, setPriceInfo] = useState<{ symbol: string; displayAmount: string } | null>(null);
 
     const originalInputRef = useRef<HTMLInputElement>(null);
     const targetInputRef = useRef<HTMLInputElement>(null);
@@ -392,6 +393,16 @@ export default function FaceSwap() {
         fetch("https://sczhou-codeformer.hf.space").catch(() => { }); // enhancer
         fetch("https://laruss5-flux2-klein-face-swap.hf.space").catch(() => { }); // head swap primary
         fetch("https://linoyts-flux2-klein-face-swap.hf.space").catch(() => { }); // head swap backup
+
+        // Fetch dynamic localized pricing
+        fetch("/api/get-price")
+            .then(res => res.json())
+            .then(data => {
+                if (data.symbol && data.displayAmount) {
+                    setPriceInfo({ symbol: data.symbol, displayAmount: data.displayAmount });
+                }
+            })
+            .catch(err => console.error("Failed to load localized pricing", err));
     }, []);
 
     const handleImageUpload = (
@@ -623,7 +634,11 @@ export default function FaceSwap() {
                         ) : (
                             <span className="btn-content">
                                 <Sparkles size={18} />
-                                <span>Generate {swapMode === 'face' ? 'Face' : 'Head'} Swap</span>
+                                <span>
+                                    Generate Face Swap
+                                    {swapMode === 'head' && priceInfo ? ` (${priceInfo.symbol}${priceInfo.displayAmount})` : ''}
+                                    {swapMode === 'head' && !priceInfo ? ` ($0.05)` : ''}
+                                </span>
                             </span>
                         )}
                     </button>
