@@ -9,9 +9,18 @@ export const handler = async (event: any) => {
         const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
         const RAZORPAY_SECRET = process.env.RAZORPAY_SECRET;
 
-        if (!RAZORPAY_KEY_ID || !RAZORPAY_SECRET) {
-            console.error("Missing Razorpay Keys");
-            return { statusCode: 500, body: JSON.stringify({ error: "Server configuration error." }) };
+        console.log("-- Environment Check (create-order) --");
+        console.log("Razorpay Key ID exists:", !!RAZORPAY_KEY_ID);
+        console.log("Razorpay Secret exists:", !!RAZORPAY_SECRET);
+
+        if (!RAZORPAY_KEY_ID) {
+            console.error("Missing RAZORPAY_KEY_ID in Netlify environment");
+            return { statusCode: 500, body: JSON.stringify({ error: "Server config error: Missing RAZORPAY_KEY_ID" }) };
+        }
+
+        if (!RAZORPAY_SECRET) {
+            console.error("Missing RAZORPAY_SECRET in Netlify environment");
+            return { statusCode: 500, body: JSON.stringify({ error: "Server config error: Missing RAZORPAY_SECRET" }) };
         }
 
         const razorpay = new Razorpay({

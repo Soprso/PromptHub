@@ -9,9 +9,18 @@ export const handler = async (event: any) => {
     if (event.httpMethod !== "POST") return { statusCode: 405, body: "Method Not Allowed" };
 
     try {
-        if (!RAZORPAY_SECRET || !REPLICATE_API_KEY) {
-            console.error("Missing Env variables");
-            return { statusCode: 500, body: JSON.stringify({ error: "Server configuration missing" }) };
+        console.log("-- Environment Check (headswap-paid) --");
+        console.log("Replicate key exists:", !!REPLICATE_API_KEY);
+        console.log("Razorpay secret exists:", !!RAZORPAY_SECRET);
+
+        if (!RAZORPAY_SECRET) {
+            console.error("Missing RAZORPAY_SECRET in Netlify environment");
+            return { statusCode: 500, body: JSON.stringify({ error: "Server configuration missing: RAZORPAY_SECRET" }) };
+        }
+
+        if (!REPLICATE_API_KEY) {
+            console.error("Missing REPLICATE_API_KEY in Netlify environment");
+            return { statusCode: 500, body: JSON.stringify({ error: "Server configuration missing: REPLICATE_API_KEY" }) };
         }
 
         // 1. Parse FormData (preserving binary transfer efficiency from frontend)
