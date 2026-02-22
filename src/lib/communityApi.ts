@@ -21,7 +21,7 @@ export const communityApi = {
 
         const { error } = await supabase
             .from('prompts_shared')
-            .insert([{ ...prompt, is_approved: true }]);
+            .insert([{ ...prompt, is_approved: false }]);
 
         if (error) throw error;
     },
