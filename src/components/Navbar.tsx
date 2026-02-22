@@ -138,6 +138,30 @@ export default function Navbar() {
                             </button>
                         </Link>
 
+                        {/* Image of the Day Link */}
+                        <Link to="/image-of-the-day" className="builder-link">
+                            <button className="builder-button" aria-label="Image of the Day">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                                <span className="builder-text">Image of the Day</span>
+                            </button>
+                        </Link>
+
+                        {/* Submit Image Link */}
+                        <Link to="/submit-image-of-the-day" className="builder-link">
+                            <button className="builder-button" aria-label="Submit Image">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                <span className="builder-text">Submit Image</span>
+                            </button>
+                        </Link>
+
                         {/* Share Link */}
                         <Link to="/share" className="builder-link">
                             <button className="builder-button" aria-label="Share Prompt">
@@ -235,6 +259,22 @@ export default function Navbar() {
                             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg>
                         <span>Community</span>
+                    </Link>
+                    <Link to="/image-of-the-day" className="drawer-item" onClick={closeDrawer}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <span>Image of the Day</span>
+                    </Link>
+                    <Link to="/submit-image-of-the-day" className="drawer-item" onClick={closeDrawer}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <span>Submit Image</span>
                     </Link>
                     <Link to="/share" className="drawer-item" onClick={closeDrawer}>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -17,6 +17,8 @@ const SeoPage = lazy(() => import("./pages/SeoPage"));
 
 const SharePromptPage = lazy(() => import("./pages/SharePromptPage"));
 const CommunityPage = lazy(() => import("./pages/CommunityPage"));
+const ImageOfDayPage = lazy(() => import("./pages/ImageOfDayPage"));
+const SubmitImagePage = lazy(() => import("./pages/SubmitImagePage"));
 const FaceSwap = lazy(() => import("./pages/FaceSwap"));
 const HeadSwap = lazy(() => import("./pages/HeadSwap"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
@@ -38,6 +40,8 @@ function App() {
                 <Route path="/category/:categoryId/:folderId" element={<FolderPage />} />
                 <Route path="/share" element={<SharePromptPage />} />
                 <Route path="/community" element={<CommunityPage />} />
+                <Route path="/image-of-the-day" element={<ImageOfDayPage />} />
+                <Route path="/submit-image-of-the-day" element={<SubmitImagePage />} />
                 <Route path="/face-swap" element={<FaceSwap />} />
                 <Route path="/head-swap" element={<HeadSwap />} />
 

@@ -3,6 +3,8 @@ import { Helmet } from "react-helmet-async";
 import { Copy, BookOpen, Search, Palette, PenTool, Code2, Sparkles, ChevronRight, Check, ThumbsUp, Bot, Brain, Play } from "lucide-react";
 import { seoPages } from "../data/seo-pages";
 import { communityApi, type SharedPrompt } from "../lib/communityApi";
+import { imageOfDayApi, type ImageOfDay } from "../lib/imageOfDayApi";
+import ImageOfDayCard from "../components/ImageOfDayCard";
 import { useEffect, useState, lazy, Suspense } from "react";
 
 const ComingSoonModal = lazy(() => import('../components/ComingSoonModal'));
@@ -11,6 +13,7 @@ export default function Home() {
     const [communityPicks, setCommunityPicks] = useState<SharedPrompt[]>([]);
     const [copiedId, setCopiedId] = useState<string | null>(null);
     const [activeModalPrompt, setActiveModalPrompt] = useState<{ id: string, content: string } | null>(null);
+    const [iod, setIod] = useState<ImageOfDay | null>(null);
 
     useEffect(() => {
         async function loadCommunityPicks() {
@@ -23,7 +26,16 @@ export default function Home() {
                 console.error('Failed to load community picks:', error);
             }
         }
+        async function loadIod() {
+            try {
+                const data = await imageOfDayApi.getTopImage();
+                setIod(data);
+            } catch (error) {
+                console.error('Failed to load image of the day:', error);
+            }
+        }
         loadCommunityPicks();
+        loadIod();
     }, []);
 
     const handleCopy = (prompt: SharedPrompt) => {
@@ -107,6 +119,62 @@ export default function Home() {
                     </li>
                 </ul>
             </div>
+
+            {/* Today's Best AI Image and Prompt Section */}
+            {iod && (
+                <div style={{ marginBottom: "3rem" }}>
+                    <h2 style={{
+                        fontSize: "1.5rem",
+                        fontWeight: 600,
+                        marginBottom: "1.5rem",
+                        color: "var(--text-primary)",
+                        letterSpacing: "-0.01em",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem"
+                    }}>
+                        <Sparkles size={24} style={{ color: "var(--accent-color)" }} />
+                        Today's Best AI Image and Prompt
+                    </h2>
+
+                    <ImageOfDayCard item={iod} />
+
+                    <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
+                        <Link
+                            to="/image-of-the-day"
+                            style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                padding: "0.75rem 1.5rem",
+                                backgroundColor: "var(--accent-color)",
+                                color: "#FFFFFF",
+                                textDecoration: "none",
+                                borderRadius: "8px",
+                                fontSize: "0.9375rem",
+                                fontWeight: 600,
+                                transition: "opacity 0.2s"
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.opacity = "0.9"}
+                            onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
+                        >
+                            View Image and Prompt <ChevronRight size={18} />
+                        </Link>
+
+                        <p style={{
+                            marginTop: "1.5rem",
+                            color: "var(--text-secondary)",
+                            fontSize: "0.9375rem",
+                            lineHeight: "1.6",
+                            maxWidth: "700px",
+                            marginLeft: "auto",
+                            marginRight: "auto"
+                        }}>
+                            Discover today's top AI generated image and the exact prompt used to create it. Copy professional Midjourney, ChatGPT, and SDXL prompts for free on <Link to="/image-of-the-day" style={{ color: "var(--accent-color)", textDecoration: "none" }}>PromptHub</Link>.
+                        </p>
+                    </div>
+                </div>
+            )}
 
             <div style={{ marginBottom: "3rem" }}>
                 <h2 style={{
