@@ -6,6 +6,7 @@ import { communityApi, type SharedPrompt } from "../lib/communityApi";
 import { imageOfDayApi, type ImageOfDay } from "../lib/imageOfDayApi";
 import ImageCarousel from "../components/ImageCarousel";
 import { useEffect, useState, lazy, Suspense } from "react";
+import "./Home.css";
 
 const ComingSoonModal = lazy(() => import('../components/ComingSoonModal'));
 
@@ -55,34 +56,16 @@ export default function Home() {
                 <meta property="og:url" content="https://promptshub.shop" />
                 <link rel="canonical" href="https://promptshub.shop" />
             </Helmet>
-            <div style={{ marginBottom: "2.5rem", maxWidth: "800px" }}>
-                <h1 style={{
-                    fontSize: "2.5rem",
-                    fontWeight: 700,
-                    marginBottom: "1rem",
-                    color: "var(--text-primary)",
-                    letterSpacing: "-0.02em",
-                    lineHeight: "1.2"
-                }}>
+            <div className="hero-section">
+                <h1 className="hero-title">
                     Internet's Best Collection of <span style={{ color: "var(--accent-color)" }}>Free AI </span> Prompts
                 </h1>
-                <p style={{
-                    color: "var(--text-secondary)",
-                    fontSize: "1.125rem",
-                    lineHeight: "1.75",
-                    marginBottom: "2rem"
-                }}>
+                <p className="hero-description">
                     Access 2,000+ curated prompts for coding, design, and content creation. Optimized for ChatGPT, Claude, and Midjourney. No signup required.
                 </p>
             </div>
 
-            <div style={{
-                backgroundColor: "var(--bg-secondary)",
-                padding: "2rem",
-                borderRadius: "8px",
-                border: "1px solid var(--border-color)",
-                marginBottom: "3rem"
-            }}>
+            <div className="workflow-container">
                 <h2 style={{
                     fontSize: "1.125rem",
                     fontWeight: 600,
@@ -91,14 +74,7 @@ export default function Home() {
                 }}>
                     Streamline Your Workflow
                 </h2>
-                <ul style={{
-                    listStyle: "none",
-                    padding: 0,
-                    margin: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1.5rem"
-                }}>
+                <ul className="workflow-list">
                     <li style={{ display: "flex", alignItems: "start", gap: "0.875rem" }}>
                         <span style={{ color: "var(--accent-color)", marginTop: "0.25rem" }}><BookOpen size={20} /></span>
                         <span style={{ color: "var(--text-secondary)", lineHeight: "1.6" }}>
@@ -122,17 +98,8 @@ export default function Home() {
 
             {/* Today's Best AI Image and Prompt Section */}
             {iods.length > 0 && (
-                <div style={{ marginBottom: "3rem" }}>
-                    <h2 style={{
-                        fontSize: "1.5rem",
-                        fontWeight: 600,
-                        marginBottom: "1.5rem",
-                        color: "var(--text-primary)",
-                        letterSpacing: "-0.01em",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem"
-                    }}>
+                <div className="section-container">
+                    <h2 className="section-title">
                         <Sparkles size={24} style={{ color: "var(--accent-color)" }} />
                         Daily Featured AI Gallery
                     </h2>
@@ -176,25 +143,12 @@ export default function Home() {
                 </div>
             )}
 
-            <div style={{ marginBottom: "3rem" }}>
-                <h2 style={{
-                    fontSize: "1.5rem",
-                    fontWeight: 600,
-                    marginBottom: "1.5rem",
-                    color: "var(--text-primary)",
-                    letterSpacing: "-0.01em",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem"
-                }}>
+            <div className="section-container">
+                <h2 className="section-title">
                     <Sparkles size={24} style={{ color: "var(--accent-color)" }} />
                     Featured Guides
                 </h2>
-                <div style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                    gap: "1rem"
-                }}>
+                <div className="guides-grid">
                     {seoPages.map((page) => (
                         <Link key={page.slug} to={`/${page.slug}`} style={{ textDecoration: "none" }}>
                             <div style={{
@@ -252,24 +206,11 @@ export default function Home() {
 
             {/* Community Picks Section */}
             {communityPicks.length > 0 && (
-                <div style={{ marginBottom: "3rem" }}>
-                    <h2 style={{
-                        fontSize: "1.5rem",
-                        fontWeight: 600,
-                        marginBottom: "1.5rem",
-                        color: "var(--text-primary)",
-                        letterSpacing: "-0.01em",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem"
-                    }}>
+                <div className="section-container">
+                    <h2 className="section-title">
                         🔥 Community Picks
                     </h2>
-                    <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                        gap: "1rem"
-                    }}>
+                    <div className="grid-responsive">
                         {communityPicks.map((prompt) => (
                             <div key={prompt.id} style={{
                                 padding: "1.5rem",
@@ -532,21 +473,11 @@ export default function Home() {
                 )}
             </Suspense>
 
-            <div>
-                <h2 style={{
-                    fontSize: "1.5rem",
-                    fontWeight: 600,
-                    marginBottom: "1.5rem",
-                    color: "var(--text-primary)",
-                    letterSpacing: "-0.01em"
-                }}>
+            <div className="section-container">
+                <h2 className="section-title">
                     Popular AI Prompt Categories
                 </h2>
-                <div style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-                    gap: "1rem"
-                }}>
+                <div className="categories-grid">
                     <Link to="/category/ai-image-generation" style={{ textDecoration: "none" }}>
                         <div style={{
                             padding: "1.25rem",

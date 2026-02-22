@@ -61,10 +61,11 @@ export default function ImageOfDayPage() {
 
             {/* Breadcrumbs */}
             <nav style={{
-                marginBottom: "2rem",
+                marginBottom: "1.5rem",
                 fontSize: "0.875rem",
                 display: "flex",
                 alignItems: "center",
+                flexWrap: "wrap",
                 gap: "0.5rem",
                 color: "var(--text-muted)"
             }}>
@@ -84,21 +85,30 @@ export default function ImageOfDayPage() {
                 <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>Latest AI Images</span>
             </nav>
 
-            <div style={{ marginBottom: "3rem" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.75rem" }}>
+            <div style={{ marginBottom: "2rem" }}>
+                <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem",
+                    marginBottom: "0.75rem",
+                    flexWrap: "wrap"
+                }}>
                     <div style={{
-                        padding: "0.75rem",
+                        padding: "0.6rem",
                         backgroundColor: "var(--bg-secondary)",
                         borderRadius: "8px",
-                        color: "var(--text-primary)"
+                        color: "var(--text-primary)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
                     }}>
-                        <ImageIcon size={28} />
+                        <ImageIcon size={24} />
                     </div>
-                    <h1 style={{ margin: 0, fontSize: "2.25rem", fontWeight: 700, color: "var(--text-primary)" }}>
+                    <h1 style={{ margin: 0, fontSize: "clamp(1.75rem, 5vw, 2.25rem)", fontWeight: 700, color: "var(--text-primary)" }}>
                         Latest AI Images & Prompts
                     </h1>
                 </div>
-                <p style={{ margin: "0", color: "var(--text-secondary)", fontSize: "1.125rem", maxWidth: "800px" }}>
+                <p style={{ margin: "0", color: "var(--text-secondary)", fontSize: "clamp(1rem, 3vw, 1.125rem)", maxWidth: "800px" }}>
                     Explore the latest daily featured AI images and copy the exact prompts used to create them.
                 </p>
             </div>
@@ -108,7 +118,7 @@ export default function ImageOfDayPage() {
                     Loading latest images...
                 </div>
             ) : iods.length > 0 ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
                     {iods.map((iod) => (
                         <ImageOfDayCard key={iod.id} item={iod} />
                     ))}
