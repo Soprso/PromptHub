@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ThumbsUp, Copy, Check } from 'lucide-react';
 import { type ImageOfDay, imageOfDayApi } from '../lib/imageOfDayApi';
+import ImageModal from './ImageModal';
 
 const LIKED_IOD_KEY = 'prompthub_liked_iod';
 
@@ -25,6 +26,7 @@ export default function ImageOfDayCard({ item }: { item: ImageOfDay }) {
     const [likes, setLikes] = useState(item.likes || 0);
     const [hasLiked, setHasLiked] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const likedIODs = getLikedIODs();
@@ -79,16 +81,29 @@ export default function ImageOfDayCard({ item }: { item: ImageOfDay }) {
                 alignItems: "stretch"
             }}>
                 {/* Image Section */}
-                <div style={{
-                    borderRadius: "8px",
-                    overflow: "hidden",
-                    border: "1px solid var(--border-color)",
-                    backgroundColor: "var(--bg-secondary)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                }}>
+                <div
+                    id={`iod-image-container-${item.id}`}
+                    onClick={() => setIsModalOpen(true)}
+                    style={{
+                        borderRadius: "12px",
+                        overflow: "hidden",
+                        border: "1px solid var(--border-color)",
+                        backgroundColor: "var(--bg-secondary)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        aspectRatio: "1/1",
+                        width: "100%",
+                        maxWidth: "500px",
+                        margin: "0 auto",
+                        cursor: "zoom-in",
+                        transition: "transform 0.2s ease"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.01)"}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+                >
                     <img
+                        id={`iod-image-${item.id}`}
                         src={item.image_url}
                         alt={`${altTextSnippet} AI generated prompt`}
                         loading="lazy"
@@ -197,9 +212,20 @@ export default function ImageOfDayCard({ item }: { item: ImageOfDay }) {
                 @media (max-width: 768px) {
                     .prompt-item > div {
                         grid-template-columns: 1fr !important;
+                        gap: 1rem !important;
+                    }
+                    div[id^="iod-image-container-"] {
+                        max-width: 100% !important;
                     }
                 }
             `}</style>
+
+            <ImageModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                imageUrl={item.image_url}
+                altText={altTextSnippet}
+            />
         </article>
     );
 }
