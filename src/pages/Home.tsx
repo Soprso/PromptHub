@@ -1,13 +1,16 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Copy, BookOpen, Search, Palette, PenTool, Code2, Sparkles, ChevronRight, Check, ThumbsUp, Bot, Brain } from "lucide-react";
+import { Copy, BookOpen, Search, Palette, PenTool, Code2, Sparkles, ChevronRight, Check, ThumbsUp, Bot, Brain, Play } from "lucide-react";
 import { seoPages } from "../data/seo-pages";
 import { communityApi, type SharedPrompt } from "../lib/communityApi";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
+
+const ComingSoonModal = lazy(() => import('../components/ComingSoonModal'));
 
 export default function Home() {
     const [communityPicks, setCommunityPicks] = useState<SharedPrompt[]>([]);
     const [copiedId, setCopiedId] = useState<string | null>(null);
+    const [activeModalPrompt, setActiveModalPrompt] = useState<{ id: string, content: string } | null>(null);
 
     useEffect(() => {
         async function loadCommunityPicks() {
@@ -353,6 +356,37 @@ export default function Home() {
                                     </button>
 
                                     <button
+                                        onClick={() => setActiveModalPrompt({ id: prompt.id, content: prompt.content })}
+                                        aria-label="Try this prompt (Coming Soon)"
+                                        title="Try this prompt (Coming Soon)"
+                                        style={{
+                                            padding: "0.375rem 0.75rem",
+                                            backgroundColor: "var(--primary-color, #3b82f6)",
+                                            color: "#fff",
+                                            border: "none",
+                                            borderRadius: "4px",
+                                            cursor: "pointer",
+                                            fontSize: "0.75rem",
+                                            fontWeight: 500,
+                                            transition: "all 0.2s ease",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "0.375rem",
+                                            boxShadow: "0 2px 4px -1px rgba(59, 130, 246, 0.2)"
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.transform = "translateY(-1px)";
+                                            e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(59, 130, 246, 0.3)";
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.transform = "translateY(0)";
+                                            e.currentTarget.style.boxShadow = "0 2px 4px -1px rgba(59, 130, 246, 0.2)";
+                                        }}
+                                    >
+                                        <Play size={12} fill="currentColor" />
+                                    </button>
+
+                                    <button
                                         onClick={() => handleCopy(prompt)}
                                         style={{
                                             padding: "0.375rem 0.75rem",
@@ -419,6 +453,16 @@ export default function Home() {
                     </div>
                 </div>
             )}
+
+            <Suspense fallback={null}>
+                {activeModalPrompt && (
+                    <ComingSoonModal
+                        isOpen={!!activeModalPrompt}
+                        promptContent={activeModalPrompt.content}
+                        onClose={() => setActiveModalPrompt(null)}
+                    />
+                )}
+            </Suspense>
 
             <div>
                 <h2 style={{

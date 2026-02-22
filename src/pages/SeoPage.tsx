@@ -1,14 +1,17 @@
 import { useParams, Navigate, Link } from "react-router-dom";
-import { Copy, Check, ChevronRight, Bot, Brain, Palette } from "lucide-react";
-import { useState } from "react";
+import { Copy, Check, ChevronRight, Bot, Brain, Palette, Play } from "lucide-react";
+import { useState, lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import { seoPages } from "../data/seo-pages";
 import { LikeButton } from "../components/LikeButton";
+
+const ComingSoonModal = lazy(() => import('../components/ComingSoonModal'));
 
 export default function SeoPage() {
     const { slug } = useParams<{ slug: string }>();
     const pageData = seoPages.find((p) => p.slug === slug);
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+    const [activeModalPrompt, setActiveModalPrompt] = useState<{ id: string, content: string } | null>(null);
 
     if (!pageData) {
         return <Navigate to="/" replace />;
@@ -264,6 +267,38 @@ export default function SeoPage() {
                                         <Copy size={16} />
                                     )}
                                 </button>
+
+                                <button
+                                    onClick={() => setActiveModalPrompt({ id: getPromptId(index), content: prompt.content })}
+                                    aria-label="Try this prompt (Coming Soon)"
+                                    title="Try this prompt (Coming Soon)"
+                                    style={{
+                                        padding: "0.5rem",
+                                        backgroundColor: "var(--primary-color, #3b82f6)",
+                                        color: "#fff",
+                                        border: "none",
+                                        borderRadius: "6px",
+                                        cursor: "pointer",
+                                        fontSize: "0.875rem",
+                                        fontWeight: 500,
+                                        transition: "all 0.2s ease",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                        boxShadow: "0 2px 4px -1px rgba(59, 130, 246, 0.2)",
+                                        marginLeft: "4px"
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = "translateY(-1px)";
+                                        e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(59, 130, 246, 0.3)";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = "translateY(0)";
+                                        e.currentTarget.style.boxShadow = "0 2px 4px -1px rgba(59, 130, 246, 0.2)";
+                                    }}
+                                >
+                                    <Play size={16} fill="currentColor" />
+                                </button>
                             </div>
                         </div>
 
@@ -284,6 +319,16 @@ export default function SeoPage() {
                     </article>
                 ))}
             </div>
+
+            <Suspense fallback={null}>
+                {activeModalPrompt && (
+                    <ComingSoonModal
+                        isOpen={!!activeModalPrompt}
+                        promptContent={activeModalPrompt.content}
+                        onClose={() => setActiveModalPrompt(null)}
+                    />
+                )}
+            </Suspense>
 
             {/* CTA */}
             <div style={{

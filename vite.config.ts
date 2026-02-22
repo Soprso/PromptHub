@@ -41,6 +41,10 @@ export default defineConfig({
         target: 'http://localhost:8888',
         changeOrigin: true,
       },
+      '/api/run-prompt': {
+        target: 'http://localhost:8888',
+        changeOrigin: true,
+      },
     },
   },
 })

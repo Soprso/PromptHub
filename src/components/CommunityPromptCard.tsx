@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { type SharedPrompt, communityApi } from '../lib/communityApi';
-import { ThumbsUp, Copy, Check, Bot, Brain, Palette } from 'lucide-react';
+import { ThumbsUp, Copy, Check, Bot, Brain, Palette, Play } from 'lucide-react';
+
+const ComingSoonModal = lazy(() => import('./ComingSoonModal'));
 
 const LIKED_PROMPTS_KEY = 'prompthub_liked_prompts';
 
@@ -27,6 +29,7 @@ export default function CommunityPromptCard({ prompt }: { prompt: SharedPrompt }
     const [likes, setLikes] = useState(prompt.like_count);
     const [hasLiked, setHasLiked] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [isTryModalOpen, setIsTryModalOpen] = useState(false);
 
     // Check if user has already liked this prompt on component mount
     useEffect(() => {
@@ -324,6 +327,39 @@ export default function CommunityPromptCard({ prompt }: { prompt: SharedPrompt }
                             <Copy size={16} />
                         )}
                     </button>
+
+                    <button
+                        onClick={() => setIsTryModalOpen(true)}
+                        aria-label="Try this prompt (Coming Soon)"
+                        title="Try this prompt (Coming Soon)"
+                        style={{
+                            padding: "0.5rem",
+                            backgroundColor: "var(--primary-color, #3b82f6)",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "6px",
+                            cursor: "pointer",
+                            fontSize: "0.875rem",
+                            fontWeight: 500,
+                            transition: "all 0.2s ease",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem",
+                            fontFamily: "inherit",
+                            boxShadow: "0 2px 4px -1px rgba(59, 130, 246, 0.2)",
+                            marginLeft: "4px"
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = "translateY(-1px)";
+                            e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(59, 130, 246, 0.3)";
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow = "0 2px 4px -1px rgba(59, 130, 246, 0.2)";
+                        }}
+                    >
+                        <Play size={16} fill="currentColor" />
+                    </button>
                 </div>
             </div>
 
@@ -343,6 +379,16 @@ export default function CommunityPromptCard({ prompt }: { prompt: SharedPrompt }
             }}>
                 <CollapsibleText content={prompt.content} />
             </div>
+
+            <Suspense fallback={null}>
+                {isTryModalOpen && (
+                    <ComingSoonModal
+                        isOpen={isTryModalOpen}
+                        promptContent={prompt.content}
+                        onClose={() => setIsTryModalOpen(false)}
+                    />
+                )}
+            </Suspense>
         </article>
     );
 }
