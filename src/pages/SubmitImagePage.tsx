@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Upload, Check, AlertCircle } from 'lucide-react';
+import { ChevronRight, Upload, Check, AlertCircle, Lock } from 'lucide-react';
 import { imageOfDayApi } from '../lib/imageOfDayApi';
 
 export default function SubmitImagePage() {
+    // Auth State
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [password, setPassword] = useState('');
+    const [loginError, setLoginError] = useState('');
+
+    // Submission State
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [prompt, setPrompt] = useState('');
@@ -12,6 +18,26 @@ export default function SubmitImagePage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+
+    useEffect(() => {
+        const auth = sessionStorage.getItem('phub_admin_auth');
+        if (auth === 'true') {
+            setIsAuthenticated(true);
+        }
+    }, []);
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        const correctPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin';
+
+        if (password === correctPassword) {
+            setIsAuthenticated(true);
+            sessionStorage.setItem('phub_admin_auth', 'true');
+            setLoginError('');
+        } else {
+            setLoginError('Incorrect password. Please try again.');
+        }
+    };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -68,6 +94,110 @@ export default function SubmitImagePage() {
             setIsSubmitting(false);
         }
     };
+
+    if (!isAuthenticated) {
+        return (
+            <div style={{
+                minHeight: '60vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '1rem'
+            }}>
+                <Helmet>
+                    <title>Admin Login | PromptHub</title>
+                    <meta name="robots" content="noindex, nofollow" />
+                </Helmet>
+
+                <div style={{
+                    width: '100%',
+                    maxWidth: '400px',
+                    backgroundColor: 'var(--bg-primary)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: '12px',
+                    padding: '2rem',
+                    textAlign: 'center',
+                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                }}>
+                    <div style={{
+                        width: '48px',
+                        height: '48px',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        color: 'var(--accent-color)',
+                        borderRadius: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '0 auto 1.5rem'
+                    }}>
+                        <Lock size={24} />
+                    </div>
+
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
+                        Admin Access
+                    </h1>
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.875rem' }}>
+                        Please enter the administrator password to continue.
+                    </p>
+
+                    <form onSubmit={handleLogin}>
+                        {loginError && (
+                            <div style={{
+                                marginBottom: '1rem',
+                                padding: '0.75rem',
+                                backgroundColor: '#FEE2E2',
+                                color: '#991B1B',
+                                borderRadius: '6px',
+                                fontSize: '0.875rem',
+                                border: '1px solid #FECACA',
+                                textAlign: 'left'
+                            }}>
+                                {loginError}
+                            </div>
+                        )}
+
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter password"
+                            autoFocus
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem 1rem',
+                                border: '1px solid var(--border-color)',
+                                borderRadius: '8px',
+                                backgroundColor: 'var(--bg-secondary)',
+                                color: 'var(--text-primary)',
+                                marginBottom: '1rem',
+                                outline: 'none',
+                                fontSize: '1rem'
+                            }}
+                        />
+
+                        <button
+                            type="submit"
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                backgroundColor: 'var(--accent-color)',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                transition: 'opacity 0.2s'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+                            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                        >
+                            Unlock Page
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
