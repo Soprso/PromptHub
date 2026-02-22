@@ -2,7 +2,7 @@ import { useParams, Link, Navigate } from "react-router-dom";
 import { promptCategories } from "../data/prompts";
 import { useState } from "react";
 import { getFolderIcon } from "../utils/iconMap";
-import { Copy, Check, ChevronRight } from "lucide-react";
+import { Copy, Check, ChevronRight, Bot, Brain, Palette } from "lucide-react";
 import { LikeButton } from "../components/LikeButton";
 
 export default function FolderPage() {
@@ -132,9 +132,10 @@ export default function FolderPage() {
                                 <LikeButton promptSlug={prompt.id} />
                                 <button
                                     onClick={() => {
-                                        window.open(`https://chatgpt.com/?q=${encodeURIComponent(prompt.content)}`, '_blank');
+                                        window.open(`https://chatgpt.com/?q=${encodeURIComponent(prompt.content)}`, '_blank', 'noopener,noreferrer');
                                     }}
                                     aria-label="Open in ChatGPT"
+                                    title="Open in ChatGPT"
                                     style={{
                                         padding: "0.5rem",
                                         backgroundColor: "transparent",
@@ -158,14 +159,15 @@ export default function FolderPage() {
                                         e.currentTarget.style.borderColor = "var(--border-color)";
                                     }}
                                 >
-                                    <span style={{ fontSize: "0.75rem" }}>ChatGPT</span>
+                                    <Bot size={16} />
                                 </button>
 
                                 <button
                                     onClick={() => {
-                                        window.open(`https://claude.ai/new?q=${encodeURIComponent(prompt.content)}`, '_blank');
+                                        window.open(`https://claude.ai/new?q=${encodeURIComponent(prompt.content)}`, '_blank', 'noopener,noreferrer');
                                     }}
                                     aria-label="Open in Claude"
+                                    title="Open in Claude"
                                     style={{
                                         padding: "0.5rem",
                                         backgroundColor: "transparent",
@@ -189,19 +191,20 @@ export default function FolderPage() {
                                         e.currentTarget.style.borderColor = "var(--border-color)";
                                     }}
                                 >
-                                    <span style={{ fontSize: "0.75rem" }}>Claude</span>
+                                    <Brain size={16} />
                                 </button>
 
                                 <button
                                     onClick={async () => {
                                         try {
                                             await navigator.clipboard.writeText(prompt.content);
-                                            window.open('https://discord.com/channels/@me', '_blank');
+                                            window.open('https://discord.com/channels/@me', '_blank', 'noopener,noreferrer');
                                         } catch (err) {
                                             console.error("Failed to copy:", err);
                                         }
                                     }}
                                     aria-label="Open in Midjourney"
+                                    title="Copy prompt and open Discord"
                                     style={{
                                         padding: "0.5rem",
                                         backgroundColor: "transparent",
@@ -225,7 +228,7 @@ export default function FolderPage() {
                                         e.currentTarget.style.borderColor = "var(--border-color)";
                                     }}
                                 >
-                                    <span style={{ fontSize: "0.75rem" }}>Midjourney</span>
+                                    <Palette size={16} />
                                 </button>
 
                                 <button
