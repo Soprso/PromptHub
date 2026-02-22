@@ -4,7 +4,7 @@ import { Copy, BookOpen, Search, Palette, PenTool, Code2, Sparkles, ChevronRight
 import { seoPages } from "../data/seo-pages";
 import { communityApi, type SharedPrompt } from "../lib/communityApi";
 import { imageOfDayApi, type ImageOfDay } from "../lib/imageOfDayApi";
-import ImageOfDayCard from "../components/ImageOfDayCard";
+import ImageCarousel from "../components/ImageCarousel";
 import { useEffect, useState, lazy, Suspense } from "react";
 
 const ComingSoonModal = lazy(() => import('../components/ComingSoonModal'));
@@ -13,7 +13,7 @@ export default function Home() {
     const [communityPicks, setCommunityPicks] = useState<SharedPrompt[]>([]);
     const [copiedId, setCopiedId] = useState<string | null>(null);
     const [activeModalPrompt, setActiveModalPrompt] = useState<{ id: string, content: string } | null>(null);
-    const [iod, setIod] = useState<ImageOfDay | null>(null);
+    const [iods, setIods] = useState<ImageOfDay[]>([]);
 
     useEffect(() => {
         async function loadCommunityPicks() {
@@ -28,10 +28,10 @@ export default function Home() {
         }
         async function loadIod() {
             try {
-                const data = await imageOfDayApi.getTopImage();
-                setIod(data);
+                const data = await imageOfDayApi.getLatestImages(20);
+                setIods(data);
             } catch (error) {
-                console.error('Failed to load image of the day:', error);
+                console.error('Failed to load image carousel:', error);
             }
         }
         loadCommunityPicks();
@@ -121,7 +121,7 @@ export default function Home() {
             </div>
 
             {/* Today's Best AI Image and Prompt Section */}
-            {iod && (
+            {iods.length > 0 && (
                 <div style={{ marginBottom: "3rem" }}>
                     <h2 style={{
                         fontSize: "1.5rem",
@@ -134,10 +134,10 @@ export default function Home() {
                         gap: "0.5rem"
                     }}>
                         <Sparkles size={24} style={{ color: "var(--accent-color)" }} />
-                        Today's Best AI Image and Prompt
+                        Daily Featured AI Gallery
                     </h2>
 
-                    <ImageOfDayCard item={iod} />
+                    <ImageCarousel images={iods} />
 
                     <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
                         <Link
