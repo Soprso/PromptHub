@@ -249,6 +249,107 @@ export default function Home() {
                                         <span>{prompt.like_count}</span>
                                     </div>
                                     <button
+                                        onClick={() => {
+                                            window.open(`https://chatgpt.com/?q=${encodeURIComponent(prompt.content)}`, '_blank');
+                                        }}
+                                        aria-label="Open in ChatGPT"
+                                        style={{
+                                            padding: "0.375rem 0.75rem",
+                                            backgroundColor: "transparent",
+                                            color: "var(--text-muted)",
+                                            border: "1px solid var(--border-color)",
+                                            borderRadius: "4px",
+                                            cursor: "pointer",
+                                            fontSize: "0.75rem",
+                                            fontWeight: 500,
+                                            transition: "all 0.2s ease",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "0.375rem",
+                                            fontFamily: "inherit"
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.color = "var(--text-primary)";
+                                            e.currentTarget.style.borderColor = "var(--text-secondary)";
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.color = "var(--text-muted)";
+                                            e.currentTarget.style.borderColor = "var(--border-color)";
+                                        }}
+                                    >
+                                        <span>ChatGPT</span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            window.open(`https://claude.ai/new?q=${encodeURIComponent(prompt.content)}`, '_blank');
+                                        }}
+                                        aria-label="Open in Claude"
+                                        style={{
+                                            padding: "0.375rem 0.75rem",
+                                            backgroundColor: "transparent",
+                                            color: "var(--text-muted)",
+                                            border: "1px solid var(--border-color)",
+                                            borderRadius: "4px",
+                                            cursor: "pointer",
+                                            fontSize: "0.75rem",
+                                            fontWeight: 500,
+                                            transition: "all 0.2s ease",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "0.375rem",
+                                            fontFamily: "inherit"
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.color = "var(--text-primary)";
+                                            e.currentTarget.style.borderColor = "var(--text-secondary)";
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.color = "var(--text-muted)";
+                                            e.currentTarget.style.borderColor = "var(--border-color)";
+                                        }}
+                                    >
+                                        <span>Claude</span>
+                                    </button>
+
+                                    <button
+                                        onClick={async () => {
+                                            try {
+                                                await navigator.clipboard.writeText(prompt.content);
+                                                window.open('https://discord.com/channels/@me', '_blank');
+                                            } catch (err) {
+                                                console.error("Failed to copy:", err);
+                                            }
+                                        }}
+                                        aria-label="Open in Midjourney"
+                                        style={{
+                                            padding: "0.375rem 0.75rem",
+                                            backgroundColor: "transparent",
+                                            color: "var(--text-muted)",
+                                            border: "1px solid var(--border-color)",
+                                            borderRadius: "4px",
+                                            cursor: "pointer",
+                                            fontSize: "0.75rem",
+                                            fontWeight: 500,
+                                            transition: "all 0.2s ease",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "0.375rem",
+                                            fontFamily: "inherit"
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.color = "var(--text-primary)";
+                                            e.currentTarget.style.borderColor = "var(--text-secondary)";
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.color = "var(--text-muted)";
+                                            e.currentTarget.style.borderColor = "var(--border-color)";
+                                        }}
+                                    >
+                                        <span>Midjourney</span>
+                                    </button>
+
+                                    <button
                                         onClick={() => handleCopy(prompt)}
                                         style={{
                                             padding: "0.375rem 0.75rem",
