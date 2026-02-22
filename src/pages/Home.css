@@ -62,12 +62,20 @@
 
 /* Mobile Adjustments */
 @media (max-width: 768px) {
+    .hero-section {
+        max-width: 100% !important;
+        margin-bottom: 2rem !important;
+        padding-top: 1rem;
+    }
+
     .hero-title {
-        font-size: 1.875rem !important;
+        font-size: 2rem !important;
+        line-height: 1.1 !important;
     }
 
     .hero-description {
         font-size: 1rem !important;
+        line-height: 1.6 !important;
     }
 
     .workflow-container {
@@ -86,5 +94,6 @@
     .guides-grid,
     .categories-grid {
         grid-template-columns: 1fr !important;
+        gap: 0.875rem !important;
     }
 }

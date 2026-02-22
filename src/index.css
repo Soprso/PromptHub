@@ -45,8 +45,15 @@
   --success-color: #3fb950;
 }
 
+html,
 body {
   margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body {
   min-width: 320px;
   min-height: 100vh;
   background-color: var(--bg-primary);

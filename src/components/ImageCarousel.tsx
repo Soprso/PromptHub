@@ -167,13 +167,21 @@ export default function ImageCarousel({ images }: ImageCarouselProps) {
 
                 @media (max-width: 768px) {
                     .carousel-image-card {
-                        width: 240px !important;
-                        height: 240px !important;
+                        width: 280px !important;
+                        height: 280px !important;
                     }
                     .carousel-nav-button {
                         display: none; /* Hide arrows on touch devices for cleaner look */
                     }
                 }
+                
+                @media (max-width: 480px) {
+                    .carousel-image-card {
+                        width: 240px !important;
+                        height: 240px !important;
+                    }
+                }
+
             ` }} />
 
             <ImageModal
