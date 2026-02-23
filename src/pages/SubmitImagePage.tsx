@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Upload, Check, AlertCircle, Lock } from 'lucide-react';
 import { imageOfDayApi } from '../lib/imageOfDayApi';
+import { r2Upload } from '../lib/cloudflare/r2Upload';
 
 export default function SubmitImagePage() {
     // Auth State
@@ -61,19 +62,25 @@ export default function SubmitImagePage() {
         }
 
         try {
-            // 1. Upload Image to Storage
-            const { url: uploadedUrl, error: uploadError } = await imageOfDayApi.uploadImage(selectedFile);
+            // 1. Upload Image to Cloudflare R2
+            let r2Url = '';
+            try {
+                r2Url = await r2Upload(selectedFile);
+            } catch (uploadError: any) {
+                setError(`Upload Failed: ${uploadError?.message || uploadError || 'Unknown storage error'}`);
+                setIsSubmitting(false);
+                return;
+            }
 
-            if (uploadError || !uploadedUrl) {
-                const detailedError = uploadError?.message || uploadError || 'Unknown storage error';
-                setError(`Upload Failed: ${detailedError}. Make sure the bucket "image_of_day" exists and has public upload policies.`);
+            if (!r2Url) {
+                setError(`Upload Failed: Unsuccessful Cloudflare R2 public URL generation.`);
                 setIsSubmitting(false);
                 return;
             }
 
             // 2. Insert into DB
             const success = await imageOfDayApi.insertImageOfDay({
-                image_url: uploadedUrl,
+                image_url: r2Url,
                 prompt,
                 likes: Number(likes)
             });
