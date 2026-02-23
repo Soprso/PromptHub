@@ -7,8 +7,10 @@ export const handler = async (event: any) => {
     }
 
     try {
+        console.log("Upload function invoked");
         const result = await parse(event);
         const file = result.files[0];
+        console.log("File parsed:", file ? file.filename : "No file");
 
         if (!file) {
             return {

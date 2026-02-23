@@ -13,14 +13,22 @@ export async function r2Upload(file: File): Promise<string> {
     formData.append('file', file);
 
     try {
-        const response = await fetch('/.netlify/functions/upload-image', {
+        const response = await fetch('/api/upload-image', {
             method: 'POST',
             body: formData,
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to upload image to R2');
+            let errorMessage = 'Failed to upload image to R2';
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.error || errorMessage;
+            } catch (e) {
+                const textError = await response.text();
+                console.error('Non-JSON error response:', textError);
+                errorMessage = `Server Error (${response.status}): ${textError.substring(0, 100)}`;
+            }
+            throw new Error(errorMessage);
         }
 
         const data = await response.json();
