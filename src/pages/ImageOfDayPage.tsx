@@ -22,7 +22,7 @@ export default function ImageOfDayPage() {
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "CreativeWork",
-        "headline": "Latest AI Images and Prompts",
+        "headline": "Daily featured AI Gallery",
         "image": iods[0]?.image_url || "https://prompthub.shop/phub.png",
         "datePublished": iods[0]?.created_at || new Date().toISOString(),
         "author": {
@@ -35,13 +35,13 @@ export default function ImageOfDayPage() {
     return (
         <>
             <Helmet>
-                <title>Latest AI Images and Prompts (Updated Daily) | PromptHub</title>
+                <title>Daily featured AI Gallery (Updated Daily) | PromptHub</title>
                 <meta name="description" content="Explore the latest AI generated images and their full prompts. Copy Midjourney, ChatGPT, and SDXL prompts for free." />
                 <meta name="keywords" content="AI image prompt, Midjourney prompt, AI image of the day, best AI prompts, prompt engineering" />
                 <link rel="canonical" href="https://prompthub.shop/image-of-the-day" />
 
                 {/* Open Graph Tags */}
-                <meta property="og:title" content="Latest AI Images and Prompts (Updated Daily) | PromptHub" />
+                <meta property="og:title" content="Daily featured AI Gallery (Updated Daily) | PromptHub" />
                 <meta property="og:description" content="Explore the latest AI generated images and their full prompts. Copy Midjourney, ChatGPT, and SDXL prompts for free." />
                 <meta property="og:image" content={iods[0]?.image_url || "https://prompthub.shop/phub.png"} />
                 <meta property="og:url" content="https://prompthub.shop/image-of-the-day" />
@@ -49,7 +49,7 @@ export default function ImageOfDayPage() {
 
                 {/* Twitter Card Tags */}
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Latest AI Images and Prompts (Updated Daily) | PromptHub" />
+                <meta name="twitter:title" content="Daily featured AI Gallery (Updated Daily) | PromptHub" />
                 <meta name="twitter:description" content="Explore the latest AI generated images and their full prompts. Copy Midjourney, ChatGPT, and SDXL prompts for free." />
                 <meta name="twitter:image" content={iods[0]?.image_url || "https://prompthub.shop/phub.png"} />
 
@@ -82,7 +82,7 @@ export default function ImageOfDayPage() {
                     Home
                 </Link>
                 <ChevronRight size={14} />
-                <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>Latest AI Images</span>
+                <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>Daily featured AI Gallery</span>
             </nav>
 
             <div style={{ marginBottom: "2rem" }}>
@@ -105,7 +105,7 @@ export default function ImageOfDayPage() {
                         <ImageIcon size={24} />
                     </div>
                     <h1 style={{ margin: 0, fontSize: "clamp(1.75rem, 5vw, 2.25rem)", fontWeight: 700, color: "var(--text-primary)" }}>
-                        Latest AI Images & Prompts
+                        Daily featured AI Gallery
                     </h1>
                 </div>
                 <p style={{ margin: "0", color: "var(--text-secondary)", fontSize: "clamp(1rem, 3vw, 1.125rem)", maxWidth: "800px" }}>
