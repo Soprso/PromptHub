@@ -8,16 +8,25 @@ import { imageOfDayApi, type ImageOfDay } from '../lib/imageOfDayApi';
 export default function ImageOfDayPage() {
     const [iods, setIods] = useState<ImageOfDay[]>([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+    const ITEMS_PER_PAGE = 10;
 
     useEffect(() => {
         async function loadData() {
-            const data = await imageOfDayApi.getLatestImages(5);
+            setLoading(true);
+            const { data, count } = await imageOfDayApi.getPaginatedImages(currentPage, ITEMS_PER_PAGE);
             setIods(data);
+            setTotalCount(count);
             setLoading(false);
+
+            // Scroll to top when page changes
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         loadData();
-    }, []);
+    }, [currentPage]);
 
+    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
     const jsonLd = {
         "@context": "https://schema.org",
@@ -30,6 +39,87 @@ export default function ImageOfDayPage() {
             "name": "PromptHub"
         },
         "description": "Explore the latest AI generated images and their full prompts. Copy Midjourney, ChatGPT, and SDXL prompts for free."
+    };
+
+    const Pagination = () => {
+        if (totalPages <= 1) return null;
+
+        const pages = [];
+        for (let i = 1; i <= totalPages; i++) {
+            pages.push(i);
+        }
+
+        return (
+            <div style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginTop: "3rem",
+                marginBottom: "2rem",
+                flexWrap: "wrap"
+            }}>
+                <button
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    style={{
+                        padding: "0.5rem 1rem",
+                        backgroundColor: "var(--bg-secondary)",
+                        border: "1px solid var(--border-color)",
+                        borderRadius: "6px",
+                        color: currentPage === 1 ? "var(--text-muted)" : "var(--text-primary)",
+                        cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                        fontSize: "0.875rem",
+                        fontWeight: 500,
+                        transition: "all 0.2s"
+                    }}
+                >
+                    Previous
+                </button>
+
+                {pages.map(page => (
+                    <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        style={{
+                            width: "2.5rem",
+                            height: "2.5rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: currentPage === page ? "var(--accent-color)" : "var(--bg-secondary)",
+                            border: "1px solid var(--border-color)",
+                            borderRadius: "6px",
+                            color: currentPage === page ? "#fff" : "var(--text-primary)",
+                            cursor: "pointer",
+                            fontSize: "0.875rem",
+                            fontWeight: 600,
+                            transition: "all 0.2s"
+                        }}
+                    >
+                        {page}
+                    </button>
+                ))}
+
+                <button
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    style={{
+                        padding: "0.5rem 1rem",
+                        backgroundColor: "var(--bg-secondary)",
+                        border: "1px solid var(--border-color)",
+                        borderRadius: "6px",
+                        color: currentPage === totalPages ? "var(--text-muted)" : "var(--text-primary)",
+                        cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                        fontSize: "0.875rem",
+                        fontWeight: 500,
+                        transition: "all 0.2s"
+                    }}
+                >
+                    Next
+                </button>
+            </div>
+        );
     };
 
     return (
@@ -118,11 +208,14 @@ export default function ImageOfDayPage() {
                     Loading latest images...
                 </div>
             ) : iods.length > 0 ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-                    {iods.map((iod) => (
-                        <ImageOfDayCard key={iod.id} item={iod} />
-                    ))}
-                </div>
+                <>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+                        {iods.map((iod) => (
+                            <ImageOfDayCard key={iod.id} item={iod} />
+                        ))}
+                    </div>
+                    <Pagination />
+                </>
             ) : (
                 <div style={{
                     textAlign: "center",

@@ -57,6 +57,33 @@ export const imageOfDayApi = {
         return data || [];
     },
 
+    async getPaginatedImages(page: number, limit: number = 10): Promise<{ data: ImageOfDay[], count: number }> {
+        if (!supabase) {
+            console.error("Supabase not initialized");
+            return { data: [], count: 0 };
+        }
+
+        const from = (page - 1) * limit;
+        const to = from + limit - 1;
+
+        const { data, error, count } = await supabase
+            .from('image_of_day')
+            .select('*', { count: 'exact' })
+            .eq('is_active', true)
+            .order('created_at', { ascending: false })
+            .range(from, to);
+
+        if (error) {
+            console.error('Error fetching paginated images:', error);
+            return { data: [], count: 0 };
+        }
+
+        return {
+            data: data || [],
+            count: count || 0
+        };
+    },
+
     async uploadImage(file: File): Promise<{ url: string | null; error: any }> {
         if (!supabase) {
             return { url: null, error: "Supabase not initialized" };
