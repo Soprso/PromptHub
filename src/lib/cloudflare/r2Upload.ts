@@ -1,24 +1,3 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-
-const accountId = import.meta.env.VITE_R2_ACCOUNT_ID;
-const accessKeyId = import.meta.env.VITE_R2_ACCESS_KEY_ID;
-const secretAccessKey = import.meta.env.VITE_R2_SECRET_ACCESS_KEY;
-const bucketName = import.meta.env.VITE_R2_BUCKET_NAME;
-const publicUrlBase = import.meta.env.VITE_R2_PUBLIC_URL;
-
-if (!accountId || !accessKeyId || !secretAccessKey || !bucketName || !publicUrlBase) {
-    console.warn("Cloudflare R2 environment variables are incomplete. Uploads may fail.");
-}
-
-const s3Client = new S3Client({
-    region: 'auto',
-    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-    credentials: {
-        accessKeyId: accessKeyId || '',
-        secretAccessKey: secretAccessKey || '',
-    },
-});
-
 export async function r2Upload(file: File): Promise<string> {
     const allowedTypes = ['image/png', 'image/jpeg', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
@@ -30,23 +9,24 @@ export async function r2Upload(file: File): Promise<string> {
         throw new Error('File exceeds the 5MB size limit.');
     }
 
-    const timestamp = Date.now();
-    const extension = file.name.split('.').pop() || 'png';
-    const fileName = `image-of-day-${timestamp}.${extension}`;
+    const formData = new FormData();
+    formData.append('file', file);
 
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = new Uint8Array(arrayBuffer);
+    try {
+        const response = await fetch('/.netlify/functions/upload-image', {
+            method: 'POST',
+            body: formData,
+        });
 
-    const command = new PutObjectCommand({
-        Bucket: bucketName,
-        Key: fileName,
-        Body: buffer,
-        ContentType: file.type,
-    });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to upload image to R2');
+        }
 
-    await s3Client.send(command);
-
-    // Remove trailing slashes if they exist and construct the final URL
-    const baseUrl = publicUrlBase?.replace(/\/+$/, '') || '';
-    return `${baseUrl}/${fileName}`;
+        const data = await response.json();
+        return data.url;
+    } catch (error: any) {
+        console.error('Upload Error:', error);
+        throw error;
+    }
 }
