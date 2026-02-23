@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.995.0",
     "@gradio/client": "^2.0.4",
     "@supabase/supabase-js": "^2.95.3",
     "@types/uuid": "^10.0.0",
