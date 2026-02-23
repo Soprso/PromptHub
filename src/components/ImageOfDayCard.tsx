@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ThumbsUp, Copy, Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { type ImageOfDay, imageOfDayApi } from '../lib/imageOfDayApi';
 import ImageModal from './ImageModal';
 
@@ -201,10 +202,106 @@ export default function ImageOfDayCard({ item }: { item: ImageOfDay }) {
                         wordBreak: "break-word",
                         fontFamily: "inherit",
                         overflowY: "auto",
-                        maxHeight: "400px" // ensures it doesn't run infinitely long if prompt is huge
+                        maxHeight: "400px"
                     }}>
                         {item.prompt}
                     </div>
+                </div>
+            </div>
+
+            {/* Explore Similar Prompts Section */}
+            <div style={{
+                marginTop: "0.5rem",
+                padding: "1.25rem",
+                borderRadius: "8px",
+                border: "1px solid var(--border-color)",
+                backgroundColor: "var(--bg-primary)"
+            }}>
+                <h3 style={{
+                    fontSize: "0.875rem",
+                    fontWeight: 600,
+                    color: "var(--text-primary)",
+                    marginBottom: "1rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem"
+                }}>
+                    Explore Similar Prompts
+                </h3>
+                <div style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "0.75rem"
+                }}>
+                    <Link
+                        to="/midjourney-logo-prompts"
+                        style={{
+                            fontSize: "0.8125rem",
+                            color: "var(--text-secondary)",
+                            textDecoration: "none",
+                            padding: "0.375rem 0.75rem",
+                            backgroundColor: "var(--bg-secondary)",
+                            borderRadius: "6px",
+                            border: "1px solid var(--border-color)",
+                            transition: "all 0.2s"
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--accent-color)"}
+                        onMouseLeave={(e) => e.currentTarget.style.borderColor = "var(--border-color)"}
+                    >
+                        Logo Design
+                    </Link>
+                    <Link
+                        to="/category/ai-image-generation"
+                        style={{
+                            fontSize: "0.8125rem",
+                            color: "var(--text-secondary)",
+                            textDecoration: "none",
+                            padding: "0.375rem 0.75rem",
+                            backgroundColor: "var(--bg-secondary)",
+                            borderRadius: "6px",
+                            border: "1px solid var(--border-color)",
+                            transition: "all 0.2s"
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--accent-color)"}
+                        onMouseLeave={(e) => e.currentTarget.style.borderColor = "var(--border-color)"}
+                    >
+                        AI Art Gallery
+                    </Link>
+                    <Link
+                        to="/category/ai-image-generation/photography-styles"
+                        style={{
+                            fontSize: "0.8125rem",
+                            color: "var(--text-secondary)",
+                            textDecoration: "none",
+                            padding: "0.375rem 0.75rem",
+                            backgroundColor: "var(--bg-secondary)",
+                            borderRadius: "6px",
+                            border: "1px solid var(--border-color)",
+                            transition: "all 0.2s"
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--accent-color)"}
+                        onMouseLeave={(e) => e.currentTarget.style.borderColor = "var(--border-color)"}
+                    >
+                        Photography Styles
+                    </Link>
+                    <Link
+                        to="/image-of-the-day/archive"
+                        style={{
+                            fontSize: "0.8125rem",
+                            color: "var(--accent-color)",
+                            textDecoration: "none",
+                            padding: "0.375rem 0.75rem",
+                            backgroundColor: "var(--bg-secondary)",
+                            borderRadius: "6px",
+                            border: "1px solid var(--accent-color)",
+                            fontWeight: 500,
+                            transition: "all 0.2s"
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.opacity = "0.8"}
+                        onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
+                    >
+                        View Archive →
+                    </Link>
                 </div>
             </div>
 
@@ -226,6 +323,6 @@ export default function ImageOfDayCard({ item }: { item: ImageOfDay }) {
                 imageUrl={item.image_url}
                 altText={altTextSnippet}
             />
-        </article>
+        </article >
     );
 }

@@ -29,7 +29,52 @@ export default function SeoPage() {
 
     // Helper to generate a consistent ID for the like button for these "static" prompts
     // We'll use "seo-[page-slug]-[index]" to ensure uniqueness
-    const getPromptId = (index: number) => `seo-${pageData.slug}-${index}`;
+    const getPromptId = (index: number) => `seo-${pageData?.slug}-${index}`;
+
+    const renderContextualText = (text: string) => {
+        const keywords = [
+            { word: "ChatGPT", link: "/prompts" },
+            { word: "Claude", link: "/prompts" },
+            { word: "Midjourney", link: "/midjourney-logo-prompts" },
+            { word: "prompt engineering", link: "/how-to-write-better-prompts" },
+            { word: "content writers", link: "/prompts-for-content-writers" },
+            { word: "PromptHub", link: "/" }
+        ];
+
+        let content: React.ReactNode[] = [text];
+
+        keywords.forEach(({ word, link }) => {
+            const newContent: React.ReactNode[] = [];
+            content.forEach((item) => {
+                if (typeof item !== "string") {
+                    newContent.push(item);
+                    return;
+                }
+
+                const parts = item.split(new RegExp(`(${word})`, "gi"));
+                parts.forEach((part, i) => {
+                    if (part.toLowerCase() === word.toLowerCase()) {
+                        newContent.push(
+                            <Link
+                                key={`${word}-${i}`}
+                                to={link}
+                                style={{ color: "var(--accent-color)", textDecoration: "none", fontWeight: 500 }}
+                                onMouseEnter={(e) => e.currentTarget.style.textDecoration = "underline"}
+                                onMouseLeave={(e) => e.currentTarget.style.textDecoration = "none"}
+                            >
+                                {part}
+                            </Link>
+                        );
+                    } else if (part) {
+                        newContent.push(part);
+                    }
+                });
+            });
+            content = newContent;
+        });
+
+        return content;
+    };
 
     return (
         <div style={{ maxWidth: "800px", margin: "0 auto", paddingBottom: "4rem" }}>
@@ -62,7 +107,20 @@ export default function SeoPage() {
                     Home
                 </Link>
                 <ChevronRight size={14} />
-                <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>Guide</span>
+                <Link
+                    to="/prompts"
+                    style={{
+                        color: "var(--text-muted)",
+                        textDecoration: "none",
+                        transition: "color 0.2s"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = "var(--text-secondary)"}
+                    onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
+                >
+                    Prompts
+                </Link>
+                <ChevronRight size={14} />
+                <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{pageData.title.split(':')[0]}</span>
             </nav>
 
             {/* Header */}
@@ -83,7 +141,7 @@ export default function SeoPage() {
                     color: "var(--text-secondary)",
                     maxWidth: "65ch"
                 }}>
-                    {pageData.intro}
+                    {renderContextualText(pageData.intro)}
                 </p>
             </header>
 
@@ -329,6 +387,86 @@ export default function SeoPage() {
                     />
                 )}
             </Suspense>
+
+            {/* Related Guides Section */}
+            <section style={{ marginTop: "5rem", borderTop: "1px solid var(--border-color)", paddingTop: "3rem" }}>
+                <h2 style={{
+                    fontSize: "1.75rem",
+                    fontWeight: 700,
+                    marginBottom: "2rem",
+                    color: "var(--text-primary)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem"
+                }}>
+                    <ChevronRight size={24} style={{ color: "var(--accent-color)" }} />
+                    Related AI Prompt Guides
+                </h2>
+                <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                    gap: "1.5rem"
+                }}>
+                    {seoPages.filter(p => p.slug !== slug).slice(0, 3).map((page) => (
+                        <Link
+                            key={page.slug}
+                            to={`/${page.slug}`}
+                            style={{
+                                padding: "1.5rem",
+                                borderRadius: "10px",
+                                backgroundColor: "var(--bg-secondary)",
+                                border: "1px solid var(--border-color)",
+                                textDecoration: "none",
+                                transition: "all 0.2s ease",
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "0.75rem"
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.borderColor = "var(--accent-color)";
+                                e.currentTarget.style.transform = "translateY(-3px)";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.borderColor = "var(--border-color)";
+                                e.currentTarget.style.transform = "translateY(0)";
+                            }}
+                        >
+                            <h3 style={{
+                                fontSize: "1.125rem",
+                                fontWeight: 600,
+                                color: "var(--text-primary)",
+                                margin: 0,
+                                lineHeight: "1.4"
+                            }}>
+                                {page.title}
+                            </h3>
+                            <p style={{
+                                fontSize: "0.875rem",
+                                color: "var(--text-secondary)",
+                                margin: 0,
+                                lineHeight: "1.5",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden"
+                            }}>
+                                {page.metaDescription}
+                            </p>
+                            <span style={{
+                                fontSize: "0.875rem",
+                                color: "var(--accent-color)",
+                                fontWeight: 500,
+                                marginTop: "auto",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.25rem"
+                            }}>
+                                Read Guide <ChevronRight size={14} />
+                            </span>
+                        </Link>
+                    ))}
+                </div>
+            </section>
 
             {/* CTA */}
             <div style={{

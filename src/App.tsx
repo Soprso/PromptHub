@@ -24,6 +24,8 @@ const HeadSwap = lazy(() => import("./pages/HeadSwap"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
+const SitemapPage = lazy(() => import("./pages/SitemapPage"));
+const ImageArchivePage = lazy(() => import("./pages/ImageArchivePage"));
 
 function App() {
   return (
@@ -41,6 +43,7 @@ function App() {
                 <Route path="/share" element={<SharePromptPage />} />
                 <Route path="/community" element={<CommunityPage />} />
                 <Route path="/image-of-the-day" element={<ImageOfDayPage />} />
+                <Route path="/image-of-the-day/archive" element={<ImageArchivePage />} />
                 <Route path="/submit-image-of-the-day" element={<SubmitImagePage />} />
                 <Route path="/face-swap" element={<FaceSwap />} />
                 <Route path="/head-swap" element={<HeadSwap />} />
@@ -49,6 +52,8 @@ function App() {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/sitemap" element={<SitemapPage />} />
+                <Route path="/prompts" element={<CommunityPage />} />
 
                 {/* SEO Pages - catch-all for top-level slugs */}
                 <Route path="/:slug" element={<SeoPage />} />

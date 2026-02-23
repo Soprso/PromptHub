@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Copy, BookOpen, Search, Palette, PenTool, Code2, Sparkles, ChevronRight, Check, ThumbsUp, Bot, Brain, Play } from "lucide-react";
+import { Copy, BookOpen, Search, Palette, Code2, Sparkles, ChevronRight, Check, ThumbsUp, Bot, Brain, Play, MessageSquare, Zap } from "lucide-react";
 import { seoPages } from "../data/seo-pages";
 import { communityApi, type SharedPrompt } from "../lib/communityApi";
 import { imageOfDayApi, type ImageOfDay } from "../lib/imageOfDayApi";
@@ -478,7 +478,33 @@ export default function Home() {
                     Popular AI Prompt Categories
                 </h2>
                 <div className="categories-grid">
-                    <Link to="/category/ai-image-generation" style={{ textDecoration: "none" }}>
+                    <Link to="/prompts" style={{ textDecoration: "none" }}>
+                        <div style={{
+                            padding: "1.25rem",
+                            border: "1px solid var(--border-color)",
+                            borderRadius: "8px",
+                            backgroundColor: "var(--bg-secondary)",
+                            transition: "all 0.2s ease",
+                            height: "100%",
+                            cursor: "pointer"
+                        }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.borderColor = "var(--accent-color)";
+                                e.currentTarget.style.transform = "translateY(-2px)";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.borderColor = "var(--border-color)";
+                                e.currentTarget.style.transform = "translateY(0)";
+                            }}
+                        >
+                            <div style={{ marginBottom: "1rem", color: "var(--accent-color)" }}><MessageSquare size={32} /></div>
+                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>ChatGPT Prompts</div>
+                            <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
+                                2000+ free ChatGPT prompts for writing, work, and productivity
+                            </div>
+                        </div>
+                    </Link>
+                    <Link to="/midjourney-logo-prompts" style={{ textDecoration: "none" }}>
                         <div style={{
                             padding: "1.25rem",
                             border: "1px solid var(--border-color)",
@@ -498,13 +524,13 @@ export default function Home() {
                             }}
                         >
                             <div style={{ marginBottom: "1rem", color: "var(--accent-color)" }}><Palette size={32} /></div>
-                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>AI Image Generation Prompts</div>
+                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>Midjourney Prompts</div>
                             <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
-                                Free prompts for Midjourney, DALL·E, Stable Diffusion
+                                Stunning AI art prompts for Midjourney, DALL·E, and Flux
                             </div>
                         </div>
                     </Link>
-                    <Link to="/category/writing" style={{ textDecoration: "none" }}>
+                    <Link to="/category/ai-image-generation" style={{ textDecoration: "none" }}>
                         <div style={{
                             padding: "1.25rem",
                             border: "1px solid var(--border-color)",
@@ -517,16 +543,18 @@ export default function Home() {
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.borderColor = "var(--accent-color)";
                                 e.currentTarget.style.transform = "translateY(-2px)";
+                                e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.1)";
                             }}
                             onMouseLeave={(e) => {
                                 e.currentTarget.style.borderColor = "var(--border-color)";
                                 e.currentTarget.style.transform = "translateY(0)";
+                                e.currentTarget.style.boxShadow = "none";
                             }}
                         >
-                            <div style={{ marginBottom: "1rem", color: "var(--accent-color)" }}><PenTool size={32} /></div>
-                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>Writing & Content Prompts</div>
+                            <div style={{ marginBottom: "1rem", color: "var(--accent-color)" }}><Zap size={32} /></div>
+                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>Stable Diffusion Prompts</div>
                             <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
-                                Free ChatGPT prompts for writing and content
+                                optimized prompts for Stable Diffusion and realistic AI photos
                             </div>
                         </div>
                     </Link>
@@ -550,9 +578,9 @@ export default function Home() {
                             }}
                         >
                             <div style={{ marginBottom: "1rem", color: "var(--accent-color)" }}><Code2 size={32} /></div>
-                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>Coding & Programming Prompts</div>
+                            <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>Coding & Programming</div>
                             <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
-                                Free AI prompts for developers and programmers
+                                Specialized AI prompts for software developers and engineers
                             </div>
                         </div>
                     </Link>
