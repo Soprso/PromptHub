@@ -65,37 +65,6 @@ export default function Home() {
                 </p>
             </div>
 
-            <div className="workflow-container">
-                <h2 style={{
-                    fontSize: "1.125rem",
-                    fontWeight: 600,
-                    marginBottom: "1.25rem",
-                    color: "var(--text-primary)"
-                }}>
-                    Streamline Your Workflow
-                </h2>
-                <ul className="workflow-list">
-                    <li style={{ display: "flex", alignItems: "start", gap: "0.875rem" }}>
-                        <span style={{ color: "var(--accent-color)", marginTop: "0.25rem" }}><BookOpen size={20} /></span>
-                        <span style={{ color: "var(--text-secondary)", lineHeight: "1.6" }}>
-                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Explore Stacks</strong> — Navigate specialized categories for developers and designers
-                        </span>
-                    </li>
-                    <li style={{ display: "flex", alignItems: "start", gap: "0.875rem" }}>
-                        <span style={{ color: "var(--accent-color)", marginTop: "0.25rem" }}><Search size={20} /></span>
-                        <span style={{ color: "var(--text-secondary)", lineHeight: "1.6" }}>
-                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Search Instantly</strong> — Find specific solutions in seconds without the fluff
-                        </span>
-                    </li>
-                    <li style={{ display: "flex", alignItems: "start", gap: "0.875rem" }}>
-                        <span style={{ color: "var(--accent-color)", marginTop: "0.25rem" }}><Copy size={20} /></span>
-                        <span style={{ color: "var(--text-secondary)", lineHeight: "1.6" }}>
-                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Copy & Ship</strong> — One-click copy formatted for immediate use
-                        </span>
-                    </li>
-                </ul>
-            </div>
-
             {/* Today's Best AI Image and Prompt Section */}
             {iods.length > 0 && (
                 <div className="section-container">
@@ -142,6 +111,37 @@ export default function Home() {
                     </div>
                 </div>
             )}
+
+            <div className="workflow-container">
+                <h2 style={{
+                    fontSize: "1.125rem",
+                    fontWeight: 600,
+                    marginBottom: "1.25rem",
+                    color: "var(--text-primary)"
+                }}>
+                    Streamline Your Workflow
+                </h2>
+                <ul className="workflow-list">
+                    <li style={{ display: "flex", alignItems: "start", gap: "0.875rem" }}>
+                        <span style={{ color: "var(--accent-color)", marginTop: "0.25rem" }}><BookOpen size={20} /></span>
+                        <span style={{ color: "var(--text-secondary)", lineHeight: "1.6" }}>
+                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Explore Stacks</strong> — Navigate specialized categories for developers and designers
+                        </span>
+                    </li>
+                    <li style={{ display: "flex", alignItems: "start", gap: "0.875rem" }}>
+                        <span style={{ color: "var(--accent-color)", marginTop: "0.25rem" }}><Search size={20} /></span>
+                        <span style={{ color: "var(--text-secondary)", lineHeight: "1.6" }}>
+                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Search Instantly</strong> — Find specific solutions in seconds without the fluff
+                        </span>
+                    </li>
+                    <li style={{ display: "flex", alignItems: "start", gap: "0.875rem" }}>
+                        <span style={{ color: "var(--accent-color)", marginTop: "0.25rem" }}><Copy size={20} /></span>
+                        <span style={{ color: "var(--text-secondary)", lineHeight: "1.6" }}>
+                            <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>Copy & Ship</strong> — One-click copy formatted for immediate use
+                        </span>
+                    </li>
+                </ul>
+            </div>
 
             <div className="section-container">
                 <h2 className="section-title">

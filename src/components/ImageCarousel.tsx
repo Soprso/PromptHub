@@ -41,13 +41,15 @@ export default function ImageCarousel({ images }: ImageCarouselProps) {
     if (!images || images.length === 0) return null;
 
     return (
-        <div style={{ position: 'relative', width: '100%', marginBottom: '2rem' }}>
+        <div
+            className="carousel-main-container"
+            style={{ position: 'relative', width: '100%', marginBottom: '2rem' }}
+        >
             {/* Left Navigation Arrow */}
             {showLeftArrow && (
                 <button
                     onClick={() => scroll('left')}
-                    className="carousel-nav-button"
-                    style={{ left: '-20px' }}
+                    className="carousel-nav-button left"
                     aria-label="Scroll left"
                 >
                     <ChevronLeft size={24} />
@@ -58,8 +60,7 @@ export default function ImageCarousel({ images }: ImageCarouselProps) {
             {showRightArrow && (
                 <button
                     onClick={() => scroll('right')}
-                    className="carousel-nav-button"
-                    style={{ right: '-20px' }}
+                    className="carousel-nav-button right"
                     aria-label="Scroll right"
                 >
                     <ChevronRight size={24} />
@@ -129,40 +130,63 @@ export default function ImageCarousel({ images }: ImageCarouselProps) {
                     top: 50%;
                     transform: translateY(-50%);
                     z-index: 10;
-                    width: 48px;
-                    height: 48px;
+                    width: 44px;
+                    height: 44px;
                     border-radius: 50%;
-                    background: rgba(255, 255, 255, 0.8);
-                    backdrop-filter: blur(8px);
-                    border: 1px solid var(--border-color);
+                    background: rgba(255, 255, 255, 0.7);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
                     color: var(--text-primary);
                     display: flex;
-                    alignItems: center;
+                    align-items: center;
                     justify-content: center;
                     cursor: pointer;
-                    transition: all 0.2s ease;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    opacity: 0;
+                    pointer-events: none;
+                }
+
+                .carousel-nav-button.left { left: 12px; }
+                .carousel-nav-button.right { right: 12px; }
+
+                .carousel-main-container:hover .carousel-nav-button {
+                    opacity: 1;
+                    pointer-events: auto;
                 }
 
                 .carousel-nav-button:hover {
-                    background: #fff;
+                    background: var(--bg-primary);
+                    color: var(--accent-color);
                     transform: translateY(-50%) scale(1.1);
-                    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+                    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    border-color: var(--accent-color);
+                }
+
+                .carousel-nav-button:active {
+                    transform: translateY(-50%) scale(0.95);
                 }
 
                 @media (prefers-color-scheme: dark) {
                     .carousel-nav-button {
-                        background: rgba(30, 41, 59, 0.8);
+                        background: rgba(30, 41, 59, 0.6);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
                         color: #fff;
                     }
-                    .carousel-nav-button:hover {
-                        background: #1e293b;
-                    }
+                }
+
+                /* Manual override for .dark class if used */
+                .dark .carousel-nav-button {
+                    background: rgba(30, 41, 59, 0.6);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    color: #fff;
                 }
 
                 .carousel-image-card:hover {
                     transform: translateY(-6px) scale(1.02);
                     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+                    border-color: var(--accent-color);
                 }
 
                 @media (max-width: 768px) {
@@ -171,7 +195,7 @@ export default function ImageCarousel({ images }: ImageCarouselProps) {
                         height: 280px !important;
                     }
                     .carousel-nav-button {
-                        display: none; /* Hide arrows on touch devices for cleaner look */
+                        display: none; 
                     }
                 }
                 
@@ -181,7 +205,6 @@ export default function ImageCarousel({ images }: ImageCarouselProps) {
                         height: 240px !important;
                     }
                 }
-
             ` }} />
 
             <ImageModal
