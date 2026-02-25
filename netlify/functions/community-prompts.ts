@@ -44,7 +44,7 @@ export const handler = async (event: any) => {
 
             // Submit prompt — API key guard
             const apiKey = headers['x-api-key'];
-            const expectedKey = process.env.ADMIN_API_KEY || 'phub-community-2025';
+            const expectedKey = process.env.ADMIN_API_KEY || '';
             if (apiKey !== expectedKey) {
                 return { statusCode: 401, headers: jsonHeaders, body: JSON.stringify({ error: 'Unauthorized' }) };
             }

@@ -19,7 +19,7 @@ export const communityApi = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': import.meta.env.VITE_COMMUNITY_API_KEY || 'phub-community-2025',
+                'x-api-key': import.meta.env.VITE_COMMUNITY_API_KEY || '',
             },
             body: JSON.stringify(prompt),
         });
