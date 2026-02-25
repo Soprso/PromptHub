@@ -47,6 +47,9 @@ export default function Navbar() {
             navigate(`/community?search=${encodeURIComponent(searchQuery)}`);
         } else if ((result.type === 'guide' || result.type === 'guide-prompt') && result.slug) {
             navigate(`/${result.slug}`);
+        } else if (result.type === 'image') {
+            // Navigate to image of the day page with search query
+            navigate(`/image-of-the-day?search=${encodeURIComponent(searchQuery)}`);
         } else if (result.category && result.folder) {
             navigate(`/category/${result.category.id}/${result.folder.id}`);
         }

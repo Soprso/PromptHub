@@ -1,0 +1,23 @@
+{
+  "images": [
+    {"id":"a5b22160-053b-4f8d-ba95-46e15afb8431","image_url":"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop","likes":42,"created_at":"2026-02-22 18:23:08.262683+00","is_active":true},
+    {"id":"12dcd749-28c5-4688-8d6b-107df7e0a7c0","image_url":"https://zxqyabfvzkkgisiapmpc.supabase.co/storage/v1/object/public/image_of_day/uploads/yubpjlwciug-1771786280249.png","likes":36,"created_at":"2026-02-22 18:51:26.738061+00","is_active":true},
+    {"id":"fd70d941-b97c-49d5-b47c-85a97adb37e7","image_url":"https://zxqyabfvzkkgisiapmpc.supabase.co/storage/v1/object/public/image_of_day/uploads/bggm2eu9oh-1771786832888.png","likes":23,"created_at":"2026-02-22 19:00:37.265406+00","is_active":true},
+    {"id":"89fe94f7-5886-4470-970e-ce32fd39f594","image_url":"https://zxqyabfvzkkgisiapmpc.supabase.co/storage/v1/object/public/image_of_day/uploads/7dtatyg58cr-1771787736573.png","likes":4,"created_at":"2026-02-22 19:15:39.288295+00","is_active":true},
+    {"id":"7c09f3bd-1223-47ac-90b4-13926727278a","image_url":"https://zxqyabfvzkkgisiapmpc.supabase.co/storage/v1/object/public/image_of_day/uploads/prfnuv2dsr-1771789255690.jpg","likes":0,"created_at":"2026-02-22 19:40:57.391+00","is_active":true},
+    {"id":"40164771-a103-463e-b7ae-0bce0b8dfa65","image_url":"https://zxqyabfvzkkgisiapmpc.supabase.co/storage/v1/object/public/image_of_day/uploads/q8xzyzvwoab-1771789510029.jpg","likes":0,"created_at":"2026-02-22 19:45:11.757758+00","is_active":true},
+    {"id":"882603c2-2355-4243-a840-9ce44d966ab8","image_url":"https://zxqyabfvzkkgisiapmpc.supabase.co/storage/v1/object/public/image_of_day/uploads/giq5y7h4cu-1771791082128.jpg","likes":0,"created_at":"2026-02-22 20:11:24.658139+00","is_active":true},
+    {"id":"3f2bfffe-4592-4f74-8c27-ff8852c0393f","image_url":"https://zxqyabfvzkkgisiapmpc.supabase.co/storage/v1/object/public/image_of_day/uploads/1r6fzjfpfxa-1771805647701.png","likes":0,"created_at":"2026-02-23 00:14:42.382562+00","is_active":true},
+    {"id":"78f0b3b8-6906-4f6f-9c73-797fa8f8b4da","image_url":"https://pub-77afca34a40e4ea3b3026cffb7ac051f.r2.dev/image-of-day-1771826696383.png","likes":10,"created_at":"2026-02-23 06:05:29.347823+00","is_active":true},
+    {"id":"54ad73fd-c51b-413d-b8f7-706f6598d508","image_url":"https://zxqyabfvzkkgisiapmpc.supabase.co/storage/v1/object/public/image_of_day/uploads/9gdjug7vqjt-1771840911334.jpg","likes":0,"created_at":"2026-02-23 10:01:59.709495+00","is_active":true},
+    {"id":"6f16eda8-0d40-4b05-b184-070846dd76cb","image_url":"https://pub-77afca34a40e4ea3b3026cffb7ac051f.r2.dev/image-of-day-1771848713792-hcd7kgg0o4i.png","likes":0,"created_at":"2026-02-23 12:11:56.042131+00","is_active":true},
+    {"id":"7acb6945-e5de-42a7-ac90-c9210845ffc7","image_url":"https://zxqyabfvzkkgisiapmpc.supabase.co/storage/v1/object/public/image_of_day/uploads/w3npfgurgc-1771849746732.png","likes":0,"created_at":"2026-02-23 12:29:28.100683+00","is_active":true},
+    {"id":"f736a740-7bad-419c-b8b6-f451b7686f3e","image_url":"https://pub-77afca34a40e4ea3b3026cffb7ac051f.r2.dev/image-of-day-1771854006384-2kcmuufu3m4.png","likes":0,"created_at":"2026-02-23 13:40:10.271204+00","is_active":true},
+    {"id":"6701d737-1bbc-41d0-a1f8-7cfa388bc98b","image_url":"https://pub-77afca34a40e4ea3b3026cffb7ac051f.r2.dev/image-of-day-1771861638063-j6yjyqn3tj.png","likes":0,"created_at":"2026-02-23 15:47:21.456838+00","is_active":true},
+    {"id":"6527c19d-6f6b-4df5-adac-f499c98021b5","image_url":"https://pub-77afca34a40e4ea3b3026cffb7ac051f.r2.dev/image-of-day-1771900028587-wxpx772dt77.png","likes":0,"created_at":"2026-02-24 02:27:10.497133+00","is_active":true},
+    {"id":"4c4bedb3-2366-4a95-bff9-035a7c437b9b","image_url":"https://pub-77afca34a40e4ea3b3026cffb7ac051f.r2.dev/image-of-day-1771905587424-mau3pevw4pq.png","likes":0,"created_at":"2026-02-24 03:59:49.766647+00","is_active":true},
+    {"id":"fea0aaa2-88e1-45c1-b7e7-e25cc14441cf","image_url":"https://pub-77afca34a40e4ea3b3026cffb7ac051f.r2.dev/image-of-day-1771914738511-ekv7xhf9zh.jpg","likes":0,"created_at":"2026-02-24 06:32:21.452067+00","is_active":true},
+    {"id":"edac97bc-fe6d-4326-ba18-a302b11d5ec6","image_url":"https://pub-77afca34a40e4ea3b3026cffb7ac051f.r2.dev/image-of-day-1771918149378-1r5gth5kctq.png","likes":0,"created_at":"2026-02-24 07:29:13.968334+00","is_active":true},
+    {"id":"024168a2-590c-4bea-8ed8-4d8845ce0f9d","image_url":"https://pub-77afca34a40e4ea3b3026cffb7ac051f.r2.dev/image-of-day-1771942511174-o0ehi1673zk.png","likes":0,"created_at":"2026-02-24 14:15:14.532369+00","is_active":true}
+  ]
+}

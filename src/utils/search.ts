@@ -1,22 +1,28 @@
 import { promptCategories } from "../data/prompts";
 import { seoPages } from "../data/seo-pages";
 import { communityApi, type SharedPrompt } from "../lib/communityApi";
+import { imageOfDayApi, type ImageOfDay } from "../lib/imageOfDayApi";
 import type { PromptFolder, PromptCategory } from "../types/prompt";
 
 export interface SearchResult {
-    type: 'prompt' | 'guide' | 'guide-prompt' | 'community';
+    type: 'prompt' | 'guide' | 'guide-prompt' | 'community' | 'image';
     prompt: { title: string; content?: string; id?: string };
     category?: PromptCategory;
     folder?: PromptFolder;
     path: string;
     slug?: string; // For guides
     communityPrompt?: SharedPrompt; // For community prompts
+    imagePrompt?: ImageOfDay; // For Image of the Day
 }
 
 // Cache for community prompts to avoid refetching on every keystroke
 let communityPromptsCache: SharedPrompt[] = [];
 let lastCacheFetch = 0;
 const CACHE_DURATION = 60000; // 1 minute
+
+// Cache for image prompts
+let imagePromptsCache: ImageOfDay[] = [];
+let lastImageCacheFetch = 0;
 
 async function getCommunityPrompts(): Promise<SharedPrompt[]> {
     const now = Date.now();
@@ -32,6 +38,24 @@ async function getCommunityPrompts(): Promise<SharedPrompt[]> {
         return communityPromptsCache;
     } catch (error) {
         console.error('Error fetching community prompts for search:', error);
+        return [];
+    }
+}
+
+async function getImagesForSearch(): Promise<ImageOfDay[]> {
+    const now = Date.now();
+    if (now - lastImageCacheFetch < CACHE_DURATION && imagePromptsCache.length > 0) {
+        return imagePromptsCache;
+    }
+
+    try {
+        // Fetch up to 100 recent images for search
+        const response = await imageOfDayApi.getPaginatedImages(1, 100);
+        imagePromptsCache = response.data;
+        lastImageCacheFetch = now;
+        return imagePromptsCache;
+    } catch (error) {
+        console.error('Error fetching image prompts for search:', error);
         return [];
     }
 }
@@ -117,6 +141,19 @@ export async function searchPrompts(query: string): Promise<SearchResult[]> {
                     prompt: { title: prompt.title, content: prompt.content, id: prompt.id },
                     path: 'Community',
                     communityPrompt: prompt
+                });
+            }
+        });
+
+        // 4. Search Image of the Day
+        const imagePrompts = await getImagesForSearch();
+        imagePrompts.forEach((img) => {
+            if (img.prompt.toLowerCase().includes(lowerQuery)) {
+                results.push({
+                    type: 'image',
+                    prompt: { title: 'Image of the Day', content: img.prompt, id: img.id },
+                    path: 'Gallery',
+                    imagePrompt: img
                 });
             }
         });

@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ChevronRight, Image as ImageIcon } from 'lucide-react';
 import ImageOfDayCard from '../components/ImageOfDayCard';
 import { imageOfDayApi, type ImageOfDay } from '../lib/imageOfDayApi';
 
 export default function ImageOfDayPage() {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [iods, setIods] = useState<ImageOfDay[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const ITEMS_PER_PAGE = 10;
 
+    const searchQuery = searchParams.get('search') || '';
+
     useEffect(() => {
         async function loadData() {
             setLoading(true);
-            const { data, count } = await imageOfDayApi.getPaginatedImages(currentPage, ITEMS_PER_PAGE);
+            const { data, count } = await imageOfDayApi.getPaginatedImages(currentPage, ITEMS_PER_PAGE, searchQuery);
             setIods(data);
             setTotalCount(count);
             setLoading(false);
@@ -24,7 +27,7 @@ export default function ImageOfDayPage() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         loadData();
-    }, [currentPage]);
+    }, [currentPage, searchQuery]);
 
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
@@ -202,6 +205,44 @@ export default function ImageOfDayPage() {
                     Explore the latest daily featured AI images and copy the exact prompts used to create them.
                 </p>
             </div>
+
+            {/* Search indicator */}
+            {searchQuery && (
+                <div style={{
+                    marginBottom: "2rem",
+                    padding: "1rem 1.25rem",
+                    backgroundColor: "var(--bg-secondary)",
+                    borderRadius: "6px",
+                    border: "1px solid var(--border-color)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "1rem"
+                }}>
+                    <div>
+                        <span style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>
+                            Showing {totalCount} result{totalCount !== 1 ? 's' : ''} for <strong style={{ color: "var(--text-primary)" }}>"{searchQuery}"</strong>
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => setSearchParams({})}
+                        style={{
+                            padding: "0.375rem 0.75rem",
+                            backgroundColor: "transparent",
+                            color: "var(--text-muted)",
+                            border: "1px solid var(--border-color)",
+                            borderRadius: "4px",
+                            fontSize: "0.75rem",
+                            fontWeight: 500,
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                            fontFamily: "inherit"
+                        }}
+                    >
+                        Clear search
+                    </button>
+                </div>
+            )}
 
             {loading ? (
                 <div style={{ padding: "4rem 2rem", textAlign: "center", color: "var(--text-secondary)", fontSize: "1rem" }}>

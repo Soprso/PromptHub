@@ -22,10 +22,15 @@ export const handler = async (event: any) => {
             if (type === 'paginated') {
                 const page = parseInt(queryStringParameters?.page || '1');
                 const limit = parseInt(queryStringParameters?.limit || '10');
+                const queryStr = queryStringParameters?.query || '';
                 const offset = (page - 1) * limit;
+
                 const rows = await query(
-                    'SELECT *, count(*) OVER() AS full_count FROM image_of_day WHERE is_active = true ORDER BY created_at DESC LIMIT $1 OFFSET $2',
-                    [limit, offset]
+                    `SELECT *, count(*) OVER() AS full_count 
+                     FROM image_of_day 
+                     WHERE is_active = true AND prompt ILIKE $1 
+                     ORDER BY created_at DESC LIMIT $2 OFFSET $3`,
+                    [`%${queryStr}%`, limit, offset]
                 );
                 const total = rows.length > 0 ? parseInt(rows[0].full_count) : 0;
                 return {
@@ -33,6 +38,16 @@ export const handler = async (event: any) => {
                     headers: cacheHeaders,
                     body: JSON.stringify({ data: rows.map(({ full_count, ...r }: any) => r), count: total }),
                 };
+            }
+
+            if (type === 'search') {
+                const queryStr = queryStringParameters?.query || '';
+                const limit = parseInt(queryStringParameters?.limit || '20');
+                const rows = await query(
+                    'SELECT * FROM image_of_day WHERE is_active = true AND prompt ILIKE $1 ORDER BY created_at DESC LIMIT $2',
+                    [`%${queryStr}%`, limit]
+                );
+                return { statusCode: 200, headers: cacheHeaders, body: JSON.stringify(rows) };
             }
         }
 

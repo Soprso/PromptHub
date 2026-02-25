@@ -34,14 +34,26 @@ export const imageOfDayApi = {
         }
     },
 
-    async getPaginatedImages(page: number, limit: number = 10): Promise<{ data: ImageOfDay[], count: number }> {
+    async getPaginatedImages(page: number, limit: number = 10, search: string = ''): Promise<{ data: ImageOfDay[], count: number }> {
         try {
-            const response = await fetch(`/api/image-of-day?type=paginated&page=${page}&limit=${limit}`);
+            const searchQuery = search ? `&query=${encodeURIComponent(search)}` : '';
+            const response = await fetch(`/api/image-of-day?type=paginated&page=${page}&limit=${limit}${searchQuery}`);
             if (!response.ok) throw new Error('Failed to fetch paginated images');
             return await response.json();
         } catch (error) {
             console.error('Error fetching paginated images:', error);
             return { data: [], count: 0 };
+        }
+    },
+
+    async searchImages(query: string, limit: number = 20): Promise<ImageOfDay[]> {
+        try {
+            const response = await fetch(`/api/image-of-day?type=search&query=${encodeURIComponent(query)}&limit=${limit}`);
+            if (!response.ok) throw new Error('Failed to search images');
+            return await response.json();
+        } catch (error) {
+            console.error('Error searching images:', error);
+            return [];
         }
     },
 
