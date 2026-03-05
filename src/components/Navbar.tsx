@@ -128,9 +128,8 @@ export default function Navbar() {
 
                 <div className="navbar-actions">
                     <div className="desktop-actions">
-                        {/* Community Link */}
-                        <Link to="/community" className="builder-link">
-                            <button className="builder-button" aria-label="Community Feed">
+                        <div className="desktop-dropdown">
+                            <button className="builder-button desktop-dropdown-btn" aria-label="Community Menu">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="9" cy="7" r="4"></circle>
@@ -138,66 +137,60 @@ export default function Navbar() {
                                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                                 </svg>
                                 <span className="builder-text">Community</span>
-                            </button>
-                        </Link>
-
-                        {/* Image of the Day Link */}
-                        <Link to="/image-of-the-day" className="builder-link">
-                            <button className="builder-button" aria-label="Image of the Day">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                <svg className="dropdown-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px' }}>
+                                    <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
-                                <span className="builder-text">Image of the Day</span>
                             </button>
-                        </Link>
-
-                        {/* Submit Image Link */}
-                        <Link to="/submit-image-of-the-day" className="builder-link">
-                            <button className="builder-button" aria-label="Submit Image">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                    <polyline points="17 8 12 3 7 8"></polyline>
-                                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                                </svg>
-                                <span className="builder-text">Submit Image</span>
-                            </button>
-                        </Link>
-
-                        {/* Share Link */}
-                        <Link to="/share" className="builder-link">
-                            <button className="builder-button" aria-label="Share Prompt">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                                </svg>
-                                <span className="builder-text">Share Prompt</span>
-                            </button>
-                        </Link>
-
-                        {/* AI Face/Head Swap Link */}
-                        <Link to="/face-swap" className="builder-link">
-                            <button className="builder-button" aria-label="AI Face/Head Swap">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M18 20a6 6 0 0 0-12 0" />
-                                    <circle cx="12" cy="10" r="4" />
-                                    <circle cx="12" cy="3" r="1" />
-                                </svg>
-                                <span className="builder-text">AI Face Swap</span>
-                            </button>
-                        </Link>
-
-                        {/* Prompt Builder Button */}
-                        <Link to="/builder" className="builder-link">
-                            <button className="builder-button" aria-label="Prompt Builder">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M12 20h9"></path>
-                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                                </svg>
-                                <span className="builder-text">Builder</span>
-                            </button>
-                        </Link>
+                            <div className="desktop-dropdown-menu">
+                                <Link to="/community" className="desktop-dropdown-item">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                    </svg>
+                                    <span>Community Feed</span>
+                                </Link>
+                                <Link to="/image-of-the-day" className="desktop-dropdown-item">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                        <polyline points="21 15 16 10 5 21"></polyline>
+                                    </svg>
+                                    <span>Image of the Day</span>
+                                </Link>
+                                <Link to="/submit-image-of-the-day" className="desktop-dropdown-item">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                    </svg>
+                                    <span>Submit Image</span>
+                                </Link>
+                                <Link to="/share" className="desktop-dropdown-item">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                    </svg>
+                                    <span>Share Prompt</span>
+                                </Link>
+                                <Link to="/face-swap" className="desktop-dropdown-item">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M18 20a6 6 0 0 0-12 0" />
+                                        <circle cx="12" cy="10" r="4" />
+                                        <circle cx="12" cy="3" r="1" />
+                                    </svg>
+                                    <span>AI Face Swap</span>
+                                </Link>
+                                <Link to="/builder" className="desktop-dropdown-item">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M12 20h9"></path>
+                                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                    </svg>
+                                    <span>Builder</span>
+                                </Link>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Tools Toggle Button (Mobile) */}
