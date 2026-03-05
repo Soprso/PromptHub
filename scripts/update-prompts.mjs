@@ -3,7 +3,7 @@ import pg from 'pg';
 const { Pool } = pg;
 
 const pool = new Pool({
-    connectionString: 'postgresql://dipur:ygNxfRfcuBEfY0EBE1fKrg@moon-serval-22596.j77.aws-ap-south-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full',
+    connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
 });
 
