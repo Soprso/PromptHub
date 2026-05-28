@@ -1,45 +1,47 @@
 # Promptshub
 
-Internet's Best Collection of Free AI Prompts.
+An AI-powered prompt library platform built with React that helps users discover, explore, and organize high-quality prompts for various AI tools and use cases.
 
-Promptshub is a modern React-based web application that provides access to 2,000+ curated AI prompts for coding, design, productivity, content creation, marketing, Midjourney, ChatGPT, Claude, and more — completely free with no signup required.
+## Live Demo
+
+https://promptshub.shop
 
 ---
 
 ## Features
 
-* Browse 2,000+ curated AI prompts
-* Categories for coding, design, marketing, writing, productivity, etc.
-* Optimized prompts for:
-
-  * ChatGPT
-  * Claude
-  * Midjourney
-  * Gemini
-* Fast and responsive UI
-* Search and filter functionality
-* Clean modern interface
-* Mobile responsive design
-* No authentication required
+* Modern responsive UI
+* AI prompt library collection
+* Search functionality
+* Dynamic prompt cards
+* Clean component-based architecture
+* Fast navigation with React Router
+* Mobile-friendly design
+* Reusable React components
 
 ---
 
 ## Tech Stack
 
-* React.js
-* JavaScript (ES6+)
-* Vite
+* React
+* JavaScript
 * Tailwind CSS
-* React Hooks
+* React Router DOM
+* Fetch API / Axios
+* Vite
 
 ---
 
-## Screenshots
+## Project Structure
 
-Add screenshots here after deployment.
-
-```md
-![Homepage](./screenshots/homepage.png)
+```bash
+src
+ ├── components
+ ├── pages
+ ├── assets
+ ├── routes
+ ├── App.jsx
+ └── main.jsx
 ```
 
 ---
@@ -49,10 +51,10 @@ Add screenshots here after deployment.
 Clone the repository:
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/your-username/promptshub.git
 ```
 
-Move into the project directory:
+Navigate into the project directory:
 
 ```bash
 cd promptshub
@@ -64,7 +66,7 @@ Install dependencies:
 npm install
 ```
 
-Start development server:
+Run the development server:
 
 ```bash
 npm run dev
@@ -72,62 +74,39 @@ npm run dev
 
 ---
 
-## Build for Production
+## Learning Outcomes
 
-```bash
-npm run build
-```
+This project helped me practice and improve my understanding of:
 
----
-
-## Folder Structure
-
-```text
-src/
-├── components/
-├── pages/
-├── data/
-├── assets/
-├── App.jsx
-├── main.jsx
-```
-
----
-
-## Concepts Implemented
-
-* Component-based architecture
-* Responsive UI design
-* Dynamic rendering using React
-* State management with React Hooks
-* Search and filtering functionality
-* Reusable UI components
-* Modern frontend development workflow using Vite
+* React component architecture
+* State management
+* Props and data flow
+* API integration
+* SPA routing
+* Responsive UI development
+* Tailwind CSS styling
+* Reusable component design
 
 ---
 
 ## Future Improvements
 
 * User authentication
-* Save favorite prompts
-* AI prompt generator
-* Dark / light theme toggle
+* Save/bookmark prompts
+* Category filtering
+* Advanced search
 * Backend integration
-* Community prompt submissions
-* AI model-specific filtering
+* Prompt submission system
+* Dark/light theme toggle
 
 ---
 
-## Live Demo
+## Screenshots
 
-[https:](https://promptshub.shop/)
-
-```text
-https://your-live-link.com
-```
+*Add screenshots of your project here*
 
 ---
 
 ## Author
 
-Built by Dipur Movies
+Built with React and Tailwind CSS by Dipur Movies.
