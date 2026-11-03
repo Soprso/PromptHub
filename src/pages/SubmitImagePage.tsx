@@ -38,15 +38,6 @@ export default function SubmitImagePage() {
         }
     };
 
-    const _handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setSelectedFile(file);
-            const url = URL.createObjectURL(file);
-            setPreviewUrl(url);
-        }
-    };
-
     // Helper: upload image via Netlify Function
     async function uploadViaFunction(file: File): Promise<{ url: string | null; error: any }> {
         const formData = new FormData();

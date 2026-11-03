@@ -74,7 +74,7 @@ export async function r2Upload(file: File, bucket: 'image_of_day' | 'prompt_imag
  */
 export async function checkBucketAccess(bucket: string): Promise<boolean> {
   try {
-    const { _data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from(bucket)
       .list('', { limit: 1 });
     return !error;
