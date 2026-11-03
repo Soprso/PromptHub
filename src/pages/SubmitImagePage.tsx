@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Upload, Check, AlertCircle, Lock } from 'lucide-react';
-import { imageOfDayApi } from '../lib/imageOfDayApi';
-import { r2Upload } from '../lib/cloudflare/r2Upload';
 
 export default function SubmitImagePage() {
     // Auth State
@@ -49,11 +47,40 @@ export default function SubmitImagePage() {
         }
     };
 
+    // Helper: upload image via Netlify Function
+    async function uploadViaFunction(file: File): Promise<{ url: string | null; error: any }> {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            // Call the Netlify Function /api/upload-image
+            // The function validates bucket, does file-type/size validation,
+            // uploads via supabaseAdmin, and returns the public URL.
+            const response = await fetch('/api/upload-image', {
+                method: 'POST',
+                body: formData,
+                // Note: Do NOT set Content-Type header when sending FormData;
+                // the browser sets it automatically with the correct boundary.
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Upload function failed: ${response.status} ${response.statusText} - ${errorText}`);
+            }
+
+            const result = await response.json();
+            return result; // { url: string } or { error: any }
+        } catch (err: any) {
+            console.error('Error calling upload function:', err);
+            return { url: null, error: err };
+        }
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
         setError('');
-        setSuccess('');
+        setSuccess("");
 
         if (!selectedFile || !prompt.trim()) {
             setError('Image File and Prompt are required.');
@@ -62,25 +89,31 @@ export default function SubmitImagePage() {
         }
 
         try {
-            // 1. Upload Image to Cloudflare R2
-            let r2Url = '';
+            // 1. Upload Image via Netlify Function
+            let supabaseUrl = '';
             try {
-                r2Url = await r2Upload(selectedFile);
+                const result = await uploadViaFunction(selectedFile);
+                supabaseUrl = result.url || '';
+                if (result.error) {
+                    setError(`Upload Failed: ${result.error.message || result.error || 'Unknown storage error'}`);
+                    setIsSubmitting(false);
+                    return;
+                }
             } catch (uploadError: any) {
                 setError(`Upload Failed: ${uploadError?.message || uploadError || 'Unknown storage error'}`);
                 setIsSubmitting(false);
                 return;
             }
 
-            if (!r2Url) {
-                setError(`Upload Failed: Unsuccessful Cloudflare R2 public URL generation.`);
+            if (!supabaseUrl) {
+                setError('Upload Failed: Unsuccessful Supabase Storage public URL generation.');
                 setIsSubmitting(false);
                 return;
             }
 
             // 2. Insert into DB
-            const success = await imageOfDayApi.insertImageOfDay({
-                image_url: r2Url,
+            const success = await (await import('../lib/imageOfDayApi')).insertImageOfDay({
+                image_url: supabaseUrl,
                 prompt,
                 likes: Number(likes)
             });
@@ -207,7 +240,7 @@ export default function SubmitImagePage() {
     }
 
     return (
-        <>
+        < >
             <Helmet>
                 <title>Submit Image of the Day | PromptHub Admin</title>
                 <meta name="robots" content="noindex, nofollow" />
@@ -323,15 +356,19 @@ export default function SubmitImagePage() {
                             Featured Image <span style={{ color: "#DC2626" }}>*</span>
                         </label>
 
-                        <div style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "1rem"
-                        }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                             <input
                                 type="file"
                                 accept="image/*"
-                                onChange={handleFileChange}
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        setSelectedFile(file);
+                                        // Immediately preview the image
+                                        const url = URL.createObjectURL(file);
+                                        setPreviewUrl(url);
+                                    }
+                                }}
                                 required
                                 style={{
                                     fontSize: "0.875rem",
@@ -384,7 +421,6 @@ export default function SubmitImagePage() {
                                 fontSize: "0.875rem",
                                 fontFamily: "inherit",
                                 transition: "border-color 0.2s",
-                                outline: "none",
                                 resize: "vertical"
                             }}
                             onFocus={(e) => e.currentTarget.style.borderColor = "var(--accent-color)"}

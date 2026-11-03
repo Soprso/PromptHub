@@ -1,38 +1,47 @@
-import { query } from './_db';
+import { supabaseAdmin } from './supabase-client';
 
-export const handler = async (event: any) => {
-    const { httpMethod, body } = event;
+export interface PromptStats {
+  count: number;
+  hasLiked: boolean;
+}
 
-    try {
-        if (httpMethod === 'POST') {
-            const { promptId, userKey, currentLikedState } = JSON.parse(body);
-            const newLikedState = !currentLikedState;
-            const jsonHeaders = { 'Content-Type': 'application/json' };
+// GET /api/prompts?slug=&userKey= - Get prompt stats and like status
+export const getPromptStats = async (promptId: string, userKey: string) => {
+  const userKeyEncoded = encodeURIComponent(userKey);
+  const promptIdEncoded = encodeURIComponent(promptId);
 
-            if (newLikedState) {
-                // Ensure prompt row exists
-                await query(
-                    'INSERT INTO prompts (slug, title) VALUES ($1, $1) ON CONFLICT (slug) DO NOTHING',
-                    [promptId]
-                );
-                // Insert like — ignore duplicate
-                try {
-                    await query('INSERT INTO likes (prompt_slug, user_key) VALUES ($1, $2)', [promptId, userKey]);
-                } catch (err: any) {
-                    if (err.code !== '23505') throw err;
-                }
-                await query('UPDATE prompts SET like_count = like_count + 1 WHERE slug = $1', [promptId]);
-            } else {
-                await query('DELETE FROM likes WHERE prompt_slug = $1 AND user_key = $2', [promptId, userKey]);
-                await query('UPDATE prompts SET like_count = GREATEST(0, like_count - 1) WHERE slug = $1', [promptId]);
-            }
+  try {
+    const response = await fetch(`/api/prompts?slug=${promptIdEncoded}&userKey=${userKeyEncoded}`);
+    if (!response.ok) throw new Error('Failed to fetch prompt stats');
+    const data = await response.json();
+    return { count: data.count || 0, hasLiked: !!data.hasLiked };
+  } catch (error) {
+    console.error('Error fetching prompt stats:', error);
+    return { count: 0, hasLiked: false };
+  }
+};
 
-            return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ success: true, newState: newLikedState }) };
-        }
+// POST /api/likes - Toggle like on a prompt
+export const toggleLike = async (promptId: string, currentLikedState: boolean) => {
+  const userKey = localStorage.getItem('phub_user_key') || 'anonymous';
 
-        return { statusCode: 405, body: 'Method Not Allowed' };
-    } catch (error: any) {
-        console.error('Error in likes:', error);
-        return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: error.message }) };
-    }
+  try {
+    const response = await fetch('/api/likes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ promptId, userKey, currentLikedState }),
+    });
+    if (!response.ok) throw new Error('Failed to toggle like');
+    const data = await response.json();
+    return data.newState;
+  } catch (error) {
+    console.error('Error toggling like:', error);
+    return currentLikedState;
+  }
+  // Note: The actual like/dislike logic is handled in the Netlify function
+  // This frontend function is kept for compatibility but the real
+  // logic is in netlify/functions/likes.ts which uses Supabase
+  return currentLikedState;
 };

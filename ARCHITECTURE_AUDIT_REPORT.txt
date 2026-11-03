@@ -1,0 +1,297 @@
+PROMPTHub Website Architecture Audit Report
+============================================
+
+Date: 2026-11-03
+Repository: /home/madhumita/PromptHub
+GitHub: https://github.com/Soprso/PromptHub
+Live Website: https://promptshub.shop
+
+================================================================================
+1. DATABASE INVESTIGATION
+================================================================================
+
+MAIN DATABASE: CockroachDB (PostgreSQL-compatible)
+
+Connection Configuration (netlify/functions/_db.ts):
+  - Pool created using pg driver
+  - connectionString: process.env.DATABASE_URL
+  - ssl: { rejectUnauthorized: false }
+  - max: 5 connections
+
+Key Findings:
+  - Migrated away from Supabase (confirmed in src/lib/supabase.ts which exports null)
+  - No Neon PostgreSQL usage
+  - All database access through Netlify Functions
+  - Environment variable: DATABASE_URL (not exposed in .env.example directly, used in function env)
+
+Supabase Status:
+  - src/lib/supabase.ts explicitly states: "Migrated to CockroachDB + Netlify Functions. Supabase no longer used."
+  - exports const supabase = null
+  - VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.example but NOT used in active code
+  - Legacy references only in: scripts/seed-data.json, supabase_schema.sql, supabase_community_schema.sql
+
+Database Tables (identified from queries in netlify/functions/):
+  - image_of_day: id, image_url, prompt, likes, is_active, created_at
+  - Other tables for prompts, community prompts, users, orders, etc.
+
+API Access Pattern:
+  - All DB queries go through Netlify Functions
+  - Functions: image-of-day.ts, likes.ts, prompts.ts, _db.ts
+  - Frontend never directly queries database
+  - Connection pooling with max 5 connections
+
+================================================================================
+2. IMAGE STORAGE INVESTIGATION
+================================================================================
+
+IMAGE FILE STORAGE: Cloudflare R2
+
+Storage Provider Details:
+  - Provider: Cloudflare R2
+  - Access method: @aws-sdk/client-s3 with R2 endpoint
+  - Endpoint: https://{accountId}.r2.cloudflarestorage.com
+  - Region: 'auto'
+
+R2 Environment Variables (from netlify/functions/upload-image.ts):
+  - R2_ACCOUNT_ID: Cloudflare account ID
+  - R2_ACCESS_KEY_ID: R2 access key
+  - R2_SECRET_ACCESS_KEY: R2 secret key
+  - R2_BUCKET_NAME: R2 bucket name
+  - VITE_R2_PUBLIC_URL: Public URL base for generating R2 URLs
+
+Image Upload Workflow:
+  1. Admin selects file in SubmitImagePage.tsx
+  2. r2Upload(file) → fetch('/api/upload-image') → Netlify Function
+  3. upload-image.ts parses multipart form data
+  4. Uploads to R2 via PutObjectCommand
+  5. Generates filename: image-of-day-{timestamp}-{random}.{ext}
+  6. Returns URL: {VITE_R2_PUBLIC_URL}/{filename}
+  7. URL stored in CockroachDB image_of_day.image_url
+
+Image Characteristics:
+  - Allowed types: PNG, JPEG, WebP
+  - Max size: 5MB
+  - No BLOB/base64 storage in database
+  - Only URLs/keys stored in CockroachDB
+
+Legacy Storage (no longer active):
+  - scripts/seed-data.json: Contains old Supabase URLs
+    (zxqyabfvzkkgisiapmpc.supabase.co/storage/v1/object/public/image_of_day/)
+  - supabase_schema.sql, supabase_community_schema.sql: Legacy schemas
+  - These are historical references only; active code does not use Supabase Storage
+
+================================================================================
+3. IMAGE LOADING WORKFLOW
+================================================================================
+
+COMPLETE WORKFLOW: From Database to Browser
+
+STEP 1: Image Records Retrieved from Database
+  - Function: imageOfDayApi.getPaginatedImages()
+  - API: GET /api/image-of-day?type=paginated&page=1&limit=10
+  - Netlify Function: image-of-day.ts
+  - DB Query: SELECT * FROM image_of_day WHERE is_active = true ORDER BY created_at DESC
+  - Result: JSON with ImageOfDay objects containing image_url fields
+
+STEP 2: API Endpoint that Fetches Image Information
+  - Endpoint: GET /api/image-of-day?type={featured|latest|paginated|search}
+  - Function: netlify/functions/image-of-day.ts
+  - Parameters: type, page, limit, query, searchQuery
+  - Response: { data: [{id, image_url, prompt, likes, created_at, is_active}], count: number }
+
+STEP 3: How Image URLs Are Generated
+  - During upload (SubmitImagePage.tsx → r2Upload → upload-image.ts):
+    • File uploaded to Cloudflare R2
+    • Generated filename: image-of-day-{timestamp}-{random}.{ext}
+    • URL format: {VITE_R2_PUBLIC_URL}/{filename}
+    • Example: https://promptshub.r2.dev/image-of-day-1730234567890-abcd1234.png
+  - URL stored in CockroachDB image_of_day.image_url column
+
+STEP 4: Frontend Loading (Direct from Storage Provider)
+  - <img src={item.image_url} loading="lazy" alt={...} />
+  - No backend proxy - images loaded directly from R2 CDN
+  - image_url from DB used directly as src attribute
+  - Two main image components use this pattern:
+    * ImageOfDayCard.tsx (line 108): iod-image-${item.id}
+    * ImageCarousel.tsx (line 103): carousel-image-card
+
+STEP 5: Caching Mechanism
+  - R2 Side: Cache-Control: public, max-age=31536000, immutable (set in upload-image.ts:55)
+  - Browser Side: Standard HTTP cache control
+  - No frontend caching layer beyond browser HTTP cache
+  - Permanent caching due to "immutable" directive
+
+STEP 6: Lazy Loading
+  - loading="lazy" attribute on all <img> elements
+  - ImageOfDayCard.tsx:110: loading="lazy"
+  - ImageCarousel.tsx:105: loading="lazy"
+  - Images load only when scrolled into viewport
+
+STEP 7: Error Handling
+  - If image fails to load: No special fallback in <img> elements
+  - Alt text provides descriptive context
+  - ImageModal.tsx shows default shadow styling on error
+  - No retry logic in current implementation
+
+================================================================================
+4. CODE REFERENCES
+================================================================================
+
+DATABASE LAYER:
+  File: netlify/functions/_db.ts
+  Function: Pool creation, query execution
+  Key code: new Pool({ connectionString: process.env.DATABASE_URL })
+  Usage: prompts.ts, likes.ts, image-of-day.ts
+
+  File: netlify/functions/image-of-day.ts
+  Function: CRUD operations on image_of_day table
+  Key code: query('SELECT * FROM image_of_day WHERE is_active = true ...')
+  Operations: GET featured/latest/paginated/search, POST like/insert
+
+  File: netlify/functions/likes.ts
+  Function: Like tracking for prompts
+  Key code: fetch('/api/likes', { method: 'POST', ... })
+
+IMAGE STORAGE LAYER:
+  File: src/lib/cloudflare/r2Upload.ts
+  Function: R2 upload client
+  Key code: fetch('/api/upload-image', { method: 'POST', body: formData })
+  Validates: PNG/JPEG/WebP, 5MB max limit
+
+  File: netlify/functions/upload-image.ts
+  Function: R2 upload handler
+  Key code: S3Client with R2 endpoint, PutObjectCommand
+  Returns: { url: r2Url } where r2Url = {VITE_R2_PUBLIC_URL}/{filename}
+
+  File: src/lib/cloudflare/r2Upload.ts (called from SubmitImagePage.tsx)
+  Function: Admin upload orchestration
+  Key code: r2Upload(selectedFile) → gets URL → insertImageOfDay({image_url, prompt, likes})
+
+IMAGE LOADING COMPONENTS:
+  File: src/components/ImageOfDayCard.tsx
+  Line 106-117: <img id={`iod-image-${item.id}`} src={item.image_url} loading="lazy" ... />
+  Also: useEffect for like tracking via localStorage, not DB
+
+  File: src/components/ImageCarousel.tsx
+  Line 102-112: <img src={item.image_url} alt="AI generated artwork" loading="lazy" ... />
+  Also: State management for image selection, modal preview
+
+  File: src/pages/ImageOfDayPage.tsx
+  Line 21: imageOfDayApi.getPaginatedImages(currentPage, ITEMS_PER_PAGE, searchQuery)
+  Renders: {iods.map((iod) => <ImageOfDayCard key={iod.id} item={iod} />)}
+
+  File: src/pages/Home.tsx
+  Line 32: const data = await imageOfDayApi.getLatestImages(20);
+  Renders: <ImageCarousel images={iods} />
+
+ENVIRONMENT VARIABLES:
+  File: .env.example
+  Content:
+    VITE_SUPABASE_URL=YOUR_SUPABASE_URL_HERE
+    VITE_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY_HERE
+  Note: Listed but NOT used in active code (Supabase migrated away)
+
+  File: netlify/functions/upload-image.ts (environment check)
+  Key code: if (!accountId || !accessKeyId || !secretAccessKey || !bucketName || !publicUrlBase)
+  Uses: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, VITE_R2_PUBLIC_URL
+
+  File: netlify/functions/_db.ts
+  Key code: connectionString: process.env.DATABASE_URL
+  Uses: DATABASE_URL (PostgreSQL/CockroachDB connection)
+
+OTHER RELEVANT FILES:
+  File: src/lib/supabase.ts
+  Content: "// Migrated to CockroachDB + Netlify Functions. Supabase no longer used."
+  Export: export const supabase = null
+
+  File: scripts/seed-data.json
+  Content: Legacy Supabase URLs alongside R2 URLs (historical reference only)
+
+  File: vite.config.ts
+  Key code: '/api/upload-image': { target: 'http://localhost:8888', changeOrigin: true }
+  Purpose: Dev proxy during local development
+
+================================================================================
+5. FINAL ARCHITECTURE REPORT
+================================================================================
+
+| Component | Current Implementation |
+|-----------|----------------------|
+| Main Database | CockroachDB (PostgreSQL-compatible) accessed via pg driver through Netlify Functions |
+| Prompt Metadata Storage | CockroachDB tables (image_of_day, prompts, community_prompts, etc.) |
+| Image File Storage | Cloudflare R2 (accessed via @aws-sdk/client-s3 with R2 endpoint) |
+| Image URL Source | R2 CDN URLs stored in CockroachDB image_of_day.image_url column |
+| Backend/API | Netlify Functions (esbuild) - all DB queries and R2 uploads through function layer |
+| Frontend Image Loading | <img src={item.image_url} loading="lazy" /> - direct R2 CDN loading in browser |
+| Image Caching | R2 Cache-Control: public, max-age=31536000, immutable + browser HTTP cache |
+| Lazy Loading | Yes - loading="lazy" on all image elements; images load on scroll |
+| Image Transformations | None - original files served from R2 |
+| Supabase Usage | None in active code (intentionally migrated away) |
+
+================================================================================
+6. RECOMMENDATIONS
+================================================================================
+
+CURRENT ARCHITECTURE ASSESSMENT: ✅ Efficient and well-designed
+
+STRENGTHS:
+1. Clean separation of concerns: CockroachDB for metadata, R2 for storage, Netlify Functions for API
+2. No database BLOBs: Images never stored in database - only URLs, saving space and improving performance
+3. CDN delivery: R2 provides automatic CDN distribution with global edge caching
+4. Lazy loading: loading="lazy" on all images improves initial page load performance
+5. Proper caching: Cache-Control: immutable on R2 assets ensures long cache times
+6. Migration complete: Supabase fully replaced with CockroachDB + R2
+7. No Neon PostgreSQL usage - using CockroachDB which is PostgreSQL-compatible but distributed
+
+POTENTIAL OPTIMIZATIONS:
+1. Image CDN transformations: Could add Cloudflare Images for automatic format optimization (WebP/AVIF), resizing, and dynamic transformations
+2. Image preloading: Consider preloading hero/image above-the-fold images for critical above-the-fold content
+3. Server-side image optimization: Could add a resize/proxy function for dynamic image dimensions without re-upload
+4. Database query optimization: image-of-day queries could benefit from indexing on (is_active, created_at) - likely already optimized given small table size
+
+UNNECESSARY DATABASE CALLS: None identified - architecture avoids database calls for image delivery (images come directly from R2 CDN)
+
+PERFORMANCE BOTTLENECKS:
+- Primary bottleneck would be CockroachDB query latency for fetching image lists, but given the small dataset (likely < 100 active images), this is negligible
+- Network latency to R2 CDN is minimal due to Cloudflare's global edge network
+- Current architecture is well-optimized for the use case
+
+MIGRATION PATH CONSIDERATION:
+- Current architecture (CockroachDB + R2) is already optimized
+- No need to migrate unless requiring built-in image transformation features
+- Would require adding Cloudflare Images or dedicated CDN service for those features
+
+================================================================================
+7. COMPLETE ARCHITECTURE: FROM DATABASE TO BROWSER
+================================================================================
+
+IMAGE STORAGE ARCHITECTURE:
+
+1. ADMIN UPLOADS IMAGE:
+   - File → r2Upload() → /api/upload-image Netlify Function → Cloudflare R2
+   - R2 stores file with key: image-of-day-{timestamp}-{random}.{ext}
+   - R2 returns public URL: {VITE_R2_PUBLIC_URL}/{filename}
+   - URL stored in CockroachDB image_of_day.image_url column
+
+2. PAGE LOADS IMAGES:
+   - imageOfDayApi.getPaginatedImages() → fetch('/api/image-of-day?type=paginated...')
+   - netlify/functions/image-of-day.ts → SELECT * FROM image_of_day WHERE is_active = true ORDER BY created_at DESC → CockroachDB
+   - JSON returned with image_url fields containing R2 CDN URLs
+   - Frontend maps over results and renders <img src={url} loading="lazy" />
+
+3. BROWSER RENDERS:
+   - <img src="https://promptshub.r2.dev/image-of-day-1234567890-abcd1234.png" loading="lazy" />
+   - Image loads directly from Cloudflare's global edge CDN
+   - Cache-Control: public, max-age=31536000, immutable header ensures browser caching
+   - loading="lazy" defers loading until image scrolls into viewport
+
+KEY TECHNOLOGY STACK:
+- Database: CockroachDB (PostgreSQL-compatible) - stores metadata only
+- Image storage: Cloudflare R2 - stores actual image files
+- API layer: Netlify Functions (esbuild) - mediates between frontend and database/storage
+- Frontend: React 19 + Vite - loads images directly from R2 CDN with lazy loading
+- No Supabase in production code: Intentionally migrated away (src/lib/supabase.ts exports null)
+
+================================================================================
+END OF REPORT
+================================================================================

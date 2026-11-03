@@ -1,65 +1,96 @@
-import { query } from './_db';
+import { supabaseAdmin } from './supabase-client';
 
-export const handler = async (event: any) => {
-    const { httpMethod, queryStringParameters, body, headers } = event;
+// Community prompt interface
+export interface SharedPrompt {
+  id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  model: string;
+  like_count: number;
+  created_at: string;
+}
 
-    try {
-        if (httpMethod === 'GET') {
-            const page = parseInt(queryStringParameters?.page || '1');
-            const perPage = parseInt(queryStringParameters?.perPage || '20');
-            const searchQuery = queryStringParameters?.searchQuery || '';
-            const offset = (page - 1) * perPage;
+// GET /api/community-prompts?page=&perPage=&searchQuery= - Get community prompts
+export const getCommunityPrompts = async (page: number = 1, perPage: number = 20, searchQuery?: string) => {
+  const offset = (page - 1) * perPage;
 
-            let sql = `SELECT *, count(*) OVER() AS full_count FROM prompts_shared WHERE is_approved = true`;
-            const params: any[] = [];
+  let query = supabaseAdmin
+    .from('prompts_shared')
+    .select('*, count(*) OVER() as full_count', { count: 'exact' })
+    .eq('is_approved', true);
 
-            if (searchQuery.trim()) {
-                const searchTerm = `%${searchQuery.trim()}%`;
-                params.push(searchTerm, searchQuery.trim());
-                sql += ` AND (title ILIKE $1 OR content ILIKE $1 OR $2 = ANY(tags))`;
-            }
+  if (searchQuery && searchQuery.trim()) {
+    const searchTerm = `%${searchQuery.trim()}%`;
+    query = query.or(`title.ilike.%${searchTerm}%,content.ilike.%${searchTerm}%,tags.csplit.any.%${searchQuery.trim()}%`);
+  }
 
-            params.push(perPage, offset);
-            sql += ` ORDER BY created_at DESC LIMIT $${params.length - 1} OFFSET $${params.length}`;
+  query = query.order('created_at', { ascending: false }).range(offset, offset + perPage - 1);
 
-            const rows = await query(sql, params);
-            const total = rows.length > 0 ? parseInt(rows[0].full_count) : 0;
+  const { data, error, count } = await query;
 
-            return {
-                statusCode: 200,
-                headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
-                body: JSON.stringify({ prompts: rows.map(({ full_count, ...r }: any) => r), total }),
-            };
-        }
+  if (error) {
+    console.error('Error fetching community prompts:', error);
+    return { prompts: [] as SharedPrompt[], total: 0 };
+  }
 
-        if (httpMethod === 'POST') {
-            const data = JSON.parse(body);
-            const { action, ...payload } = data;
-            const jsonHeaders = { 'Content-Type': 'application/json' };
+  return {
+    prompts: (data as any[]).map((r: any) => ({
+      id: r.id,
+      title: r.title,
+      content: r.content,
+      tags: r.tags || [],
+      model: r.model || '',
+      like_count: r.like_count || 0,
+      created_at: r.created_at,
+    })),
+    total: count || 0,
+  };
+};
 
-            if (action === 'like') {
-                await query('UPDATE prompts_shared SET like_count = like_count + 1 WHERE id = $1 AND is_approved = true', [payload.id]);
-                return { statusCode: 200, headers: jsonHeaders, body: JSON.stringify({ success: true }) };
-            }
+// POST /api/community-prompts?action=like - Like a community prompt
+export const likeCommunityPrompt = async (promptId: string) => {
+  const { error } = await supabaseAdmin
+    .from('prompts_shared')
+    .increment('like_count', 1)
+    .eq('id', promptId);
 
-            // Submit prompt — API key guard
-            const apiKey = headers['x-api-key'];
-            const expectedKey = process.env.ADMIN_API_KEY || '';
-            if (apiKey !== expectedKey) {
-                return { statusCode: 401, headers: jsonHeaders, body: JSON.stringify({ error: 'Unauthorized' }) };
-            }
+  if (error) {
+    console.error('Error liking community prompt:', error);
+    return false;
+  }
+  return true;
+};
 
-            const { title, content, tags, model } = payload;
-            await query(
-                'INSERT INTO prompts_shared (title, content, tags, model, is_approved) VALUES ($1, $2, $3, $4, false)',
-                [title, content, tags, model]
-            );
-            return { statusCode: 200, headers: jsonHeaders, body: JSON.stringify({ success: true }) };
-        }
+// POST /api/community-prompts - Submit a new community prompt
+export const submitCommunityPrompt = async (prompt: {
+  title: string;
+  content: string;
+  tags: string[];
+  model: string;
+  apiKey: string,
+}) => {
+  // Verify API key
+  if (prompt.apiKey !== process.env.ADMIN_API_KEY) {
+    return { error: 'Unauthorized' };
+  }
 
-        return { statusCode: 405, body: 'Method Not Allowed' };
-    } catch (error: any) {
-        console.error('Error in community-prompts:', error);
-        return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: error.message }) };
-    }
+  const { data, error } = await supabaseAdmin
+    .from('prompts_shared')
+    .insert([{
+      title: prompt.title,
+      content: prompt.content,
+      tags: prompt.tags,
+      model: prompt.model,
+      is_approved: false,
+      like_count: 0,
+    }])
+    .select();
+
+  if (error) {
+    console.error('Error submitting community prompt:', error);
+    return { error: error.message };
+  }
+
+  return { success: true, data };
 };
