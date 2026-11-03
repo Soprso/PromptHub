@@ -212,7 +212,7 @@ export const uploadImageToSupabase = async (
   // 4. All uploads go through the trusted Netlify Function endpoint
   
   // Build the API URL
-  const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}`; // Actually we need the Netlify function URL
+  const _apiUrl = `${import.meta.env.VITE_SUPABASE_URL}`; // Actually we need the Netlify function URL
   
   // Since we can't easily build the full Netlify function URL from the client,
   // and the function is at /api/upload-image on the Netlify deployment,
