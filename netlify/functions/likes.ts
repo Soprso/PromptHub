@@ -1,47 +1,29 @@
-import { supabaseAdmin } from './supabase-client';
+import { toggleLike } from './prompts';
 
-export interface PromptStats {
-  count: number;
-  hasLiked: boolean;
-}
+const jsonHeaders = { 'Content-Type': 'application/json' };
 
-// GET /api/prompts?slug=&userKey= - Get prompt stats and like status
-export const getPromptStats = async (promptId: string, userKey: string) => {
-  const userKeyEncoded = encodeURIComponent(userKey);
-  const promptIdEncoded = encodeURIComponent(promptId);
+// HTTP handler for /api/likes (POST toggle like)
+export const handler = async (event: any) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, headers: jsonHeaders, body: JSON.stringify({ error: 'Method Not Allowed' }) };
+  }
 
   try {
-    const response = await fetch(`/api/prompts?slug=${promptIdEncoded}&userKey=${userKeyEncoded}`);
-    if (!response.ok) throw new Error('Failed to fetch prompt stats');
-    const data = await response.json();
-    return { count: data.count || 0, hasLiked: !!data.hasLiked };
-  } catch (error) {
-    console.error('Error fetching prompt stats:', error);
-    return { count: 0, hasLiked: false };
-  }
-};
+    const payload = event.body ? JSON.parse(event.body) : {};
+    const { promptId, userKey, currentLikedState } = payload;
 
-// POST /api/likes - Toggle like on a prompt
-export const toggleLike = async (promptId: string, currentLikedState: boolean) => {
-  const userKey = localStorage.getItem('phub_user_key') || 'anonymous';
+    if (!promptId || !userKey) {
+      return { statusCode: 400, headers: jsonHeaders, body: JSON.stringify({ error: 'promptId and userKey are required' }) };
+    }
 
-  try {
-    const response = await fetch('/api/likes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ promptId, userKey, currentLikedState }),
-    });
-    if (!response.ok) throw new Error('Failed to toggle like');
-    const data = await response.json();
-    return data.newState;
-  } catch (error) {
-    console.error('Error toggling like:', error);
-    return currentLikedState;
+    const result = await toggleLike(promptId, userKey, !!currentLikedState);
+    return {
+      statusCode: result.success ? 200 : 500,
+      headers: jsonHeaders,
+      body: JSON.stringify(result),
+    };
+  } catch (error: any) {
+    console.error('Error in likes:', error);
+    return { statusCode: 500, headers: jsonHeaders, body: JSON.stringify({ error: error?.message || 'Internal error' }) };
   }
-  // Note: The actual like/dislike logic is handled in the Netlify function
-  // This frontend function is kept for compatibility but the real
-  // logic is in netlify/functions/likes.ts which uses Supabase
-  return currentLikedState;
 };

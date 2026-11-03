@@ -72,14 +72,11 @@ export const getPaginatedImages = async (
 
   let query = supabase
     .from('image_of_day')
-    .select('*, count(*) OVER() as full_count', { count: 'exact' })
+    .select('*', { count: 'exact' })
     .eq('is_active', true);
 
   if (search && search.trim()) {
-    const searchTerm = `%${search.trim()}%`;
-    query = query.or(
-      `prompt.ilike.${searchTerm.toString()},content.ilike.${searchTerm.toString()}`
-    );
+    query = query.ilike('prompt', `%${search.trim()}%`);
   }
 
   query = query.order('created_at', { ascending: false }).range(from, to);
@@ -117,7 +114,7 @@ export const searchImages = async (query: string, limit: number = 20): Promise<I
     .from('image_of_day')
     .select('*')
     .eq('is_active', true)
-    .or(`prompt.ilike.%${encodeURIComponent(query)}%`)
+    .ilike('prompt', `%${query}%`)
     .limit(limit);
 
   if (searchError) {
@@ -136,17 +133,19 @@ export const insertImageOfDay = async (image: {
   prompt: string;
   likes?: number;
 }): Promise<boolean> => {
-  const { data: _insertResult, error: insertError } = await supabase
-    .from('image_of_day')
-    .insert([{ ...image, is_active: true, likes: image.likes || 0 }])
-    .select()
-    .single();
-
-  if (insertError) {
-    console.error('Error inserting image of the day:', insertError);
+  // Writes go through the trusted Netlify Function (service role).
+  // The image_of_day table has no anonymous INSERT policy by design.
+  try {
+    const response = await fetch('/api/image-of-day', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'insert', ...image }),
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Error inserting image of the day:', error);
     return false;
   }
-  return true;
 };
 
 /**
@@ -154,17 +153,18 @@ export const insertImageOfDay = async (image: {
  * @param id - Image ID
  */
 export const likeImageOfDay = async (id: string): Promise<boolean> => {
-  // Increment likes using Supabase update
-  const { error: likeError } = await supabase
-    .from('image_of_day')
-    .update({ likes: supabase.rpc('inc', { id }) })
-    .eq('id', id);
-
-  if (likeError) {
-    console.error('Error liking image of the day:', likeError);
+  // Writes go through the trusted Netlify Function (service role).
+  try {
+    const response = await fetch('/api/image-of-day', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'like', id }),
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Error liking image of the day:', error);
     return false;
   }
-  return true;
 };
 
 /**

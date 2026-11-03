@@ -1,3 +1,4 @@
+import { parse } from 'lambda-multipart-parser';
 import { supabaseAdmin } from './supabase-client';
 
 // Supported image file types for upload
@@ -10,48 +11,59 @@ const maxSize = 5 * 1024 * 1024;
 // Anonymous users must NOT use these directly; all uploads go through this Netlify Function.
 const PERMITTED_BUCKETS = ['image_of_day', 'prompt_images', 'community-prompt-images'] as const;
 
+// Shape of a file parsed by lambda-multipart-parser.
+// It is NOT a DOM File: it exposes filename/contentType/content instead of name/type/size.
+interface ParsedFile {
+  filename: string;
+  contentType: string;
+  content: Uint8Array;
+  encoding?: string;
+  fieldname?: string;
+}
+
+type PermittedBucket = 'image_of_day' | 'prompt_images' | 'community-prompt-images';
+
 /**
  * Upload a file to Supabase Storage via trusted Netlify Function.
  * CRITICAL: Bucket name is validated server-side; clients must NOT supply bucket names.
  *
- * @param file - The File object to upload
- * @param bucketHint - Hint for which bucket intended (image_of_day | prompt_images | community-prompt-images)
- *                     This is for logging/routing only; the actual bucket is validated server-side.
+ * @param file - The parsed multipart file (filename/contentType/content)
+ * @param bucket - Validated destination bucket
  * @returns The public URL of the uploaded file, or error object
  */
-export const supabaseUpload = async (file: File, bucketHint?: 'image_of_day' | 'prompt_images' | 'community-prompt-images'): Promise<{ url: string; error: any }> {
+export const supabaseUpload = async (
+  file: ParsedFile,
+  bucket: PermittedBucket = 'image_of_day'
+): Promise<{ url: string | null; error: any }> => {
   // Validate file type
-  if (!allowedTypes.includes(file.type)) {
+  if (!allowedTypes.includes(file.contentType)) {
     return { url: null, error: 'Invalid file type. Only PNG, JPEG, and WEBP are allowed.' };
   }
 
-  // Validate file size
-  if (file.size > maxSize) {
+  // Validate file size (content is a Buffer/Uint8Array, so .length is the byte size)
+  if (file.content.length > maxSize) {
     return { url: null, error: 'File exceeds the 5MB size limit.' };
   }
+
+  // Derive the extension from the validated content type (never trust the filename)
+  const extensionByType: Record<string, string> = {
+    'image/png': 'png',
+    'image/jpeg': 'jpg',
+    'image/webp': 'webp',
+  };
+  const extension = extensionByType[file.contentType] || 'png';
 
   // Generate a unique filename with timestamp
   const timestamp = Date.now();
   const uniqueId = Math.random().toString(36).substring(2, 15);
-  const extension = file.name.split('.').pop() || 'png';
   const fileName = `image-of-day-${timestamp}-${uniqueId}.${extension}`;
 
-  // Determine which bucket to use based on the hint.
-  // The actual bucket validation happens server-side in the handler.
-  // Mapping from hint to bucket name:
-  const bucketMap: Record<'image_of_day' | 'prompt_images' | 'community-prompt-images', string> = {
-    'image_of_day': 'image_of_day',
-    'prompt_images': 'prompt_images',
-    'community-prompt-images': 'community-prompt-images',
-  };
-
   // Upload to Supabase Storage using the admin client
-  // The bucket name is determined server-side in the handler based on the request
-  const { data, error } = await supabaseAdmin.storage
-    .from(bucketMap[bucketHint] || 'image_of_day')
-    .upload(fileName, file, {
+  const { error } = await supabaseAdmin.storage
+    .from(bucket)
+    .upload(fileName, file.content, {
       cacheControl: 'public, max-age=31536000, immutable',
-      contentType: file.type,
+      contentType: file.contentType,
     });
 
   if (error) {
@@ -61,7 +73,7 @@ export const supabaseUpload = async (file: File, bucketHint?: 'image_of_day' | '
 
   // Get the public URL
   const { data: { publicUrl } } = supabaseAdmin.storage
-    .from(bucketMap[bucketHint] || 'image_of_day')
+    .from(bucket)
     .getPublicUrl(fileName);
 
   return { url: publicUrl, error: null };
@@ -89,14 +101,9 @@ export const handler = async (event: any) => {
   try {
     console.log("Upload function invoked");
 
-    // Parse the multipart form data
-    const result = await new Promise<any>((resolve, reject) => {
-      const { parse } = await import('lambda-multipart-parser');
-      parse(event, (err: any, result: any) => {
-        if (err) reject(err);
-        else resolve(result);
-      });
-    });
+    // Parse the multipart form data. lambda-multipart-parser's parse()
+    // returns a Promise (it is not callback-based).
+    const result = await parse(event);
 
     const file = result.files[0];
     console.log("File parsed:", file ? file.filename : "No file");
@@ -109,20 +116,24 @@ export const handler = async (event: any) => {
     }
 
     // Determine which bucket to use based on the request query parameter.
-    // This is validated against PERMITTED_BUCKETS server-side below.
-    const bucketHint = (result.queryStringParameters?.bucket || 'image_of_day') as 'image_of_day' | 'prompt_images' | 'community-prompt-images' | undefined;
+    // Query parameters live on the event, not on the parsed multipart body.
+    const requestedBucket = event.queryStringParameters?.bucket as
+      | 'image_of_day'
+      | 'prompt_images'
+      | 'community-prompt-images'
+      | undefined;
 
     // CRITICAL: Validate bucket against permitted list.
     // If the bucket is not permitted, default to 'image_of_day' and log a warning.
-    let validatedBucket = 'image_of_day';
-    if (PERMITTED_BUCKETS.includes(bucketHint)) {
-      validatedBucket = bucketHint;
-    } else {
-      console.warn(`⚠ Invalid bucket hint "${bucketHint}" received. Defaulting to "image_of_day".`);
+    let validatedBucket: 'image_of_day' | 'prompt_images' | 'community-prompt-images' = 'image_of_day';
+    if (requestedBucket && PERMITTED_BUCKETS.includes(requestedBucket)) {
+      validatedBucket = requestedBucket;
+    } else if (requestedBucket) {
+      console.warn(`⚠ Invalid bucket hint "${requestedBucket}" received. Defaulting to "image_of_day".`);
     }
 
-    // Upload to Supabase Storage via the admin client
-    const uploadResult = await supabaseUpload(file as File, bucketHint);
+    // Upload to Supabase Storage via the admin client using the validated bucket
+    const uploadResult = await supabaseUpload(file, validatedBucket);
 
     if (uploadResult.error) {
       return {

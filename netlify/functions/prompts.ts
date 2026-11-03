@@ -9,27 +9,25 @@ export interface PromptStats {
 // GET /api/prompts?slug=&userKey= - Get prompt stats and like status
 export const getPromptStats = async (slug: string, userKey: string | null) => {
   // Get like count for the prompt
-  const { data: promptData, error: promptError } = await supabaseAdmin
+  const { data: promptData } = await supabaseAdmin
     .from('prompts')
     .select('like_count')
     .eq('slug', slug)
-    .single();
+    .maybeSingle();
 
   const count = promptData ? (promptData.like_count || 0) : 0;
 
   // Check if user has liked this prompt
   let hasLiked = false;
   if (userKey) {
-    const { data: likeData, error: likeError } = await supabaseAdmin
+    const { data: likeData } = await supabaseAdmin
       .from('likes')
       .select('id')
       .eq('prompt_slug', slug)
       .eq('user_key', userKey)
-      .single();
+      .maybeSingle();
 
-    if (likeData && !likeError) {
-      hasLiked = true;
-    }
+    hasLiked = !!likeData;
   }
 
   return { count, hasLiked };
@@ -38,35 +36,33 @@ export const getPromptStats = async (slug: string, userKey: string | null) => {
 // POST /api/likes - Toggle like on a prompt
 export const toggleLike = async (promptId: string, userKey: string, currentLikedState: boolean) => {
   const newLikedState = !currentLikedState;
-  const jsonHeaders = { 'Content-Type': 'application/json' };
 
   if (newLikedState) {
-    // Ensure prompt row exists
+    // Ensure prompt row exists without clobbering an existing like_count
     const { error: promptError } = await supabaseAdmin
       .from('prompts')
-      .upsert({ slug: promptId, title: `Prompt ${promptId}`, like_count: 0 })
-      .select();
+      .upsert(
+        { slug: promptId, title: `Prompt ${promptId}`, like_count: 0 },
+        { onConflict: 'slug', ignoreDuplicates: true }
+      );
 
     if (promptError) {
       console.error('Error ensuring prompt exists:', promptError);
     }
 
-    // Insert like — ignore duplicate
+    // Insert like — ignore duplicate (unique violation is OK)
     const { error: likeError } = await supabaseAdmin
       .from('likes')
       .insert({ prompt_slug: promptId, user_key: userKey });
 
     if (likeError && likeError.code !== '23505') {
-      // 23505 is the unique violation code - duplicate like is OK
       console.error('Error inserting like:', likeError);
       return { success: false, error: likeError.message };
     }
 
-    // Increment like count
+    // Atomic increment via RPC (PostgREST has no .increment() method)
     const { error: countError } = await supabaseAdmin
-      .from('prompts')
-      .increment('like_count', 1)
-      .eq('slug', promptId);
+      .rpc('increment_like_count', { row_slug: promptId });
 
     if (countError) {
       console.error('Error incrementing like count:', countError);
@@ -85,12 +81,9 @@ export const toggleLike = async (promptId: string, userKey: string, currentLiked
       return { success: false, error: unlikeError.message };
     }
 
-    // Decrement like count (minimum 0)
+    // Atomic decrement via RPC (clamped to a minimum of 0 in SQL)
     const { error: countError } = await supabaseAdmin
-      .from('prompts')
-      .decrement('like_count', 1)
-      .eq('slug', promptId)
-      .gte('like_count', 1);
+      .rpc('decrement_like_count', { row_slug: promptId });
 
     if (countError) {
       console.error('Error decrementing like count:', countError);
@@ -99,4 +92,46 @@ export const toggleLike = async (promptId: string, userKey: string, currentLiked
   }
 
   return { success: true, newState: newLikedState };
+};
+
+const jsonHeaders = { 'Content-Type': 'application/json' };
+
+// HTTP handler for /api/prompts (GET stats, POST toggle)
+export const handler = async (event: any) => {
+  const { httpMethod, queryStringParameters, body } = event;
+
+  try {
+    if (httpMethod === 'GET') {
+      const slug = queryStringParameters?.slug;
+      const userKey = queryStringParameters?.userKey || null;
+
+      if (!slug) {
+        return { statusCode: 400, headers: jsonHeaders, body: JSON.stringify({ error: 'Slug is required' }) };
+      }
+
+      const stats = await getPromptStats(slug, userKey);
+      return {
+        statusCode: 200,
+        headers: { ...jsonHeaders, 'Cache-Control': 'public, max-age=60' },
+        body: JSON.stringify({ count: stats.count, hasLiked: stats.hasLiked }),
+      };
+    }
+
+    if (httpMethod === 'POST') {
+      const payload = body ? JSON.parse(body) : {};
+      const { promptId, userKey, currentLikedState } = payload;
+
+      if (!promptId || !userKey) {
+        return { statusCode: 400, headers: jsonHeaders, body: JSON.stringify({ error: 'promptId and userKey are required' }) };
+      }
+
+      const result = await toggleLike(promptId, userKey, !!currentLikedState);
+      return { statusCode: result.success ? 200 : 500, headers: jsonHeaders, body: JSON.stringify(result) };
+    }
+
+    return { statusCode: 405, headers: jsonHeaders, body: JSON.stringify({ error: 'Method Not Allowed' }) };
+  } catch (error: any) {
+    console.error('Error in prompts:', error);
+    return { statusCode: 500, headers: jsonHeaders, body: JSON.stringify({ error: error?.message || 'Internal error' }) };
+  }
 };
